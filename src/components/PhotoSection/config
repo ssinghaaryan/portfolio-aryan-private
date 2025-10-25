@@ -1,0 +1,9 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyBQGocgNPpELSOL3BASmA9Pa6PzwgTkqyI",
+  authDomain: "personal-abc.firebaseapp.com",
+  projectId: "personal-abc",
+  storageBucket: "personal-abc.firebasestorage.app",
+  messagingSenderId: "375212288923",
+  appId: "1:375212288923:web:7f50d4e66fb2dd39750f3e",
+  measurementId: "G-YFPR1G9B06"
+};

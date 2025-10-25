@@ -1,0 +1,24 @@
+#photoHero {
+    display: flex;
+    width: 100vw;
+    max-width: 70%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    margin: 4rem auto;
+    /* justify-content: center; */
+    /* text-align: center; */
+}
+
+.photoHeroSummary {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.judge {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #A61804;
+}

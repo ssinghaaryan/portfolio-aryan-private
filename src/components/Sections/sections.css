@@ -1,0 +1,71 @@
+#sections {
+    width: 100vw;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    text-align: left;
+    margin: 0 auto; /* Pushed the content within the 60% width set above */
+    padding: 4rem 0;
+    gap: 3rem;
+}
+
+.sectionContainer {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    /* justify-content: center; */
+    /* align-items: flex-start; */
+    width: 100%;
+    padding: 2rem 2rem;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 2rem;
+    border-style: solid;
+    border-color: #37373a;
+    border-width: 1px;
+    border-radius: 1.5rem;
+    border-bottom: 5px solid #37373a;
+    transition: 0.3s ease;
+}
+
+.sectionContainer:hover {
+    transform: translateY(-10px);
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: left;
+    width: fit-content;
+}
+
+.sectionLinkWrapper:visited {
+    text-decoration: none;
+    color: white;
+}
+
+.sectionBottomRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5rem; /* to add spacing between the section content & images on left & right correctly, instead of using marging-left/right. */
+  }
+
+.sectionContent {
+    text-align: left;
+    flex: 1; /* To keep text & img side by side */
+    color: #a1a1aa;
+    line-height: 1.5rem;
+}
+
+.sectionImg {
+    height: 12rem;
+    width: 16rem;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 1.5rem;
+    /* margin: 0 5rem; */
+}

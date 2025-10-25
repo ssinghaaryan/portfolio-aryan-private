@@ -1,0 +1,6 @@
+#footer {
+    display: flex;
+    justify-content: center;
+    color: rgb(161 161 170);
+    margin: 1rem auto;
+}

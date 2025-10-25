@@ -1,0 +1,34 @@
+.projectBanner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.projectBannerImg {
+    width: 100vw;
+    max-width: 60%;
+    height: 25rem;
+    object-fit: cover; /* Would need to make it 'contain' later */
+    margin: 0 auto;
+    /* margin-left: 24rem; For keeping banner at center and 60% width  */
+}
+
+#projectSummary {
+    overflow: hidden;
+    width: 100vw;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.projectSummaryDesc {
+    font-size: 1.2rem;
+    font-weight: 100;
+    color: #a1a1aa; /* Will have to use this color as common for all desc/sub-desc on the site */
+    line-height: 2rem;
+    margin: 4rem 0;
+}

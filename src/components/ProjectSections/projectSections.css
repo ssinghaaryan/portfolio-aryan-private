@@ -1,0 +1,111 @@
+#projectSections {
+    width: 100vw;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    margin: 0 auto;
+    gap: 3rem
+    /* padding: 2rem 0; */
+}
+
+.projectSectionsContainer {
+    display: flex;
+    width: 100%;
+    height: auto;
+    padding: 2rem 2rem;
+    gap: 5rem;
+    flex-wrap: wrap; /* allow content to wrap if needed */
+    /* margin: 3rem auto 5rem; */
+}
+
+.projectSectionContent {
+    color: #a1a1aa;
+}
+
+.projectSectionImg {
+    /* height: 15rem;
+    width: 20rem; */
+    height: auto;
+    width: 100%;
+    max-width: 12rem;
+    object-fit: contain;
+    border-radius: 1.5rem;
+}
+
+.projectSectionRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    /* min-width: 250px; */
+}
+
+.projectSectionRight > span {
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.projectSectionLinks {
+    justify-content: right;
+    display: flex;
+    /* flex-direction: column; */
+    gap: 2.5rem;
+    margin-top: 2rem;
+    /* margin-right: 0.5rem; */
+    cursor: pointer;
+}
+
+/* linkText is for just adding the easy hover line effect under links */
+.linkText {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+.linkText::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 0;
+    background: white;
+    transition: 0.3s;
+  }
+  
+.linkText:hover::after {
+    width: 95%;
+  }
+
+/* linkArrow is just for the hover effect for arrow shifting right */
+
+.projectSectionLinks span:hover .linkArrow {
+    transform: translateX(5px);
+}
+
+.linkArrow {
+    display: inline-block;
+    /* margin-left: 0.1rem; */
+    transition: transform 0.3s ease;
+}
+
+.sectionDivider {
+    border: 0.1px rgba(95, 95, 93, 0.617) solid;
+    width: 100vw;
+    max-width: 50%;
+}
+
+@media (max-width: 768px) {
+    #projectSections {
+        max-width: 80%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #projectSections {
+        max-width: 80%;
+    }
+  }
