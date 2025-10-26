@@ -33,7 +33,7 @@ const Photo = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const res = await fetch("http://localhost:8080/list");
+        const res = await fetch("/api/list");
         const data = await res.json();
         const urls = data.map((file) => file.url);
         setImages(urls); // show latest first

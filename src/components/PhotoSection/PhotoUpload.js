@@ -7,7 +7,7 @@ const PhotoUpload = ({ onUpload }) => {
   // ✅ Explicit authenticator function
   const authenticator = async () => {
     try {
-      const response = await fetch("http://localhost:8080/auth");
+      const response = await fetch("/api/auth");
       const data = await response.json();
       return data; // must contain { token, expire, signature }
     } catch (error) {
@@ -18,8 +18,8 @@ const PhotoUpload = ({ onUpload }) => {
 
   return (
     <IKContext
-      publicKey="public_L9euM/Nfb6sl8cb4UeImo4bCsik="
-      urlEndpoint="https://ik.imagekit.io/aryans"
+      publicKey={process.env.IMAGEKIT_PUBLIC_KEY}
+      urlEndpoint={process.env.IMAGEKIT_URL_ENDPOINT}
       authenticator={authenticator} // ✅ Directly pass the function
     >
       <div style={{ display: "flex", justifyContent: "flex-end", width: "94%" }}>
