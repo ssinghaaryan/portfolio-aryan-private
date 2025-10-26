@@ -18,8 +18,9 @@ const PhotoUpload = ({ onUpload }) => {
 
   return (
     <IKContext
-      publicKey={process.env.IMAGEKIT_PUBLIC_KEY}
-      urlEndpoint={process.env.IMAGEKIT_URL_ENDPOINT}
+      publicKey={process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY}
+      urlEndpoint={process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT}
+      authenticationEndpoint={process.env.REACT_APP_IMAGEKIT_AUTH_ENDPOINT}
       authenticator={authenticator} // ✅ Directly pass the function
     >
       <div style={{ display: "flex", justifyContent: "flex-end", width: "94%" }}>
