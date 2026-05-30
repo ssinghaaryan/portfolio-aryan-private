@@ -136,8 +136,8 @@ const Photo = () => {
 
     try {
       // const res = await fetch(`/api/list?skip=${skip}&limit=${limit}`);
-      // const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
-      const res = await fetch("https://iaryan.vercel.app/api/list?skip=0&limit=5");
+      const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
+      // const res = await fetch("https://iaryan.vercel.app/api/list?skip=0&limit=5");
       const data = await res.json();
 
       if (!data.length) {

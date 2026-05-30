@@ -1,7 +1,7 @@
 import React from "react";
 import './hero.css';
 import profile from '../../assets/profile.PNG'
-import background from "../../assets/Banner.png"
+// import background from "../../assets/Banner.png"
 
 const Hero = () => {
     return (

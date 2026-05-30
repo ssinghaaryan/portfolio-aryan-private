@@ -7,7 +7,7 @@ const ProjectHero = () => {
         <>
         <section id='projectHero'>
             <div className='projectBanner'>
-                <img src={ProjectBanner} className='projectBannerImg'></img>
+                <img src={ProjectBanner} className='projectBannerImg' alt='image'></img>
             </div>
             <div className='projectSummary'></div>
         </section>
@@ -18,4 +18,4 @@ const ProjectHero = () => {
     )
 }
 
-export default ProjectHero;
+export default ProjectHero;s

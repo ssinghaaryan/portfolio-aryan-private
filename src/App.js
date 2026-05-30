@@ -1,9 +1,9 @@
-import Navbar from "./components/Navbar/navbar"
-import Home from "./pages/Home";
-import Projects from './pages/Projects'
-import History from "./pages/History";
+// import Navbar from "./components/Navbar/navbar"
+// import Home from "./pages/Home";
+// import Projects from './pages/Projects'
+// import History from "./pages/History";
 import Photos from "./pages/Photos";
-import Track from "./track/Track";
+// import Track from "./track/Track";
 import { Route, Routes } from "react-router-dom";
 import ScrollToTop from './ScrollToTop';
 import Footer from "./components/Footer/Footer";
