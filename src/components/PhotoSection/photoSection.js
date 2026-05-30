@@ -104,7 +104,7 @@
 
 // -----------------
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./photoSection.css";
 import PhotoUpload from "./PhotoUpload";
 import Masonry from "react-masonry-css";
@@ -129,43 +129,43 @@ const Photo = () => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  const loadImages = async () => {
-    if (loading || !hasMore) return;
+  const loadImages = useCallback(async () => {
+  if (loading || !hasMore) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      // const res = await fetch(`/api/list?skip=${skip}&limit=${limit}`);
-      const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
-      // const res = await fetch("https://iaryan.vercel.app/api/list?skip=0&limit=5");
-      const data = await res.json();
+  try {
+    const res = await fetch(
+      `https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`
+    );
 
-      if (!data.length) {
-        setHasMore(false);
-        setLoading(false);
-        return;
-      }
+    const data = await res.json();
 
-      const urls = data.map((file) =>
+    if (!data.length) {
+      setHasMore(false);
+      setLoading(false);
+      return;
+    }
+
+    const urls = data.map((file) =>
       file.url.replace(
       "/aryans/",
       "/aryans/tr:w-600,q-70/"
       )
     );
 
-      setImages((prev) => [...prev, ...urls]);
-      setSkip((prev) => prev + limit);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching images", err);
-      setLoading(false);
-    }
-  };
+    setImages((prev) => [...prev, ...urls]);
+    setSkip((prev) => prev + limit);
+    setLoading(false);
+  } catch (err) {
+    console.error("Error fetching images", err);
+    setLoading(false);
+  }
+}, [skip, limit, loading, hasMore]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadImages();
-  }, []);
+  }, [loadImages]);
 
 //   useEffect(() => {
 //   fetch("https://jsonplaceholder.typicode.com/posts/1")
