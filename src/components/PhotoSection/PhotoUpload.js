@@ -7,7 +7,7 @@ const PhotoUpload = ({ onUpload }) => {
   // ✅ Explicit authenticator function
   const authenticator = async () => {
     try {
-      const response = await fetch("/api/auth");
+      const response = await fetch("https://iaryan.vercel.app/api/auth");
       const data = await response.json();
       return data; // must contain { token, expire, signature }
     } catch (error) {

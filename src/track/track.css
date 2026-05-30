@@ -1,0 +1,125 @@
+/* ===== Page background ===== */
+.track-container {
+  min-height: 100vh;
+  background: #0f0f10; /* deep charcoal */
+  padding: 40px 20px;
+  color: #ffffff;
+}
+
+/* ===== Title ===== */
+.track-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+  font-weight: 600;
+  color: #f5f5f5;
+}
+
+/* ===== Rings layout ===== */
+.rings-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* ===== Ring card ===== */
+.ring-card {
+  position: relative;
+  background: #121212; /* dark background so white text is visible */
+  border-radius: 16px;
+  padding: 16px 12px 20px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.ring-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.ring-card.done {
+  opacity: 0.9;
+}
+
+.ring-card.done .progress-ring-fill {
+  stroke: #4CAF50;
+}
+
+/* ===== SVG Ring ===== */
+.progress-ring {
+  display: block;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.progress-ring-bg {
+  fill: none;
+  stroke: #2a2a2e;
+  stroke-width: 8;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* ===== Text ===== */
+.ring-label {
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.ring-subtext {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+/* ===== Mobile tweaks ===== */
+@media (max-width: 600px) {
+  .rings-wrapper {
+    gap: 24px;
+  }
+
+  .ring-card {
+    width: 140px;
+    padding: 20px 16px;
+  }
+}
+
+.ring-card.done {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.ring-check {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 18px;
+  color: #4CAF50;
+  font-weight: bold;
+  z-index: 3;
+  pointer-events: none; /* VERY IMPORTANT */
+}
+
+
+.ring-center-text {
+  fill: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@keyframes ring-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.ring-card.animate {
+  animation: ring-pop 0.35s ease;
+}

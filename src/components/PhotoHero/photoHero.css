@@ -22,3 +22,18 @@
     font-size: 1rem;
     color: #A61804;
 }
+
+/* Mobile screens */
+@media (max-width: 600px) {
+  .photoHeroSummary {
+    font-size: 1.1rem;      /* smaller font size */
+    white-space: nowrap;    /* force into one line */
+    overflow: hidden;       /* hide overflow */
+    text-overflow: ellipsis; /* add ... if too long */
+    max-width: 95vw;        /* prevent overflow */
+  }
+
+  #photoHero {
+    max-width: 95%;        /* allow wider text container */
+  }
+}

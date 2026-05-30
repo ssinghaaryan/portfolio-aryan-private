@@ -7,10 +7,21 @@ const imagekit = new ImageKit({
 });
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  
   try {
+    const { skip = 0, limit = 10 } = req.query;
+
     const files = await imagekit.listFiles({
       path: "/photos", // same as before
-      limit: 20,
+      skip: Number(skip),
+      limit: Number(limit),
     });
     res.status(200).json(files);
   } catch (error) {
