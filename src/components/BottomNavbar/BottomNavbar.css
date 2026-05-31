@@ -1,10 +1,13 @@
 .bottom-nav {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
 
+  z-index: 99999;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
   gap: 20px;
