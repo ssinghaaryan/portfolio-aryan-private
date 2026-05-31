@@ -7,6 +7,7 @@ import Photos from "./pages/Photos";
 import { Route, Routes } from "react-router-dom";
 import ScrollToTop from './ScrollToTop';
 import Footer from "./components/Footer/Footer";
+import Music from "./music/Music";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         {/* <Route path='/photos' element={<Photos />} /> */}
         <Route path='/' element={<Photos />} />
         {/* <Route path="/track" element={<Track />} /> */}
+        <Route path='/music' element={<Music />} />
       </Routes>
       <Footer />
     </div>
