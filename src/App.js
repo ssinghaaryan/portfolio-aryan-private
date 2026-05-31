@@ -2,6 +2,7 @@
 // import Home from "./pages/Home";
 // import Projects from './pages/Projects'
 // import History from "./pages/History";
+import { Toaster } from "react-hot-toast";
 import Photos from "./pages/Photos";
 // import Track from "./track/Track";
 import { Route, Routes } from "react-router-dom";
@@ -23,6 +24,7 @@ function App() {
         {/* <Route path="/track" element={<Track />} /> */}
         <Route path='/music' element={<Music />} />
       </Routes>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Footer />
     </div>
   );

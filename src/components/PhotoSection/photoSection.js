@@ -110,6 +110,7 @@ import PhotoUpload from "./PhotoUpload";
 import Masonry from "react-masonry-css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import BottomNavbar from "../BottomNavbar/BottomNavbar";
 
 const breakpointColumnsObj = {
   default: 6,
@@ -229,6 +230,8 @@ const Photo = () => {
           {loading ? "Loading..." : "Load More ↓"}
         </button>
       )}
+
+      <BottomNavbar />
 
       {!hasMore && (
         <p style={{ textAlign: "center", margin: "20px 0", color: "#777" }}>
