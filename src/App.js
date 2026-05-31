@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import ScrollToTop from './ScrollToTop';
 import Footer from "./components/Footer/Footer";
 import Music from "./music/Music";
+import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='/music' element={<Music />} />
       </Routes>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <BottomNavbar />
       <Footer />
     </div>
   );
