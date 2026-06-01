@@ -26,7 +26,13 @@ function App() {
         <Route path='/photos' element={<Photos />} />
       </Routes>
       <BottomNavbar />
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="bottom-center"
+        toastOptions={{
+          style: {
+            marginBottom: "100px"
+          },
+        }}
+      />
       <Footer />
     </div>
   );

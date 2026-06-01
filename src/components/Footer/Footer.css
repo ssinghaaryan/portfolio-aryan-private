@@ -1,6 +1,9 @@
 #footer {
-    display: flex;
-    justify-content: center;
-    color: rgb(161 161 170);
-    margin: 1rem auto;
+  display: flex;
+  justify-content: flex-end;
+
+  margin: 2rem 1rem 0rem 0;
+
+  font-size: 11px;
+  opacity: 0.4;
 }

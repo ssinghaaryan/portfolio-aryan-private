@@ -11,6 +11,8 @@ export default function Music() {
   const [savedSongs, setSavedSongs] = useState([]);
   const [view, setView] = useState("collection");
   const [showLibrary, setShowLibrary] = useState(false);
+  const [lastSearch, setLastSearch] = useState("");
+  const [loading, setLoading] = useState(false);
   const collectionSongs = [...savedSongs]
   .sort((a, b) => b.createdAt - a.createdAt)
   .slice(0, 30);
@@ -18,16 +20,24 @@ export default function Music() {
   // Searching for songs with the query passed.
   const searchSongs = async () => {
     if (!searchTerm.trim()) return;
+    const term = searchTerm;
+    setLastSearch(term);
+    setSearchTerm("");
+    setResults([]);
+    setLoading(true);
+
     try {
       const res = await fetch(
         `https://iaryan.vercel.app/api/music-search?q=${encodeURIComponent(searchTerm)}`
       );
 
       const data = await res.json();
-
       setResults(data);
+
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -307,6 +317,7 @@ const renderSongCard = (song) => (
     alignItems: "center",
   }}
 ></div>
+    <div className="search-bar-row" >
       <input
         value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}
@@ -317,30 +328,53 @@ const renderSongCard = (song) => (
       borderRadius: "15px",
       border: "1px solid grey",
       outline: "none",
-      fontSize: "12px",
+      fontSize: "15px",
       color: "white"
     //   background: "",
     }}/>
 
       <button 
       onClick={searchSongs}
+      disabled={loading}
     style={{
+      width: "80px",
+      height: "42px",
       padding: "12px 16px",
       borderRadius: "15px",
       border: "1px solid grey",
       marginLeft: "5px",
-    //   background: "grey",
-    
       color: "grey",
       fontWeight: "600",
-      fontSize: "12px",
+      fontSize: "15px",
       cursor: "pointer",
       transition: "0.2s",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     }}
     onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
     onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}>
-        Search
+    {loading ? (
+      <div className="spinner" />
+    ) : (
+        "Search"
+    )}
       </button>
+    </div>
+
+      {results.length > 0 && (
+  <div className="search-results-label">
+    Showing results for - '{lastSearch}'
+  </div>
+)}
+
+      {!loading &&
+ results.length === 0 &&
+ lastSearch && (
+  <div className="search-results-label">
+    No results found for '{lastSearch}'
+  </div>
+)}
 
       <div className="search-grid">
         {results.map((song) => (
