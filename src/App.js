@@ -21,9 +21,9 @@ function App() {
         <Route path='/projects' element={<Projects />} />
         <Route path='/history' element={<History />} /> */}
         {/* <Route path='/photos' element={<Photos />} /> */}
-        <Route path='/' element={<Photos />} />
+        <Route path='/' element={<Music />} />
         {/* <Route path="/track" element={<Track />} /> */}
-        <Route path='/music' element={<Music />} />
+        <Route path='/photos' element={<Photos />} />
       </Routes>
       <BottomNavbar />
       <Toaster position="bottom-center" reverseOrder={false} />

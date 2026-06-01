@@ -44,12 +44,8 @@
 }
 
 .nav-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 1);
   transform: translateY(-2px);
-}
-
-.nav-item span {
-  margin-top: 4px;
 }
 
 .nav-item.active {

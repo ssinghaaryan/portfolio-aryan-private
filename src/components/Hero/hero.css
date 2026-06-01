@@ -3,7 +3,7 @@
     /* height: 100vh; */
     /* position: relative; */
     overflow: hidden;
-    padding-top: 3rem;
+    padding-top: env(safe-area-inset-top);
 }  
 
 .banner {

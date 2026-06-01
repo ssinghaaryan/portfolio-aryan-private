@@ -13,14 +13,29 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 40px 10px 10px; /* 👈 IMPORTANT: reserve space for delete icon */
+  gap: 15px;
+  padding: 8px 10px 8px 10px; /* 👈 IMPORTANT: reserve space for delete icon */
   border-radius: 14px;
   border: 2px solid #323232;
   /* background: #fff; */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  min-height: 72px;
 }
+
+.song-card > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 0; /* VERY IMPORTANT */
+}
+
+/* .song-card div div {
+  white-space: mn
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
 
 .song-card:hover {
   transform: translateY(-2px);
@@ -45,7 +60,7 @@
 
 .saved-grid {
   display: grid;
-  gap: 16px;
+  gap: 10px;
   margin-bottom: 24px;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
@@ -147,4 +162,34 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 35px 0;
+  position: relative;
+
+  color: #888;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+   /* background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent); */
+}
+
+.section-divider::before {
+  margin-right: 12px;
+}
+
+.section-divider::after {
+  margin-left: 12px;
 }

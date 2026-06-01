@@ -134,6 +134,11 @@ useEffect(() => {
     </div>
   ))}
 </div>
+
+<div className="section-divider">
+  <span>Discover Music</span>
+</div>
+
       <h2>Search New Music</h2>
 <div
   style={{
@@ -197,8 +202,6 @@ useEffect(() => {
             </div>
           </div>
         ))}
-    
-
       </div>
       <BottomNavbar />
     </div>
