@@ -25,8 +25,8 @@ function App() {
         {/* <Route path="/track" element={<Track />} /> */}
         <Route path='/music' element={<Music />} />
       </Routes>
-      <Toaster position="bottom-center" reverseOrder={false} />
       <BottomNavbar />
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Footer />
     </div>
   );

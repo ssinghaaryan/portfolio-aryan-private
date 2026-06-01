@@ -4,25 +4,21 @@
   left: 50%;
   transform: translateX(-50%);
 
-  z-index: 99999;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 
-  padding: 10px 24px;
+  padding: 15px 10px;
 
-  background: #202020;
-  backdrop-filter: blur(10px);
+  background: #191919;
+  backdrop-filter: blur(14px);
 
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 30px;
+  border-radius: 28px;
 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  cursor: pointer;
-  z-index: 1000;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
+
+  z-index: 999999;
 }
 
 .nav-item {
@@ -30,23 +26,21 @@
   flex-direction: column;
   align-items: center;
 
-  font-size: 13px;
-  color: #777;
+  font-size: 12px;
+  color: white;
 
   cursor: pointer;
-  transition: all 0.25s ease;
-  user-select: none;
 
-  padding: 6px 12px;          /* 👈 important for pill */
-  border-radius: 16px;        /* 👈 pill shape */
+  padding: 6px 10px;
+  border-radius: 14px;
+
+  transition: all 0.2s ease;
 }
 
 .nav-item.active {
   background: rgba(0, 0, 0, 0.3);
-  color: #000;
+  color: white;
   font-weight: 600;
-
-  transform: translateY(-2px);
 }
 
 .nav-item:hover {
