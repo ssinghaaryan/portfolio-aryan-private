@@ -183,7 +183,6 @@
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
-   /* background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent); */
 }
 
 .section-divider::before {

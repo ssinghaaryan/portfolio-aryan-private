@@ -13,13 +13,13 @@ export default function BottomNav() {
       >
         <span>🎵 Music</span>
       </div>
-|
+        <div className="nav-divider" />
       <div
         className={`nav-item ${location.pathname === "/photos" ? "active" : ""}`}
         onClick={() => navigate("/photos")}
       >
         <span>📸 Photos</span>
-      </div>
+      </div> 
     </div>
   );
 }

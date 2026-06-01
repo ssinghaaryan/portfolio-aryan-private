@@ -10,6 +10,7 @@
   gap: 15px;
 
   padding: 15px 10px;
+  /* padding-top: calc(120px + env(safe-area-inset-bottom)); */
 
   background: #191919;
   backdrop-filter: blur(14px);
@@ -23,8 +24,9 @@
 
 .nav-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 5px;
 
   font-size: 12px;
   color: white;
@@ -56,4 +58,10 @@
 
 .nav-item:active {
   transform: scale(0.92);
+}
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.15);
 }

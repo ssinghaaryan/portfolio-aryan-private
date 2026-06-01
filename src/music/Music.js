@@ -100,8 +100,7 @@ useEffect(() => {
   return (
 
     <div style={{ padding: "20px" }}>
-
-     <h2 style={{ marginBottom: "15px" }}>My Collection</h2>
+     <h2 style={{ marginBottom: "15px", paddingTop: "60px" }}>My Collection</h2>
 <div className="saved-grid">
   {savedSongs.map((song) => (
     <div key={song.id} className="song-card">
@@ -203,7 +202,7 @@ useEffect(() => {
           </div>
         ))}
       </div>
-      <BottomNavbar />
+      {/* <BottomNavbar /> */}
     </div>
   );
 }

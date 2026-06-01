@@ -4,6 +4,7 @@
     box-sizing: border-box;
     text-decoration: none;
     background: transparent; 
+    /* padding-bottom: ; */
 }
 
 body {
@@ -25,6 +26,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     padding-top: env(safe-area-inset-top);
+    padding-bottom: 100px;
     /* font-family: __inter_20b187, __inter_Fallback_20b187, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; */
     /* margin: 0 0 2rem; */
 }

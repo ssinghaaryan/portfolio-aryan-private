@@ -231,7 +231,7 @@ const Photo = () => {
         </button>
       )}
 
-      <BottomNavbar />
+      {/* <BottomNavbar /> */}
 
       {!hasMore && (
         <p style={{ textAlign: "center", margin: "20px 0", color: "#777" }}>
