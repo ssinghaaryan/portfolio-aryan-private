@@ -7,7 +7,7 @@ export default function BottomNav() {
 
   return (
     <div className="bottom-nav">
-      <div
+      {/* <div
         className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
         onClick={() => navigate("/")}
       >
@@ -19,7 +19,23 @@ export default function BottomNav() {
         onClick={() => navigate("/music")}
       >
         <span>Music</span>
-      </div>
+      </div> */}
+      <div style={{
+  position: "fixed",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: "80px",
+  background: "red",
+  zIndex: 999999999,
+  color: "white",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "20px"
+}}>
+  NAV TEST
+</div>
     </div>
   );
 }
