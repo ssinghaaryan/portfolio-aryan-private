@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../Firebase.js";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
 import toast from "react-hot-toast";
 import "./Music.css";
 import BottomNavbar from "../components/BottomNavbar/BottomNavbar.js";
@@ -9,6 +9,11 @@ export default function Music() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [savedSongs, setSavedSongs] = useState([]);
+  const [view, setView] = useState("collection");
+  const [showLibrary, setShowLibrary] = useState(false);
+  const collectionSongs = [...savedSongs]
+  .sort((a, b) => b.createdAt - a.createdAt)
+  .slice(0, 30);
 
   // Searching for songs with the query passed.
   const searchSongs = async () => {
@@ -97,12 +102,110 @@ useEffect(() => {
   loadSavedSongs();
 }, []);
 
-  return (
+const deleteSong = async (id) => {
+  try {
+    if (!window.confirm("Delete this song?")) return;
+    await deleteDoc(doc(db, "music", id));
 
+    toast.success("Song removed");
+
+    loadSavedSongs();
+  } catch (err) {
+    console.error(err);
+
+    toast.error("Failed to delete");
+  }
+};
+
+// Common reusable method for the cards under recent, saved grid, etc.
+const renderSongCard = (song) => (
+  <div key={song.id} className="song-card">
+    <img
+      src={song.artworkUrl100}
+      alt={song.trackName}
+      width="64"
+      height="64"
+      style={{ borderRadius: "10px" }}
+    />
+
+    <div style={{ overflow: "hidden" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 600,
+            fontSize: "14px",
+          }}
+        >
+          {song.trackName}
+        </div>
+
+        <div
+          style={{
+            fontSize: "12px",
+            color: "#666",
+          }}
+        >
+          {song.artistName}
+        </div>
+      </div>
+    </div>
+
+    <div
+      className="delete-btn"
+      onClick={() => deleteSong(song.id)}
+    >
+      🗑️
+    </div>
+  </div>
+);
+
+ const groupedSongs = [...savedSongs]
+  .sort((a, b) => b.createdAt - a.createdAt)
+  .reduce((acc, song) => {
+    const monthYear = new Date(song.createdAt)
+      .toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+
+    if (!acc[monthYear]) {
+      acc[monthYear] = [];
+    }
+
+    acc[monthYear].push(song);
+
+    return acc;
+  }, {});
+
+  return (
     <div style={{ padding: "20px" }}>
-     <h2 style={{ marginBottom: "15px", paddingTop: "60px" }}>My Collection</h2>
+
+    <h2 style={{ marginBottom: "15px", paddingTop: "60px" }}>My Music</h2>
+    <div className="music-toggle">
+<button
+  className={view === "collection" ? "music-active" : ""}
+  onClick={() => setView("collection")}
+>
+  Collection
+</button>
+
+<button
+  className={view === "timeline" ? "music-active" : ""}
+  onClick={() => setView("timeline")}
+>
+  Timeline
+</button>
+</div>
+{view === "collection" && (
 <div className="saved-grid">
-  {savedSongs.map((song) => (
+  {collectionSongs.map(renderSongCard)}
+  {/* {savedSongs.map((song) => (
     <div key={song.id} className="song-card">
       <img
         src={song.artworkUrl100}
@@ -126,15 +229,72 @@ useEffect(() => {
       </div>
       <div
         className="delete-btn"
-        onClick={() => console.log("delete", song.id)}
+        onClick={() => deleteSong(song.id)}
       >
         🗑️
         </div>
     </div>
-  ))}
+  ))} */}
 </div>
+)}
+
+{view === "timeline" && (
+  <div className="timeline-view">
+    {Object.entries(groupedSongs).map(
+      ([month, songs]) => (
+        <div
+          key={month}
+          className="timeline-month"
+        >
+          <h3>{month}</h3>
+
+          <div className="saved-grid">
+            {songs.map(renderSongCard)}
+          </div>
+        </div>
+      )
+    )}
+  </div>
+)}
+
+{savedSongs.length > 20 && (
+  <button
+    className="view-all-btn"
+    onClick={() => setShowLibrary(true)}
+  >
+    View All ({savedSongs.length})
+  </button>
+)}
+
+{showLibrary && (
+  <div className="library-overlay">
+    <div className="library-modal">
+
+      <div className="library-header">
+        <h2>All Songs</h2>
+
+        <button
+  className="library-close"
+  onClick={() => setShowLibrary(false)}
+>
+  ✕
+</button>
+      </div>
+
+      <div className="library-list">
+        {[...savedSongs]
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map((song) => (
+            renderSongCard(song)
+        ))}
+      </div>
+
+    </div>
+  </div>
+)}
 
 <div className="section-divider">
+
   <span>Discover Music</span>
 </div>
 

@@ -26,7 +26,7 @@ function App() {
         <Route path='/photos' element={<Photos />} />
       </Routes>
       <BottomNavbar />
-      <Toaster position="bottom-center" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
       <Footer />
     </div>
   );

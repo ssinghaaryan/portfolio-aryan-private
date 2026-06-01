@@ -3,6 +3,7 @@
   bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
+  /* width: 50%; */
 
   display: flex;
   align-items: center;
