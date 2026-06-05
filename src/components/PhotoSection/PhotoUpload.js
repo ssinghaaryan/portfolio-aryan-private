@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { IKContext, IKUpload } from "imagekitio-react";
 
+// const [uploading, setUploading] = useState(false);
+
 const PhotoUpload = ({ onUpload }) => {
   const fileInputRef = useRef(null);
 
@@ -39,7 +41,7 @@ const PhotoUpload = ({ onUpload }) => {
         + Upload
       </button>
       </div>
-
+      {/* setUploading(true); */}
       <IKUpload
         ref={fileInputRef}
         fileName={`photo_${Date.now()}.jpg`}
@@ -47,6 +49,7 @@ const PhotoUpload = ({ onUpload }) => {
         onSuccess={(res) => {
           console.log("✅ Uploaded:", res.url);
           onUpload(res.url);
+          // setUploading(false);
         }}
         onError={(err) => console.error("❌ Upload error:", err)}
         style={{ display: "none" }}

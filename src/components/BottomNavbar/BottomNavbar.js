@@ -11,14 +11,14 @@ export default function BottomNav() {
         className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
         onClick={() => navigate("/")}
       >
-        <span>🎵 Music</span>
+        <span>Music</span>
       </div>
         <div className="nav-divider" />
       <div
         className={`nav-item ${location.pathname === "/photos" ? "active" : ""}`}
         onClick={() => navigate("/photos")}
       >
-        <span>📸 Photos</span>
+        <span>Photos</span>
       </div> 
     </div>
   );

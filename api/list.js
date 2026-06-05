@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   }
   
   try {
-    const { skip = 0, limit = 10 } = req.query;
+    const { skip = 0, limit = 5 } = req.query;
 
     const files = await imagekit.listFiles({
       path: "/photos", // same as before
