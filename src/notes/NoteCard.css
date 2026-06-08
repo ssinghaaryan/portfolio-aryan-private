@@ -123,3 +123,15 @@
 
   text-transform: uppercase;
 }
+
+.note-card.small {
+  min-height: 160px;
+}
+
+.note-card.medium {
+  min-height: 220px;
+}
+
+.note-card.large {
+  min-height: 280px;
+}

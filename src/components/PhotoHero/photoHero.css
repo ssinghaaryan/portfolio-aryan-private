@@ -32,7 +32,7 @@
   .photoHeroSummary {
     font-size: 1.1rem;      /* smaller font size */
     white-space: nowrap;    /* force into one line */
-    overflow: hidden;       /* hide overflow */
+    /* overflow: hidden;       hide overflow */
     text-overflow: ellipsis; /* add ... if too long */
     max-width: 95vw;        /* prevent overflow */
   }

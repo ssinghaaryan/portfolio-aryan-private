@@ -14,7 +14,7 @@
 }
 
 #projectSummary {
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100vw;
     max-width: 60%;
     display: flex;

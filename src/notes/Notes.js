@@ -5,6 +5,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../Firebase";
 import { PencilLine } from "lucide-react";
 import { FilePenLine } from "lucide-react";
+import Header from "../components/Header/header";
 import "./Notes.css";
 
 export default function Notes() {
