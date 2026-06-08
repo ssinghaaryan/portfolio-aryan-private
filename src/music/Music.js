@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useMemo } from "react";
 import { db } from "../Firebase.js";
 import { collection, addDoc, getDocs, query, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -24,6 +24,7 @@ export default function Music() {
   const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const MENU_WIDTH = 180;
   // const collectionSongs = [...savedSongs]
   // .sort((a, b) => b.createdAt - a.createdAt)
   // .slice(0, 30);
@@ -39,7 +40,11 @@ export default function Music() {
     : savedSongs;
 
 
-  const visibleSongs = displayedSongs.slice(0, 12);
+  const visibleSongs = useMemo(() => {
+  return [...displayedSongs]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 12);
+}, [displayedSongs]);
 
   // Searching for songs with the query passed.
   const searchSongs = async () => {
@@ -274,9 +279,11 @@ const filteredLibrarySongs =
 const inputRef = useRef(null);
 
 useEffect(() => {
-  if (showSearch) {
+  if (!showSearch) return;
+
+  requestAnimationFrame(() => {
     inputRef.current?.focus();
-  }
+  });
 }, [showSearch]);
 
 const loadPlaylists = async () => {
@@ -566,6 +573,10 @@ const addSongToPlaylist = async (
   setSearchMode("web");
   setSearchTerm("");
   setResults([]);
+
+  setTimeout(() => {
+    inputRef.current?.focus();
+  }, 0);
 }}
   >
     Web
@@ -581,6 +592,10 @@ const addSongToPlaylist = async (
   setSearchMode("library");
   setSearchTerm("");
   setResults([]);
+
+  setTimeout(() => {
+    inputRef.current?.focus();
+  }, 0);
 }}
   >
     Library
@@ -595,6 +610,14 @@ const addSongToPlaylist = async (
           onChange={(e) =>
             setSearchTerm(e.target.value)
           }
+          onKeyDown={(e) => {
+    if (
+      e.key === "Enter" &&
+      searchMode === "web"
+    ) {
+      searchSongs();
+    }
+  }}
           ref={inputRef}
           placeholder="Search songs, artists..."
           style={{
@@ -602,7 +625,7 @@ const addSongToPlaylist = async (
             padding: "12px 14px",
             borderRadius: "15px",
             border: "1px solid grey",
-            fontSize: "15px",
+            fontSize: "16px",
             color: "white"
           }}
         />
@@ -708,10 +731,13 @@ const addSongToPlaylist = async (
       <div
   style={{
   top: menuPosition.y + 8,
-  left: Math.min(
-    window.innerWidth - 192,
-    Math.max(12, menuPosition.x - 180)
-  )
+
+  left:
+    window.innerWidth -
+    menuPosition.x <
+    MENU_WIDTH
+      ? menuPosition.x - MENU_WIDTH
+      : menuPosition.x
 }}
 >
 
@@ -724,7 +750,11 @@ const addSongToPlaylist = async (
     );
 
   return (
-    <button
+    <button className={
+    alreadyInPlaylist
+      ? "playlist-added"
+      : ""
+  }
       key={playlist.id}
       onClick={() => {
 
@@ -737,7 +767,7 @@ const addSongToPlaylist = async (
       }}
     >
       {alreadyInPlaylist
-        ? `✓ ${playlist.name}`
+        ? `${playlist.name} ✓`
         : `+ ${playlist.name}`}
     </button>
   );
@@ -776,12 +806,15 @@ const addSongToPlaylist = async (
     <div
       className="floating-song-menu"
       style={{
-        top: menuPosition.y + 8,
-        left: Math.max(
-  12,
-  menuPosition.x - 180
-)
-      }}
+  top: menuPosition.y + 8,
+
+  left:
+    window.innerWidth -
+    menuPosition.x <
+    MENU_WIDTH
+      ? menuPosition.x - MENU_WIDTH
+      : menuPosition.x
+}}
     >
 
       {playlists.map((playlist) => {

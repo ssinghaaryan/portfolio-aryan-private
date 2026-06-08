@@ -147,12 +147,14 @@ const Photo = () => {
         return;
       }
 
-      const urls = data.map((file) =>
-      file.url.replace(
+      const urls = data
+  .reverse()
+  .map((file) =>
+    file.url.replace(
       "/aryans/",
       "/aryans/tr:w-600,q-70/"
-      )
-    );
+    )
+  );
 
       setImages((prev) => [...prev, ...urls]);
       setSkip((prev) => prev + limit);

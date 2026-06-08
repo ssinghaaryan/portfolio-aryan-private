@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import ScrollToTop from './ScrollToTop';
 import Footer from "./components/Footer/Footer";
 import Music from "./music/Music";
+import Notes from "../src/notes/Notes";
 import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
@@ -24,7 +25,8 @@ function App() {
         <Route path='/' element={<Music />} />
         {/* <Route path="/track" element={<Track />} /> */}
         <Route path='/photos' element={<Photos />} />
-      </Routes>
+        <Route path='/notes' element={<Notes />} />
+        </Routes>
       <BottomNavbar />
       <Toaster position="bottom-center"
         toastOptions={{

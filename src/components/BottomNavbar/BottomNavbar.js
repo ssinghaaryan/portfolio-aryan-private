@@ -19,6 +19,13 @@ export default function BottomNav() {
         onClick={() => navigate("/photos")}
       >
         <span>Photos</span>
+      </div>
+      <div className="nav-divider" /> 
+      <div
+        className={`nav-item ${location.pathname === "/notes" ? "active" : ""}`}
+        onClick={() => navigate("/notes")}
+      >
+        <span>Notes</span>
       </div> 
     </div>
   );
