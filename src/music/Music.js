@@ -25,6 +25,7 @@ export default function Music() {
   const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [shuffledSongs, setShuffledSongs] = useState([]);
   const MENU_WIDTH = 180;
   const MENU_HEIGHT = 260;
   const longPressTimer = useRef(null);
@@ -71,11 +72,6 @@ const openYouTubeMusic = (song) => {
 };
 
 
-  const visibleSongs = useMemo(() => {
-  return [...displayedSongs]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 12);
-}, [displayedSongs]);
 
   // Searching for songs with the query passed.
   const searchSongs = async () => {
@@ -172,6 +168,18 @@ useEffect(() => {
   loadPlaylists();
 }, []);
 
+useEffect(() => {
+
+  const shuffled =
+    [...displayedSongs]
+      .sort(() => Math.random() - 0.5);
+
+  setShuffledSongs(shuffled);
+
+}, [selectedPlaylist, savedSongs]);
+
+const visibleSongs = shuffledSongs.slice(0, 12);
+
 const deleteSong = async (id) => {
   try {
     if (!window.confirm("Delete this song?")) return;
@@ -192,6 +200,10 @@ const renderMusicTile = (song) => (
   <div
   key={song.id}
   className="music-tile"
+  
+  onContextMenu={(e) =>
+    e.preventDefault()
+  }
 
   onTouchStart={(e) =>
     handleLongPressStart(

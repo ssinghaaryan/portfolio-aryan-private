@@ -75,7 +75,7 @@
 
   font-size: 15px;
   font-weight: 600;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
 
   white-space: nowrap;
   overflow: hidden;
@@ -251,6 +251,7 @@
   border-radius: 18px;
   border: 2px solid #323232;
   background: #191919;
+  /* background: #1b1b1f; */
 
   cursor: pointer;
   transition: 0.2s ease;
@@ -875,4 +876,17 @@
 
   transition:
     transform .15s ease;
+}
+
+.music-tile img,
+.song-card img {
+
+  -webkit-touch-callout: none;
+
+  -webkit-user-select: none;
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+  pointer-events: none;
 }

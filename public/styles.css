@@ -9,7 +9,8 @@
 
 body {
     /* background: rgb(30, 30, 30); */
-    background: rgb(24, 24, 27);
+    /* background: rgb(18, 18, 20); */
+    background: rgb(17,17,19);
     color: white;
     /* overflow: hidden; Disables scroll on the entire website */
     overflow-y: scroll; /* Overrides the above & just enables vertical/y-axis scroll. horizontal scroll still remains disabled. */
