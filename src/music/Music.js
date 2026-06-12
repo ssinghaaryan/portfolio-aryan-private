@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import "./Music.css";
 import BottomNavbar from "../components/BottomNavbar/BottomNavbar.js";
 import Header from "../components/Header/header.js";
+import { Music2, PlayCircle } from "lucide-react";
 
 export default function Music() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,8 @@ export default function Music() {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const MENU_WIDTH = 180;
+  const MENU_HEIGHT = 260;
+  const longPressTimer = useRef(null);
   // const collectionSongs = [...savedSongs]
   // .sort((a, b) => b.createdAt - a.createdAt)
   // .slice(0, 30);
@@ -38,6 +41,34 @@ export default function Music() {
           )
       )
     : savedSongs;
+
+//------------Open in Spotify and YT Music----------------------//
+
+    const openSpotify = (song) => {
+
+  const query =
+    encodeURIComponent(
+      `${song.trackName} ${song.artistName}`
+    );
+
+  window.open(
+    `https://open.spotify.com/search/${query}`,
+    "_blank"
+  );
+};
+
+const openYouTubeMusic = (song) => {
+
+  const query =
+    encodeURIComponent(
+      `${song.trackName} ${song.artistName}`
+    );
+
+  window.open(
+    `https://music.youtube.com/search?q=${query}`,
+    "_blank"
+  );
+};
 
 
   const visibleSongs = useMemo(() => {
@@ -157,7 +188,41 @@ const deleteSong = async (id) => {
 };
 
 const renderMusicTile = (song) => (
-  <div key={song.id} className="music-tile">
+  // <div key={song.id} className="music-tile">
+  <div
+  key={song.id}
+  className="music-tile"
+
+  onTouchStart={(e) =>
+    handleLongPressStart(
+      e,
+      song
+    )
+  }
+
+  onTouchEnd={
+    handleLongPressEnd
+  }
+
+  onTouchMove={
+    handleLongPressEnd
+  }
+
+  onMouseDown={(e) =>
+    handleLongPressStart(
+      e,
+      song
+    )
+  }
+
+  onMouseUp={
+    handleLongPressEnd
+  }
+
+  onMouseLeave={
+    handleLongPressEnd
+  }
+>
 
     <img
       src={song.artworkUrl100}
@@ -196,7 +261,41 @@ const renderMusicTile = (song) => (
 
 // Common reusable method for the cards under recent, saved grid, etc.
 const renderSongRow = (song) => (
-  <div key={song.id} className="song-card">
+  // <div key={song.id} className="song-card">
+  <div
+  key={song.id}
+  className="song-card"
+
+  onTouchStart={(e) =>
+    handleLongPressStart(
+      e,
+      song
+    )
+  }
+
+  onTouchEnd={
+    handleLongPressEnd
+  }
+
+  onTouchMove={
+    handleLongPressEnd
+  }
+
+  onMouseDown={(e) =>
+    handleLongPressStart(
+      e,
+      song
+    )
+  }
+
+  onMouseUp={
+    handleLongPressEnd
+  }
+
+  onMouseLeave={
+    handleLongPressEnd
+  }
+>
 
     <img
       src={song.artworkUrl100}
@@ -217,8 +316,12 @@ const renderSongRow = (song) => (
     </div>
 
     <div
-      className="song-menu-btn"
-      onClick={(e) => {
+  className="song-menu-btn"
+  onClick={(e) => {
+
+    console.log("MENU CLICK");
+
+    e.stopPropagation();
         e.stopPropagation();
 
         const rect =
@@ -369,6 +472,38 @@ const addSongToPlaylist = async (
   } catch (err) {
     console.error(err);
   }
+};
+
+const handleLongPressStart = (
+  e,
+  song
+) => {
+
+  const rect =
+    e.currentTarget.getBoundingClientRect();
+
+  longPressTimer.current =
+    setTimeout(() => {
+
+      setSelectedSong(song);
+
+      setMenuSongId(song.id);
+
+      setMenuPosition({
+        x: rect.right,
+        y: rect.bottom
+      });
+
+    }, 500);
+
+};
+
+const handleLongPressEnd = () => {
+
+  clearTimeout(
+    longPressTimer.current
+  );
+
 };
 
 // --------------------------------------- ********* ----------------------------------- //
@@ -730,7 +865,12 @@ const addSongToPlaylist = async (
     >
       <div
   style={{
-  top: menuPosition.y + 8,
+  top:
+    window.innerHeight -
+    menuPosition.y <
+    MENU_HEIGHT
+      ? menuPosition.y - MENU_HEIGHT
+      : menuPosition.y + 8,
 
   left:
     window.innerWidth -
@@ -776,9 +916,23 @@ const addSongToPlaylist = async (
 
 </div>
 
-      <button>
-        Open in Spotify
-      </button>
+<button
+  onClick={() =>
+    openSpotify(selectedSong)
+  }
+>
+  <Music2 size={16} />
+  Spotify
+</button>
+
+<button
+  onClick={() =>
+    openYouTubeMusic(selectedSong)
+  }
+>
+  <PlayCircle size={16} />
+  YouTube Music
+</button>
 
       <button
         onClick={() =>
@@ -806,7 +960,12 @@ const addSongToPlaylist = async (
     <div
       className="floating-song-menu"
       style={{
-  top: menuPosition.y + 8,
+  top:
+    window.innerHeight -
+    menuPosition.y <
+    MENU_HEIGHT
+      ? menuPosition.y - MENU_HEIGHT
+      : menuPosition.y + 8,
 
   left:
     window.innerWidth -
@@ -846,22 +1005,48 @@ const addSongToPlaylist = async (
 
       <hr />
 
-      <button>
-        Open Spotify
-      </button>
+<button
+  onClick={() => {
 
-      <button
-        onClick={() => {
+    openSpotify(
+      selectedSong
+    );
 
-          deleteSong(
-            selectedSong.id
-          );
+    setMenuSongId(null);
+  }}
+>
+  <Music2 size={16} />
+  Spotify
+</button>
 
-          setMenuSongId(null);
-        }}
-      >
-        Delete Song
-      </button>
+<button
+  onClick={() => {
+
+    openYouTubeMusic(
+      selectedSong
+    );
+
+    setMenuSongId(null);
+  }}
+>
+  <PlayCircle size={16} />
+  YT Music
+</button>
+
+<hr />
+
+<button
+  onClick={() => {
+
+    deleteSong(
+      selectedSong.id
+    );
+
+    setMenuSongId(null);
+  }}
+>
+  Delete Song
+</button>
 
     </div>
 

@@ -7,13 +7,19 @@ export default function NoteCard({ note, onClick }) {
       </div>
 
       <div className="note-footer">
-        <span className="note-author">
-          {note.author || "Unknown"}
-        </span>
-        </div>
-        <div className="song-menu-btn">
+
+  <span className="note-author">
+    {note.author}
+  </span>
+
+  <span className="note-category">
+    {note.category}
+  </span>
+
+</div>
+        {/* <div className="song-menu-btn">
           ⋯
-        </div>
+        </div> */}
       </div>
   );
 }

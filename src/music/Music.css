@@ -689,8 +689,7 @@
 .menu-backdrop {
   position: fixed;
   inset: 0;
-
-  z-index: 999;
+  z-index: 10000;
 }
 
 .floating-song-menu {
@@ -706,11 +705,10 @@
 
   padding: 8px;
 
-  z-index: 1000;
+  z-index: 10001;
 
   display: flex;
   flex-direction: column;
-
   gap: 4px;
 
   box-shadow:
@@ -859,4 +857,22 @@
   background: rgba(0,255,100,.12) !important;
   border: 1px solid rgba(0,255,100,.25);
   color: #6aff9f !important;
+}
+
+.floating-song-menu button {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.song-card:active,
+.music-tile:active {
+
+  transform: scale(.97);
+
+  transition:
+    transform .15s ease;
 }

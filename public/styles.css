@@ -31,3 +31,16 @@ body {
     /* margin: 0 0 2rem; */
 }
 
+html {
+  height: auto;
+}
+
+body {
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root {
+  min-height: 100vh;
+}
