@@ -93,14 +93,24 @@ const [date, setDate] =
 const createMonth = async () => {
 
   if (
-    !monthName.trim() ||
+    !monthName ||
     !openingBalance
   ) return;
 
-  const monthKey =
-    new Date(monthName)
-      .toISOString()
-      .slice(0, 7);
+  const [year, month] =
+    monthName.split("-");
+
+  const displayMonth =
+    new Date(
+      Number(year),
+      Number(month) - 1
+    ).toLocaleString(
+      "default",
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
 
   await addDoc(
     collection(
@@ -109,17 +119,16 @@ const createMonth = async () => {
     ),
     {
       monthName:
-  new Date(monthName)
-    .toLocaleString(
-      "default",
-      {
-        month: "long",
-        year: "numeric"
-      }
-    ),
-      monthKey,
+        displayMonth,
+
+      monthKey:
+        monthName,
+
       openingBalance:
-        Number(openingBalance),
+        Number(
+          openingBalance
+        ),
+
       createdAt:
         Date.now()
     }
@@ -168,14 +177,13 @@ const saveTransaction =
 
 const confirmDeleteMonth = async () => {
 
-  const confirmDelete =
-   setShowDeleteModal(false);
+  console.log("DELETE CLICKED");
 
-  if (!confirmDelete) return;
+  console.log(selectedMonth);
+
+  setShowDeleteModal(false);
 
   try {
-
-    // Delete month document
 
     await deleteDoc(
       doc(
@@ -185,38 +193,7 @@ const confirmDeleteMonth = async () => {
       )
     );
 
-    // Delete related transactions
-
-    const relatedTransactions =
-      transactions.filter(
-        transaction =>
-          transaction.monthKey ===
-          selectedMonth.monthKey
-      );
-
-    await Promise.all(
-
-      relatedTransactions.map(
-        transaction =>
-
-          deleteDoc(
-            doc(
-              db,
-              "financeTransactions",
-              transaction.id
-            )
-          )
-      )
-
-    );
-
-    setShowMonthModal(false);
-
-    setSelectedMonth(null);
-
-    loadMonths();
-
-    loadTransactions();
+    console.log("MONTH DELETED");
 
   } catch (err) {
 
@@ -442,7 +419,6 @@ useEffect(() => {
       month.openingBalance
     ) - totalSpent;
 
-console.log(transactionType);
   return (
 
     <div
@@ -812,7 +788,8 @@ console.log(transactionType);
 <div className="finance-form">
 
   <input
-    placeholder="Month & Year (MM-YYYY)"
+  type="month"
+    // placeholder="Month & Year (MM-YYYY)"
     value={monthName}
     onChange={(e) =>
       setMonthName(e.target.value)
