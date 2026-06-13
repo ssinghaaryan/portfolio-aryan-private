@@ -10,6 +10,7 @@ import ScrollToTop from './ScrollToTop';
 import Footer from "./components/Footer/Footer";
 import Music from "./music/Music";
 import Notes from "../src/notes/Notes";
+import Finance from "../src/finance/Finance"
 import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         {/* <Route path="/track" element={<Track />} /> */}
         <Route path='/photos' element={<Photos />} />
         <Route path='/notes' element={<Notes />} />
+        <Route path='/finance' element={<Finance />} />
         </Routes>
       <BottomNavbar />
       <Toaster position="bottom-center"

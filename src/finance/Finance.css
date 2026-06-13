@@ -1,0 +1,403 @@
+/* .month-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(250px,1fr)
+    );
+
+  gap: 16px;
+
+  padding: 16px;
+} */
+
+.month-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 14px;
+
+  padding: 16px;
+}
+
+.month-card {
+
+  padding: 18px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.06),
+      rgba(255,255,255,.02)
+    );
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  cursor: pointer;
+
+  transition: .2s ease;
+}
+
+.month-card:hover {
+
+  transform:
+    translateY(-2px);
+}
+
+.finance-modal {
+
+  width:
+    min(92%,700px);
+
+  background: #191919;
+
+  border-radius: 24px;
+
+  padding: 32px;
+
+  position: relative;
+}
+
+.finance-modal > h2 {
+  margin-top: 20px;
+}
+.finance-balance-card {
+
+  margin-top: 20px;
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,.05);
+
+  border:
+    1px solid
+    rgba(255,255,255,.08);
+}
+
+.finance-balance-card > div {
+  padding-bottom: 5px;
+}
+
+.finance-balance-card > h3 {
+  color: #999;
+}
+
+.add-finance-fab {
+
+  position: fixed;
+
+  right: 24px;
+  bottom: 100px;
+
+  width: 55px;
+  height: 55px;
+
+  border: none;
+
+  border-radius: 35%;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.12),
+      rgba(255,255,255,.04)
+    );
+
+  color: white;
+
+  font-size: 28px;
+
+  cursor: pointer;
+
+  z-index: 999;
+}
+
+.finance-transactions {
+
+  margin-top: 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.finance-row {
+
+  border-bottom:
+    1px solid rgba(255,255,255,.06);
+
+  padding: 12px 0;
+}
+
+.finance-date {
+
+  font-weight: 600;
+
+  font-size: 15px;
+}
+
+.finance-expense {
+
+  font-weight: 600;
+
+  color: white;
+}
+
+.finance-table-header {
+
+  padding: 0 12px 12px;
+
+  color: #888;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.08);
+}
+
+.finance-notes {
+
+  font-size: 12px;
+
+  color: #777;
+
+  margin-top: 4px;
+}
+
+.finance-balance-row {
+
+  display: flex;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+  /* margin-top: 10px; */
+}
+
+.finance-balance-card {
+
+  flex: 1;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,.05);
+
+  border:
+    1px solid rgba(255,255,255,.08);
+}
+
+.finance-notes {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 6px;
+}
+
+.finance-note-chip {
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,.06);
+
+  font-size: 11px;
+
+  color: #aaa;
+}
+
+.finance-row-header {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    80px
+    100px;
+
+  align-items: center;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.finance-table-header,
+.finance-row-header {
+
+  display: grid;
+
+  grid-template-columns:
+    1.5fr
+    1fr
+    1fr;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.finance-count {
+
+  font-size: 12px;
+
+  color: #777;
+
+  margin-top: 4px;
+}
+
+.finance-expanded {
+
+  margin-top: 12px;
+
+  margin-left: 0;
+
+  padding-left: 12px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.finance-entry {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    100px;
+
+  max-width: 220px;
+
+  color: #888;
+  font-size: 14px;
+}
+
+.finance-date-group {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.finance-chevron {
+
+  font-size: 30px;
+
+  color: #777;
+
+  transition: transform .2s ease;
+}
+
+.finance-chevron.open {
+
+  transform: rotate(180deg);
+}
+
+.finance-entry-amount {
+  padding-left: 12px;
+}
+
+.add-month-fab {
+
+  position: fixed;
+
+  right: 24px;
+
+  bottom: 170px;
+
+  width: 55px;
+
+  height: 55px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  z-index: 999;
+
+  background:
+    rgba(255,255,255,.08);
+
+  color: white;
+}
+
+.month-stat {
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  margin-top: 10px;
+
+  font-size: 14px;
+}
+
+.month-stat span {
+
+  color: #888;
+}
+
+.month-spent {
+
+  margin-top: 14px;
+
+  font-size: 12px;
+
+  color: #ff9b7a;
+}
+
+.finance-entry-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+  margin-left: 12px;
+}
+
+.finance-delete-btn {
+
+  border: none;
+
+  background: none;
+
+  cursor: pointer;
+
+  opacity: .6;
+}
+
+.finance-delete-btn:hover {
+
+  opacity: 1;
+}
