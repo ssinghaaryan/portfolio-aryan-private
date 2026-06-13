@@ -271,7 +271,32 @@ useEffect(() => {
   loadTransactions();
 }, []);
 
+useEffect(() => {
 
+  if (
+    showMonthModal ||
+    showAddModal
+  ) {
+
+    document.body.style.overflow =
+      "hidden";
+
+  } else {
+
+    document.body.style.overflow =
+      "auto";
+  }
+
+  return () => {
+
+    document.body.style.overflow =
+      "auto";
+  };
+
+}, [
+  showMonthModal,
+  showAddModal
+]);
 
   return (
 
@@ -591,35 +616,37 @@ useEffect(() => {
         ✕
       </button>
 
-      <h2>
-        Create Month
-      </h2>
+      <h2>Create Month</h2>
 
-      <input
-        type="month"
-        onChange={(e) =>
-          setMonthName(
-            e.target.value
-          )
-        }
-      />
+<div className="finance-form">
 
-      <input
-        placeholder="Opening Balance"
-        value={openingBalance}
-        onChange={(e) =>
-          setOpeningBalance(
-            e.target.value
-          )
-        }
-      />
+  <input
+    placeholder="Month & Year (MM-YYYY)"
+    value={monthName}
+    onChange={(e) =>
+      setMonthName(e.target.value)
+    }
+  />
 
-      <button
-        className="save-note-btn"
-        onClick={createMonth}
-      >
-        Create Month
-      </button>
+  <input
+    type="number"
+    placeholder="Opening Balance"
+    value={openingBalance}
+    onChange={(e) =>
+      setOpeningBalance(
+        e.target.value
+      )
+    }
+  />
+
+  <button
+    className="save-note-btn"
+    onClick={createMonth}
+  >
+    Create Month
+  </button>
+
+</div>
 
     </div>
 
@@ -653,45 +680,43 @@ useEffect(() => {
       </button>
 
       <h2>
-        Add Expense
-      </h2>
+  Add Expense
+</h2>
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) =>
-          setDate(
-            e.target.value
-          )
-        }
-      />
+<div className="finance-form">
 
-      <input
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) =>
-          setAmount(
-            e.target.value
-          )
-        }
-      />
+  <input
+    type="date"
+    value={date}
+    onChange={(e) =>
+      setDate(e.target.value)
+    }
+  />
 
-      <input
-        placeholder="Note"
-        value={note}
-        onChange={(e) =>
-          setNote(
-            e.target.value
-          )
-        }
-      />
+  <input
+    placeholder="Amount"
+    value={amount}
+    onChange={(e) =>
+      setAmount(e.target.value)
+    }
+  />
 
-      <button
-        className="save-note-btn"
-        onClick={saveTransaction}
-      >
-        Save Expense
-      </button>
+  <input
+    placeholder="Note"
+    value={note}
+    onChange={(e) =>
+      setNote(e.target.value)
+    }
+  />
+
+  <button
+    className="save-note-btn"
+    onClick={saveTransaction}
+  >
+    Save Expense
+  </button>
+
+</div>
 
     </div>
 

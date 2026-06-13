@@ -54,16 +54,16 @@
 
 .finance-modal {
 
-  width:
-    min(92%,700px);
+  width: 92%;
+  max-width: 700px;
 
-  background: #191919;
+  max-height: 85vh;
+  padding: 24px;
 
-  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
 
-  padding: 32px;
-
-  position: relative;
+  overflow: hidden;
 }
 
 .finance-modal > h2 {
@@ -125,12 +125,13 @@
 
 .finance-transactions {
 
-  margin-top: 24px;
+  flex: 1;
 
-  display: flex;
-  flex-direction: column;
+  overflow-y: auto;
 
-  gap: 10px;
+  min-height: 0;
+
+  padding-bottom: 30px;
 }
 
 .finance-row {
@@ -400,4 +401,24 @@
 .finance-delete-btn:hover {
 
   opacity: 1;
+}
+
+.finance-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.finance-form input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  color: white;
+}
+
+.finance-form input[type="date"] {
+  color-scheme: dark;
 }
