@@ -34,11 +34,22 @@ export default function Finance() {
   const [showAddModal, setShowAddModal] =
     useState(false);
 
+    const [showDeleteModal,
+  setShowDeleteModal] =
+  useState(false);
+
+  const [showMonthMenu,
+  setShowMonthMenu] =
+  useState(false);
+
     const [amount, setAmount] =
   useState("");
 
 const [note, setNote] =
   useState("");
+
+  const [transactionType, setTransactionType] =
+  useState("expense");
 
   const [expandedDates, setExpandedDates] =
   useState([]);
@@ -139,7 +150,7 @@ const saveTransaction =
       monthKey,
       date,
       amount: Number(amount),
-      type: "expense",
+      type: transactionType,
       note,
       createdAt:
         Date.now()
@@ -148,8 +159,71 @@ const saveTransaction =
 
   setAmount("");
   setNote("");
+  setTransactionType(
+  "expense"
+);
   setShowAddModal(false);
   loadTransactions();
+};
+
+const confirmDeleteMonth = async () => {
+
+  const confirmDelete =
+   setShowDeleteModal(false);
+
+  if (!confirmDelete) return;
+
+  try {
+
+    // Delete month document
+
+    await deleteDoc(
+      doc(
+        db,
+        "financeMonths",
+        selectedMonth.id
+      )
+    );
+
+    // Delete related transactions
+
+    const relatedTransactions =
+      transactions.filter(
+        transaction =>
+          transaction.monthKey ===
+          selectedMonth.monthKey
+      );
+
+    await Promise.all(
+
+      relatedTransactions.map(
+        transaction =>
+
+          deleteDoc(
+            doc(
+              db,
+              "financeTransactions",
+              transaction.id
+            )
+          )
+      )
+
+    );
+
+    setShowMonthModal(false);
+
+    setSelectedMonth(null);
+
+    loadMonths();
+
+    loadTransactions();
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
 };
 
 const deleteTransaction =
@@ -224,11 +298,27 @@ const groupedTransactions =
 
         }
 
-        acc[date].total +=
-          Number(transaction.amount);
-        acc[date].entries.push({
+if (
+  transaction.type ===
+  "expense"
+) {
+
+  acc[date].total +=
+    Number(
+      transaction.amount
+    );
+
+} else {
+
+  acc[date].total -=
+    Number(
+      transaction.amount
+    );
+}
+     acc[date].entries.push({
   note: transaction.note,
   amount: transaction.amount,
+  type: transaction.type,
   id: transaction.id
 });
 
@@ -266,6 +356,23 @@ const groupedTransactions =
           ?.openingBalance || 0
       );
 
+          const openAddModal = () => {
+
+  setTransactionType("expense");
+
+  setAmount("");
+
+  setNote("");
+
+  setDate(
+    new Date()
+      .toISOString()
+      .split("T")[0]
+  );
+
+  setShowAddModal(true);
+};
+
 useEffect(() => {
   loadMonths();
   loadTransactions();
@@ -300,6 +407,15 @@ useEffect(() => {
 
   return (
 
+    <div>
+
+    <div className="finance-header">
+
+  <h2 className="finance-title">
+    Finance
+  </h2>
+</div>
+
     <div className="month-grid">
 
       {months.map((month) => {
@@ -326,6 +442,7 @@ useEffect(() => {
       month.openingBalance
     ) - totalSpent;
 
+console.log(transactionType);
   return (
 
     <div
@@ -379,7 +496,7 @@ useEffect(() => {
       )
       })}
 
-      {showMonthModal && selectedMonth && (
+  {showMonthModal && selectedMonth && (
 
   <div
     className="library-overlay"
@@ -395,14 +512,82 @@ useEffect(() => {
       }
     >
 
-      <button
-        className="library-close"
-        onClick={() =>
-          setShowMonthModal(false)
-        }
-      >
-        ✕
-      </button>
+    {showDeleteModal && (
+
+  <>
+    <div
+      className="menu-backdrop"
+      onClick={() =>
+        setShowDeleteModal(false)
+      }
+    />
+
+    <div
+      className="delete-month-modal"
+    >
+
+      <h3 className="delete-title">
+  Delete Month
+</h3>
+
+<p className="delete-description">
+
+  This will permanently delete
+
+  <span className="delete-month-name">
+    • {selectedMonth.monthName} •
+  </span>
+
+  and all transactions inside it.
+
+</p>
+
+<div className="delete-actions">
+
+  <button
+    onClick={() =>
+      setShowDeleteModal(false)
+    }
+  >
+    Cancel
+  </button>
+
+  <button
+    className="danger-btn"
+    onClick={confirmDeleteMonth}
+  >
+    Delete
+  </button>
+
+</div>
+
+    </div>
+
+  </>
+
+)}
+
+<div className="finance-modal-header">
+
+  <button
+    className="library-close"
+    onClick={() =>
+      setShowMonthModal(false)
+    }
+  >
+    ✕
+  </button>
+
+  <button
+    className="month-menu-btn"
+    onClick={() =>
+      setShowDeleteModal(true)
+    }
+  >
+    ⋯
+  </button>
+
+</div>
 
       <h2>
         {selectedMonth.monthName}
@@ -553,8 +738,14 @@ useEffect(() => {
             <div className="finance-entry-actions">
 
   <span>
-    ₹{entry.amount}
-  </span>
+
+  {entry.type === "credit"
+    ? "+"
+    : "-"}
+
+  ₹{entry.amount}
+
+</span>
 
   <button
     className="finance-delete-btn"
@@ -693,6 +884,38 @@ useEffect(() => {
     }
   />
 
+  <div className="transaction-type">
+
+  <button
+  type="button"
+  className={
+    transactionType === "expense"
+      ? "type-active"
+      : ""
+  }
+  onClick={() =>
+    setTransactionType("expense")
+  }
+>
+  Expense
+</button>
+
+<button
+  type="button"
+  className={
+    transactionType === "credit"
+      ? "type-active"
+      : ""
+  }
+  onClick={() =>
+    setTransactionType("credit")
+  }
+>
+  Credit
+</button>
+
+</div>
+
   <input
     placeholder="Amount"
     value={amount}
@@ -727,11 +950,9 @@ useEffect(() => {
 <>
 <button
   className="add-finance-fab"
-  onClick={() =>
-    setShowAddModal(true)
-  }
+  onClick={openAddModal}
 >
-  +<IndianRupee size={25} />
+  +
 </button>
 
 <button
@@ -747,6 +968,6 @@ useEffect(() => {
     </div>
 
     
-
+</div>
   );
 }

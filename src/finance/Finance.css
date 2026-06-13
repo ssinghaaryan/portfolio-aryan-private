@@ -13,6 +13,32 @@
   padding: 16px;
 } */
 
+.finance-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 20px;
+  padding-top: 80px;
+  /* margin-bottom: 20px; */
+/* 
+  padding: 16px;
+
+  margin-bottom: 12px; */
+}
+
+.finance-title {
+
+  margin: 0;
+
+  font-size: 28px;
+
+  font-weight: 700;
+}
+
 .month-grid {
 
   display: grid;
@@ -98,7 +124,7 @@
   position: fixed;
 
   right: 24px;
-  bottom: 100px;
+  bottom: 120px;
 
   width: 55px;
   height: 55px;
@@ -329,7 +355,7 @@
 
   right: 24px;
 
-  bottom: 170px;
+  bottom: 185px;
 
   width: 55px;
 
@@ -337,7 +363,7 @@
 
   border: none;
 
-  border-radius: 50%;
+  border-radius: 35%;
 
   font-size: 22px;
 
@@ -421,4 +447,172 @@
 
 .finance-form input[type="date"] {
   color-scheme: dark;
+}
+
+.transaction-type {
+
+  display: flex;
+
+  gap: 10px;
+}
+
+.transaction-type button {
+
+  flex: 1;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  border: none;
+
+  background:
+    rgba(255,255,255,.05);
+
+  color: white;
+}
+
+.type-active {
+  background: white !important;
+  color: black !important;
+}
+
+.month-delete-btn {
+
+  margin-bottom: 16px;
+
+  width: 100%;
+
+  padding: 12px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: rgba(255,0,0,.15);
+
+  color: #ff7b7b;
+
+  cursor: pointer;
+}
+
+.delete-month-modal {
+
+  position: fixed;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  width: 90%;
+  max-width: 360px;
+
+  padding: 28px;
+
+  border-radius: 24px;
+
+  background:
+    rgb(32,32,35);
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  z-index: 9999;
+}
+
+.delete-title {
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  margin-bottom: 12px;
+}
+
+.delete-description {
+
+  color:
+    rgba(255,255,255,.75);
+
+  line-height: 1.6;
+
+  font-size: 15px;
+}
+
+.delete-month-name {
+
+  display: block;
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  color: white;
+
+  font-weight: 600;
+
+  font-size: 17px;
+}
+
+.delete-actions {
+
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+.delete-actions button {
+
+  flex: 1;
+
+  height: 48px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  color: white;
+
+  background:
+    rgba(255,255,255,.08);
+}
+
+.danger-btn {
+
+  background:
+    rgba(255,0,0,.14);
+
+  color:
+    rgb(255,120,120);
+}
+
+.finance-modal-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.month-menu-btn {
+
+  width: 36px;
+  height: 36px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.08);
+
+  color: white;
+
+  font-size: 24px;
 }
