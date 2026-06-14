@@ -997,14 +997,6 @@ const handleLongPressEnd = () => {
       : menuPosition.x
 }}
     >
-    <a 
-  href="https://open.spotify.com" 
-  target="_blank" 
-  rel="noreferrer"
-  style={{ color: "white" }}
->
-  Test Spotify
-</a>
 
       {playlists.map((playlist) => {
 
