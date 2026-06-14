@@ -22,6 +22,7 @@ export default async function handler(req, res) {
       path: "/photos", // same as before
       skip: Number(skip),
       limit: Number(limit),
+      sort: "DESC_CREATED",
     });
     res.status(200).json(files);
   } catch (error) {
