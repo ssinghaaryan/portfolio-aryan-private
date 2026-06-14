@@ -6,23 +6,30 @@ import AddIdea from "./AddIdea";
 import { Plus } from "lucide-react";
 import "./Ideas.css";
 import IdeasSkeleton from "../components/Skeleton/IdeasSkeleton";
+import { useData } from "../context/DataContext";
 
 export default function Ideas() {
-  const [items, setItems] = useState([]);
+  const { ideasData, setIdeasData } = useData();
+  const [items, setItems] = useState(ideasData || []);
   const [activeTab, setActiveTab] = useState("active");
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!ideasData);
 
   const loadItems = async () => {
-    setLoading(true);
-    const q = query(collection(db, "ideas"), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    setItems(data);
-    setLoading(false);
-  };
+  setLoading(true);
+  const q = query(collection(db, "ideas"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  setItems(data);
+  setIdeasData(data); // 👈 save to context
+  setLoading(false);
+};
 
-  useEffect(() => { loadItems(); }, []);
+useEffect(() => {
+  if (!ideasData) {
+    loadItems();
+  }
+}, []);
 
   const handleAdd = async (item) => {
     await addDoc(collection(db, "ideas"), {

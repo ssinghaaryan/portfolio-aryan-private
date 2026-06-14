@@ -177,3 +177,7 @@
   color: rgba(255,255,255,.6);
 }  
 
+.yarl__button {
+  margin-top: env(safe-area-inset-top) !important;
+}
+

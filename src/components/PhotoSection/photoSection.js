@@ -1,109 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import "./photoSection.css";
-// import PhotoUpload from "./PhotoUpload";
-// import Masonry from "react-masonry-css";
-// import Lightbox from "yet-another-react-lightbox";
-// import "yet-another-react-lightbox/styles.css";
-
-//   // const initialImages = [
-//   //   "https://ik.imagekit.io/aryans/photos/pump-check?updatedAt=1761156311549",
-//   //   "https://ik.imagekit.io/aryans/photos/Mommyyy.PNG?updatedAt=1761157348412",
-//   //   "https://ik.imagekit.io/aryans/photos/Vihaan-Mac.jpg?updatedAt=1761157348308",
-//   //   "https://ik.imagekit.io/aryans/photos/Mac.JPG?updatedAt=1761157347847",
-//   //   "https://ik.imagekit.io/aryans/photos/P-M.jpg?updatedAt=1761157347815",
-//   //   "https://ik.imagekit.io/aryans/photos/Vihaan.JPG?updatedAt=1761157347776"
-//   // ];
-  
-//   // const shuffledImages = [...initialImages].sort(() => 0.5 - Math.random());
-
-//   const breakpointColumnsObj = {
-//     default: 6, // Desktop - 6 columns
-//     1600: 5,    // Large laptops
-//     1200: 4,    // Normal laptops
-//     992: 3,     // Tablets
-//     768: 2,     // Small tablets
-//     500: 2      // Mobiles
-//   };
-
-// const Photo = () => {
-//   const [images, setImages] = useState([]);
-//   const [skip, setSkip] = useState(0);
-//   const limit = 10;
-//   const [loading, setLoading] = useState(false);
-//   const [hasMore, setHasMore] = useState(true);
-//   const [open, setOpen] = useState(false);
-//   const [photoIndex, setPhotoIndex] = useState(0);
-
-//   useEffect(() => {
-//     const fetchImages = async () => {
-//       try {
-//         const res = await fetch("/api/list");
-//         const data = await res.json();
-//         const urls = data.map((file) => file.url);
-//         setImages(urls); // show latest first
-//       } catch (error) {
-//         console.error("Error fetching images:", error);
-//       }
-//     };
-
-//     fetchImages();
-//   }, []);
-  
-//   const handleNewUpload = (url) => {
-//     setImages(prev => [url, ...prev]); // add new image to the top
-//   };
-
-//     return (
-//       <div>
-//       {/* Upload Section */}
-//       <PhotoUpload onUpload={handleNewUpload} />
-
-//       {/* Gallery */}
-//         <Masonry
-//       breakpointCols={breakpointColumnsObj}
-//       className="gallery-masonry"
-//       columnClassName="gallery-column"
-//     >
-//       {images.map((src, idx) => {
-
-//         const match = src.match(/media\/(.*?)\./);
-//         {/* const fileName = src.split("/").pop().split(".")[0]; */}
-//         /* const fileName = match ? `${match[1]}` : "Image"; */
-
-//         return (
-//         <div key={idx} className="gallery-item">
-//           <img
-//             src={src}
-//             alt={`gallery-img-${idx}`}
-//             loading="lazy"
-//             className="gallery-image"
-//             onClick={() => {
-//                 setPhotoIndex(idx);
-//                 setOpen(true);
-//               }}
-//           />
-//           {/* <div className='fileName'>{fileName}</div> */}
-//         </div>
-//         );
-//       })}
-//     </Masonry>
-//       {open && (
-//         <Lightbox
-//           open={open}
-//           close={() => setOpen(false)}
-//           index={photoIndex}
-//           slides={images.map((img) => ({ src: img.url || img }))}
-//           carousel={{ finite: false }}
-//         />
-//       )}
-//     </div>
-//     )
-// }
-
-// export default Photo;
-
-// -----------------
-
 import React, { useState, useEffect, useCallback } from "react";
 import "./photoSection.css";
 import PhotoUpload from "./PhotoUpload";
@@ -112,6 +6,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import BottomNavbar from "../BottomNavbar/BottomNavbar";
 import { HardDrive, Images, ExternalLink } from "lucide-react";
+import { useData } from "../../context/DataContext";
 
 const breakpointColumnsObj = {
   default: 6,
@@ -123,40 +18,41 @@ const breakpointColumnsObj = {
 };
 
 const Photo = () => {
-  const [images, setImages] = useState([]);
-  const [skip, setSkip] = useState(0);
+  const { photosData, setPhotosData } = useData();
+  const [images, setImages] = useState(photosData?.images || []);
+  const [skip, setSkip] = useState(photosData?.skip || 0);
   const limit = 5; // Using this to limit the number of images that load up at once.
+  const [hasMore, setHasMore] = useState(photosData?.hasMore ?? true);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  
 
   const loadImages = async () => {
     if (loading || !hasMore) return;
-
     setLoading(true);
-
     try {
       // const res = await fetch(`/api/list?skip=${skip}&limit=${limit}`);
       const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
       // const res = await fetch("https://iaryan.vercel.app/api/list?skip=0&limit=5");
       const data = await res.json();
-
       if (!data.length) {
         setHasMore(false);
+        setPhotosData(prev => ({ ...prev, hasMore: false }));
         setLoading(false);
         return;
       }
-
     const urls = data.map((file) =>
   file.url.replace("/aryans/", "/aryans/tr:w-600,q-70/")
 );
-
-      setImages((prev) => [...prev, ...urls]);
-      setSkip((prev) => prev + limit);
-      setLoading(false);
+      const newImages = [...images, ...urls];
+      const newSkip = skip + limit;
+      setImages(newImages);
+      setSkip(newSkip);
+      setPhotosData({ images: newImages, skip: newSkip, hasMore: true });
+      setLoading(false);;
     } catch (err) {
       console.error("Error fetching images", err);
       setLoading(false);
@@ -177,9 +73,11 @@ const Photo = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+  if (!photosData) {
     loadImages();
     loadStats();
-  }, []);
+  }
+}, []);
 
 //   useEffect(() => {
 //   fetch("https://jsonplaceholder.typicode.com/posts/1")

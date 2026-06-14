@@ -1,4 +1,5 @@
 import "./Finance.css";
+import { useData } from "../context/DataContext";
 
 import React, {
   useState,
@@ -20,11 +21,13 @@ import FinanceSkeleton from "../components/Skeleton/FinanceSkeleton";
 
 export default function Finance() {
 
+  const { financeData, setFinanceData } = useData();
+
   const [months, setMonths] =
-    useState([]);
+    useState(financeData?.months || []);
 
   const [transactions, setTransactions] =
-    useState([]);
+    useState(financeData?.transactions || []);
 
   const [selectedMonth, setSelectedMonth] =
     useState(null);
@@ -64,7 +67,7 @@ const [monthName, setMonthName] =
 const [openingBalance, setOpeningBalance] =
   useState("");
 
-  const [loading, setLoading] = useState(true);
+const [loading, setLoading] = useState(!financeData);
 
 const [date, setDate] =
   useState(
@@ -73,25 +76,11 @@ const [date, setDate] =
       .split("T")[0]
   );
     
-    const loadTransactions =
-  async () => {
-    setLoading(true);
-  const snapshot =
-    await getDocs(
-      collection(
-        db,
-        "financeTransactions"
-      )
-    );
-
-  const data =
-    snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
+ const loadTransactions = async () => {
+  const snapshot = await getDocs(collection(db, "financeTransactions"));
+  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   setTransactions(data);
-  setLoading(false);
+  setFinanceData(prev => ({ ...prev, transactions: data }));
 };
 
 const createMonth = async () => {
@@ -228,24 +217,14 @@ const deleteTransaction =
 };
 
   const loadMonths = async () => {
-    setLoading(true);
-    const snapshot =
-      await getDocs(
-        collection(
-          db,
-          "financeMonths"
-        )
-      );
-
-    const data =
-      snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-    setMonths(data);
-    setLoading(false);
-  };
+  setLoading(true);
+  const snapshot = await getDocs(collection(db, "financeMonths"));
+  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  setMonths(data);
+  // save combined finance data to context after both loads
+  setFinanceData(prev => ({ ...prev, months: data }));
+  setLoading(false);
+};
 
   const monthTransactions =
   selectedMonth
@@ -356,8 +335,10 @@ if (
 };
 
 useEffect(() => {
-  loadMonths();
-  loadTransactions();
+  if (!financeData) {
+    loadMonths();
+    loadTransactions();
+  }
 }, []);
 
 useEffect(() => {

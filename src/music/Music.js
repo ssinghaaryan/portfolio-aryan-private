@@ -7,18 +7,20 @@ import BottomNavbar from "../components/BottomNavbar/BottomNavbar.js";
 import Header from "../components/Header/header.js";
 import { Music2, PlayCircle } from "lucide-react";
 import MusicSkeleton from "../components/Skeleton/MusicSkeleton";
+import { useData } from "../context/DataContext";
 
 export default function Music() {
+  const { musicData, setMusicData } = useData();
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
-  const [savedSongs, setSavedSongs] = useState([]);
+  const [savedSongs, setSavedSongs] = useState(musicData?.songs || []);
   const [view, setView] = useState("collection");
   const [showLibrary, setShowLibrary] = useState(false);
   const [lastSearch, setLastSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [searchMode, setSearchMode] = useState("web");
-  const [playlists, setPlaylists] = useState([]);
+  const [playlists, setPlaylists] = useState(musicData?.playlists || []);
+  const [loading, setLoading] = useState(!musicData);
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [selectedSong, setSelectedSong] = useState(null);
   const [showSongMenu, setShowSongMenu] = useState(false);
@@ -27,6 +29,7 @@ export default function Music() {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [shuffledSongs, setShuffledSongs] = useState([]);
+
   const MENU_WIDTH = 180;
   const MENU_HEIGHT = 260;
   const longPressTimer = useRef(null);
@@ -46,30 +49,14 @@ export default function Music() {
 
 //------------Open in Spotify and YT Music----------------------//
 
-    const openSpotify = (song) => {
-
-  const query =
-    encodeURIComponent(
-      `${song.trackName} ${song.artistName}`
-    );
-
-  window.open(
-    `https://open.spotify.com/search/${query}`,
-    "_blank"
-  );
+  const openSpotify = (song) => {
+  const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
+  window.location.href = `https://open.spotify.com/search/${query}`;
 };
 
 const openYouTubeMusic = (song) => {
-
-  const query =
-    encodeURIComponent(
-      `${song.trackName} ${song.artistName}`
-    );
-
-  window.open(
-    `https://music.youtube.com/search?q=${query}`,
-    "_blank"
-  );
+  const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
+  window.location.href = `https://music.youtube.com/search?q=${query}`;
 };
 
 
@@ -152,21 +139,22 @@ const openYouTubeMusic = (song) => {
   const loadSavedSongs = async () => {
   try {
     const snapshot = await getDocs(collection(db, "music"));
-
     const songs = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-
     setSavedSongs(songs);
+    setMusicData(prev => ({ ...prev, songs })); // 👈 save to context
   } catch (err) {
     console.error(err);
   }
 };
 
 useEffect(() => {
-  loadSavedSongs();
-  loadPlaylists();
+  if (!musicData) {
+    loadSavedSongs();
+    loadPlaylists();
+  }
 }, []);
 
 useEffect(() => {
@@ -403,16 +391,13 @@ useEffect(() => {
 }, [showSearch]);
 
 const loadPlaylists = async () => {
-  const snapshot = await getDocs(
-    collection(db, "playlists")
-  );
-
+  const snapshot = await getDocs(collection(db, "playlists"));
   const data = snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   }));
-
   setPlaylists(data);
+  setMusicData(prev => ({ ...prev, playlists: data })); // 👈 save to context
 };
 
 const createPlaylist = async () => {
@@ -780,16 +765,12 @@ const handleLongPressEnd = () => {
 
         {searchMode === "web" && (
   <button
-    className="overlay-search-btn"
-    onClick={searchSongs}
-    disabled={loading}
-  >
-    {loading ? (
-      <MusicSkeleton count={8} />
-    ) : (
-      "Search"
-    )}
-  </button>
+  className="overlay-search-btn"
+  onClick={searchSongs}
+  disabled={loading}
+>
+  {loading ? "..." : "Search"}
+</button>
 )}
 
       </div>
@@ -801,6 +782,12 @@ const handleLongPressEnd = () => {
           Showing {filteredLibrarySongs.length} results for '{lastSearch}'
         </div>
       )}
+
+      {loading && searchMode === "web" && (
+  <div style={{ padding: "0 16px" }}>
+    <MusicSkeleton count={6} />
+  </div>
+)}
 
       {searchMode === "web" && (
   <div className="search-grid">

@@ -7,10 +7,12 @@ import { PencilLine } from "lucide-react";
 import { FilePenLine, Dice5 } from "lucide-react";
 import "./Notes.css";
 import NotesSkeleton from "../components/Skeleton/NotesSkeleton";
+import { useData } from "../context/DataContext";
 
 export default function Notes() {
 
-  const [notes, setNotes] = useState([]);
+  const { notesData, setNotesData } = useData();
+  const [notes, setNotes] = useState(notesData || []);
   const [showModal, setShowModal] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [author, setAuthor] = useState("");
@@ -23,7 +25,7 @@ export default function Notes() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!notesData); // skip loading if cached
 
   const categories = [
   "All",
@@ -33,34 +35,22 @@ export default function Notes() {
   "Notes",
 ];
 
-  const loadNotes = async () => {
+    const loadNotes = async () => {
+  setLoading(true);
+  const notesQuery = query(collection(db, "notes"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(notesQuery);
+  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  setNotes(data);
+  setNotesData(data); // 👈 save to context
+  setLoading(false);
+};
 
-    // Right now this fetches all notes at once.. eventually update it to fetch say 10-20 at once then load more.
-    setLoading(true);
-    const notesQuery = query(
-  collection(db, "notes"),
-  orderBy(
-    "createdAt",
-    "desc"
-  )
-);
-
-const snapshot =
-  await getDocs(notesQuery);
-
-    const data =
-      snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-    setNotes(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
+// update useEffect:
+useEffect(() => {
+  if (!notesData) {
     loadNotes();
-  }, []);
+  }
+}, []);
 
   const saveNote = async () => {
 

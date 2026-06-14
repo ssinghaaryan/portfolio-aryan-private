@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Music2, Image, BookOpen, Wallet, Lightbulb } from "lucide-react";
 import "./SectionSelector.css";
+import { useData } from "./context/DataContext";
 
 const sections = [
   { name: "Music", path: "/music", icon: Music2 },
@@ -12,12 +13,14 @@ const sections = [
 ];
 
 const SectionSelector = () => {
+  const { clearAll } = useData();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth_token");
-    navigate("/login");
-  };
+const handleLogout = () => {
+  clearAll(); // 👈 wipes cached data on logout
+  localStorage.removeItem("auth_token");
+  navigate("/login");
+};
 
   return (
     <div className="selector-container">
