@@ -49,24 +49,42 @@ export default function Music() {
 
 //------------Open in Spotify and YT Music----------------------//
 
-const openExternalLink = (url) => {
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_blank";
-  a.rel = "noreferrer";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
+// const openExternalLink = (url) => {
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.target = "_blank";
+//   a.rel = "noreferrer";
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+// };
+
+// const openSpotify = (song) => {
+//   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
+//   openExternalLink(`https://open.spotify.com/search/${query}`);
+// };
+
+// const openYouTubeMusic = (song) => {
+//   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
+//   openExternalLink(`https://music.youtube.com/search?q=${query}`);
+// };
 
 const openSpotify = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  openExternalLink(`https://open.spotify.com/search/${query}`);
+  // Try Spotify app first, fall back to web
+  window.location.href = `spotify:search:${query}`;
+  setTimeout(() => {
+    window.location.href = `https://open.spotify.com/search/${query}`;
+  }, 1500);
 };
 
 const openYouTubeMusic = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  openExternalLink(`https://music.youtube.com/search?q=${query}`);
+  // Try YT Music app first, fall back to web
+  window.location.href = `youtubemusic://search?q=${query}`;
+  setTimeout(() => {
+    window.location.href = `https://music.youtube.com/search?q=${query}`;
+  }, 1500);
 };
 
   // Searching for songs with the query passed.
@@ -925,21 +943,23 @@ const handleLongPressEnd = () => {
 </div>
 
 <button
-  onClick={() =>
-    openSpotify(selectedSong)
-  }
+  onClick={() => {
+    openSpotify(selectedSong);
+    setShowSongMenu(false);
+  }}
 >
   <Music2 size={16} />
   Spotify
 </button>
 
 <button
-  onClick={() =>
-    openYouTubeMusic(selectedSong)
-  }
+  onClick={() => {
+    openYouTubeMusic(selectedSong);
+    setShowSongMenu(false);
+  }}
 >
   <PlayCircle size={16} />
-  YouTube Music
+  YT Music
 </button>
 
       <button
@@ -1015,7 +1035,7 @@ const handleLongPressEnd = () => {
 
 <button
   onClick={() => {
-    openExternalLink(`https://open.spotify.com/search/${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}`);
+    openSpotify(selectedSong);
     setMenuSongId(null);
   }}
 >
@@ -1025,7 +1045,7 @@ const handleLongPressEnd = () => {
 
 <button
   onClick={() => {
-    openExternalLink(`https://music.youtube.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}`);
+    openYouTubeMusic(selectedSong);
     setMenuSongId(null);
   }}
 >
