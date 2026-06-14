@@ -1015,11 +1015,7 @@ const handleLongPressEnd = () => {
 
 <button
   onClick={() => {
-
-    openSpotify(
-      selectedSong
-    );
-
+    openExternalLink(`https://open.spotify.com/search/${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}`);
     setMenuSongId(null);
   }}
 >
@@ -1029,11 +1025,7 @@ const handleLongPressEnd = () => {
 
 <button
   onClick={() => {
-
-    openYouTubeMusic(
-      selectedSong
-    );
-
+    openExternalLink(`https://music.youtube.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}`);
     setMenuSongId(null);
   }}
 >
