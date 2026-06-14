@@ -5,17 +5,21 @@ import IdeaCard from "./IdeaCard";
 import AddIdea from "./AddIdea";
 import { Plus } from "lucide-react";
 import "./Ideas.css";
+import IdeasSkeleton from "../components/Skeleton/IdeasSkeleton";
 
 export default function Ideas() {
   const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState("active");
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const loadItems = async () => {
+    setLoading(true);
     const q = query(collection(db, "ideas"), orderBy("createdAt", "desc"));
     const snapshot = await getDocs(q);
     const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     setItems(data);
+    setLoading(false);
   };
 
   useEffect(() => { loadItems(); }, []);
@@ -70,20 +74,26 @@ export default function Ideas() {
 
       {/* List */}
       <div className="ideas-list">
-        {displayed.length === 0 && (
-          <div className="ideas-empty">
-            {activeTab === "active" ? "No active items. Add one ↓" : "Nothing completed yet."}
-          </div>
-        )}
-        {displayed.map(item => (
-          <IdeaCard
-            key={item.id}
-            item={item}
-            onComplete={handleComplete}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+  {loading ? (
+    <IdeasSkeleton count={6} />
+  ) : (
+    <>
+      {displayed.length === 0 && (
+        <div className="ideas-empty">
+          {activeTab === "active" ? "No active items. Add one ↓" : "Nothing completed yet."}
+        </div>
+      )}
+      {displayed.map(item => (
+        <IdeaCard
+          key={item.id}
+          item={item}
+          onComplete={handleComplete}
+          onDelete={handleDelete}
+        />
+      ))}
+    </>
+  )}
+</div>
 
       {/* FAB */}
       <button className="ideas-fab" onClick={() => setShowModal(true)}>

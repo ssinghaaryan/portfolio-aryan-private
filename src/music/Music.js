@@ -6,6 +6,7 @@ import "./Music.css";
 import BottomNavbar from "../components/BottomNavbar/BottomNavbar.js";
 import Header from "../components/Header/header.js";
 import { Music2, PlayCircle } from "lucide-react";
+import MusicSkeleton from "../components/Skeleton/MusicSkeleton";
 
 export default function Music() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -784,7 +785,7 @@ const handleLongPressEnd = () => {
     disabled={loading}
   >
     {loading ? (
-      <div className="spinner" />
+      <MusicSkeleton count={8} />
     ) : (
       "Search"
     )}

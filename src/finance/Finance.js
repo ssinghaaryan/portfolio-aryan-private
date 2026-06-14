@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../Firebase";
+import FinanceSkeleton from "../components/Skeleton/FinanceSkeleton";
 
 export default function Finance() {
 
@@ -63,6 +64,8 @@ const [monthName, setMonthName] =
 const [openingBalance, setOpeningBalance] =
   useState("");
 
+  const [loading, setLoading] = useState(true);
+
 const [date, setDate] =
   useState(
     new Date()
@@ -72,7 +75,7 @@ const [date, setDate] =
     
     const loadTransactions =
   async () => {
-
+    setLoading(true);
   const snapshot =
     await getDocs(
       collection(
@@ -88,6 +91,7 @@ const [date, setDate] =
     }));
 
   setTransactions(data);
+  setLoading(false);
 };
 
 const createMonth = async () => {
@@ -224,7 +228,7 @@ const deleteTransaction =
 };
 
   const loadMonths = async () => {
-
+    setLoading(true);
     const snapshot =
       await getDocs(
         collection(
@@ -240,6 +244,7 @@ const deleteTransaction =
       }));
 
     setMonths(data);
+    setLoading(false);
   };
 
   const monthTransactions =
@@ -394,7 +399,10 @@ useEffect(() => {
 </div>
 
     <div className="month-grid">
-
+  {loading ? (
+    <FinanceSkeleton count={6} />
+  ) : (
+    <>
       {months.map((month) => {
 
   const monthTransactionsForCard =
@@ -471,6 +479,8 @@ useEffect(() => {
 
       )
       })}
+    </>
+  )}
 
   {showMonthModal && selectedMonth && (
 

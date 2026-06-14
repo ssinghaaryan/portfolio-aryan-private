@@ -6,6 +6,7 @@ import { db } from "../Firebase";
 import { PencilLine } from "lucide-react";
 import { FilePenLine, Dice5 } from "lucide-react";
 import "./Notes.css";
+import NotesSkeleton from "../components/Skeleton/NotesSkeleton";
 
 export default function Notes() {
 
@@ -22,6 +23,7 @@ export default function Notes() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const categories = [
   "All",
@@ -34,6 +36,7 @@ export default function Notes() {
   const loadNotes = async () => {
 
     // Right now this fetches all notes at once.. eventually update it to fetch say 10-20 at once then load more.
+    setLoading(true);
     const notesQuery = query(
   collection(db, "notes"),
   orderBy(
@@ -52,6 +55,7 @@ const snapshot =
       }));
 
     setNotes(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -225,6 +229,12 @@ const openRandomNote = () => {
 
 </div>
 
+    {loading ? (
+  <div style={{ display: "flex", gap: 16, padding: "0 16px" }}>
+    <div style={{ flex: 1 }}><NotesSkeleton count={3} /></div>
+    <div style={{ flex: 1 }}><NotesSkeleton count={3} /></div>
+  </div>
+) : (
       <Masonry
   breakpointCols={{
   default: 4,
@@ -249,6 +259,7 @@ const openRandomNote = () => {
   />
 ))}
 </Masonry>
+)}
 
 {visibleCount < filteredNotes.length && (
 
