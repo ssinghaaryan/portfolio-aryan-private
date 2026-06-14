@@ -5,8 +5,11 @@
 import { Toaster } from "react-hot-toast";
 import Photos from "./pages/Photos";
 // import Track from "./track/Track";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import ScrollToTop from './ScrollToTop';
+import Login from "../src/auth/Login";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import SectionSelector from "./SectionSelector";
 import Footer from "./components/Footer/Footer";
 import Music from "./music/Music";
 import Notes from "../src/notes/Notes";
