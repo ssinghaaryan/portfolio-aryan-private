@@ -946,15 +946,6 @@ const handleLongPressEnd = () => {
   Spotify
 </button>
 
-<a 
-  href="https://open.spotify.com" 
-  target="_blank" 
-  rel="noreferrer"
-  style={{ color: "white" }}
->
-  Test Spotify
-</a>
-
 <button
   onClick={() => {
     openYouTubeMusic(selectedSong);
@@ -1006,6 +997,14 @@ const handleLongPressEnd = () => {
       : menuPosition.x
 }}
     >
+    <a 
+  href="https://open.spotify.com" 
+  target="_blank" 
+  rel="noreferrer"
+  style={{ color: "white" }}
+>
+  Test Spotify
+</a>
 
       {playlists.map((playlist) => {
 
