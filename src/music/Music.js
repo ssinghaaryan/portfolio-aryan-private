@@ -71,20 +71,14 @@ export default function Music() {
 
 const openSpotify = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  // Try Spotify app first, fall back to web
-  window.location.href = `spotify:search:${query}`;
-  setTimeout(() => {
-    window.location.href = `https://open.spotify.com/search/${query}`;
-  }, 1500);
+  const url = `https://open.spotify.com/search/${query}`;
+  window.open(url, "_blank", "noopener");
 };
 
 const openYouTubeMusic = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  // Try YT Music app first, fall back to web
-  window.location.href = `youtubemusic://search?q=${query}`;
-  setTimeout(() => {
-    window.location.href = `https://music.youtube.com/search?q=${query}`;
-  }, 1500);
+  const url = `https://music.youtube.com/search?q=${query}`;
+  window.open(url, "_blank", "noopener");
 };
 
   // Searching for songs with the query passed.
@@ -951,6 +945,15 @@ const handleLongPressEnd = () => {
   <Music2 size={16} />
   Spotify
 </button>
+
+<a 
+  href="https://open.spotify.com" 
+  target="_blank" 
+  rel="noreferrer"
+  style={{ color: "white" }}
+>
+  Test Spotify
+</a>
 
 <button
   onClick={() => {

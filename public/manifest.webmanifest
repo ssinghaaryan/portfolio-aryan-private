@@ -3,6 +3,7 @@
   "short_name": "Aryan",
   "start_url": "/",
   "display": "standalone",
+  "scope": "/",
   "orientation": "portrait",
   "theme_color": "#111111",
   "background_color": "#111111",
