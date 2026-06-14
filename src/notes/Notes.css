@@ -510,6 +510,16 @@
   padding: 24px;
 }
 
+.delete-confirm-modal > h3 {
+  margin-bottom: 10px;
+}
+
+.delete-confirm-modal .delete-btn {
+  background: rgb(255, 60, 60) !important;
+  color: white !important;
+  border: none !important;
+}
+
 .delete-actions {
 
   display: flex;
@@ -664,4 +674,20 @@
 .random-note-fab {
   width: 46px;
   height: 46px;
+}
+
+.delete-confirm-modal button {
+  background: rgba(255,255,255,.06);
+  color: white;
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-confirm-modal .delete-btn {
+  background: rgba(255,60,60,.15) !important;
+  color: rgb(255,100,100) !important;
+  border-color: rgba(255,60,60,.2) !important;
 }

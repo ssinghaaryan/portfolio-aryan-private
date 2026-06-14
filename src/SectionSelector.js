@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Music2, Image, BookOpen, Wallet, Lightbulb } from "lucide-react";
 import "./SectionSelector.css";
 
 const sections = [
-  { name: "Music", path: "/music", emoji: "🎵" },
-  { name: "Photos", path: "/photos", emoji: "📷" },
-  { name: "Notes", path: "/notes", emoji: "📝" },
-  { name: "Finance", path: "/finance", emoji: "💰" },
-  { name: "Ideas", path: "/ideas", emoji: "💡" },
+  { name: "Music", path: "/music", icon: Music2 },
+  { name: "Photos", path: "/photos", icon: Image },
+  { name: "Notes", path: "/notes", icon: BookOpen },
+  { name: "Finance", path: "/finance", icon: Wallet },
+  { name: "Ideas", path: "/ideas", icon: Lightbulb },
 ];
 
 const SectionSelector = () => {
@@ -26,16 +27,19 @@ const SectionSelector = () => {
       </div>
 
       <div className="selector-grid">
-        {sections.map((s) => (
-          <div
-            key={s.name}
-            className="selector-tile"
-            onClick={() => navigate(s.path)}
-          >
-            <span className="tile-emoji">{s.emoji}</span>
-            <span className="tile-name">{s.name}</span>
-          </div>
-        ))}
+        {sections.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div
+              key={s.name}
+              className="selector-tile"
+              onClick={() => navigate(s.path)}
+            >
+              <Icon size={28} strokeWidth={1.6} color="white" />
+              <span className="tile-name">{s.name}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

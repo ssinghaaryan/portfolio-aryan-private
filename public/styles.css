@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
-    background: transparent; 
+    /* background: transparent;  */
     /* padding-bottom: ; */
 }
 
@@ -44,4 +44,8 @@ body {
 
 #root {
   min-height: 100vh;
+}
+
+input, textarea, select {
+  font-size: 16px !important;
 }

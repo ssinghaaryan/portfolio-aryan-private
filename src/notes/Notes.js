@@ -454,17 +454,14 @@ const openRandomNote = () => {
         </button>
 
         <button
-          className="delete-btn"
-          onClick={() => {
-
-            deleteNote();
-
-            setShowDeleteConfirm(false);
-
-          }}
-        >
-          Delete
-        </button>
+  onClick={() => {
+    setShowDeleteConfirm(true);
+    setShowNoteMenu(false);
+    setShowNoteViewer(false); // 👈 add this
+  }}
+>
+  Delete
+</button>
 
       </div>
 

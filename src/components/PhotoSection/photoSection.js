@@ -111,6 +111,7 @@ import Masonry from "react-masonry-css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import BottomNavbar from "../BottomNavbar/BottomNavbar";
+import { HardDrive, Images, ExternalLink } from "lucide-react";
 
 const breakpointColumnsObj = {
   default: 6,
@@ -129,6 +130,8 @@ const Photo = () => {
   const [hasMore, setHasMore] = useState(true);
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   const loadImages = async () => {
     if (loading || !hasMore) return;
@@ -160,9 +163,22 @@ const Photo = () => {
     }
   };
 
+    const loadStats = async () => {
+    try {
+      const res = await fetch("https://iaryan.vercel.app/api/photos-stats");
+      const data = await res.json();
+      setStats(data);
+    } catch (err) {
+      console.error("Error fetching stats", err);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadImages();
+    loadStats();
   }, []);
 
 //   useEffect(() => {
@@ -178,11 +194,46 @@ const Photo = () => {
 
   const handleNewUpload = (url) => {
     setImages((prev) => [url, ...prev]);
+    loadStats(); // refresh stats after upload
   };
 
   return (
     <div>
       <PhotoUpload onUpload={handleNewUpload} />
+
+      {/* Stats Card */}
+<div className="photos-stats-card">
+  <div className="stats-row">
+    <div className="stat-item">
+      <Images size={16} strokeWidth={1.6} />
+      <span className="stat-value">
+        {statsLoading ? "—" : stats?.totalCount}
+      </span>
+      <span className="stat-label">Photos</span>
+    </div>
+    <div className="stat-divider" />
+    <div className="stat-item">
+      <HardDrive size={16} strokeWidth={1.6} />
+      <span className="stat-value">
+        {statsLoading ? "—" : `${stats?.totalMB} MB`}
+      </span>
+      <span className="stat-label">Storage used</span>
+    </div>
+    <div className="stat-divider" />
+    <div className="stat-item">
+      <span className="stat-value">20 GB</span>
+      <span className="stat-label">Free limit</span>
+    </div>
+  </div>
+  <a
+    className="stats-dashboard-link"
+    href="https://imagekit.io/dashboard"
+    target="_blank"
+    rel="noreferrer"
+  >
+    ImageKit Dashboard <ExternalLink size={12} />
+  </a>
+</div>
 
       <Masonry
         breakpointCols={breakpointColumnsObj}
