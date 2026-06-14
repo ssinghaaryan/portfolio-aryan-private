@@ -1,0 +1,90 @@
+.ideas-container {
+  min-height: 100vh;
+  background: #0f0f0f;
+  padding: 0 0 140px;
+}
+
+.ideas-header {
+  padding: 80px 20px 0;
+}
+
+.ideas-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.ideas-tabs {
+  display: flex;
+  gap: 0;
+  padding: 20px 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 16px;
+}
+
+.ideas-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255,255,255,.35);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ideas-tab.active {
+  color: white;
+  border-bottom-color: white;
+}
+
+.tab-count {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+}
+
+.ideas-list {
+  padding: 8px 16px;
+}
+
+.ideas-empty {
+  text-align: center;
+  color: rgba(255,255,255,.25);
+  font-size: 14px;
+  padding: 60px 0;
+}
+
+.ideas-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 120px;
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 35%;
+  background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.1);
+  color: white;
+  cursor: pointer;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .25s ease;
+}
+
+.ideas-fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  border-color: rgba(255,255,255,.2);
+}

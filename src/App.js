@@ -13,7 +13,8 @@ import SectionSelector from "./SectionSelector";
 import Footer from "./components/Footer/Footer";
 import Music from "./music/Music";
 import Notes from "../src/notes/Notes";
-import Finance from "../src/finance/Finance"
+import Finance from "../src/finance/Finance";
+import Ideas from "../src/ideas/Ideas";
 import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
@@ -55,6 +56,9 @@ function App() {
         } />
         <Route path='/finance' element={
           <ProtectedRoute><Finance /></ProtectedRoute>
+        } />
+        <Route path='/ideas' element={
+          <ProtectedRoute><Ideas /></ProtectedRoute>
         } />
 
         {/* Fallback */}

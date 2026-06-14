@@ -1,0 +1,126 @@
+.idea-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.03);
+  margin-bottom: 10px;
+  transition: all .2s ease;
+}
+
+.idea-row.completed {
+  opacity: 0.45;
+}
+
+.idea-tick {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.25);
+  background: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+  margin-top: 1px;
+}
+
+.idea-tick.ticked {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.15);
+  color: #4cd964;
+}
+
+.idea-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.idea-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.idea-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.idea-row.completed .idea-title {
+  text-decoration: line-through;
+  color: rgba(255,255,255,.4);
+}
+
+.idea-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.idea-priority {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.idea-type {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.55);
+}
+
+.idea-details {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  line-height: 1.5;
+}
+
+.idea-expand {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.3);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.idea-expand:hover {
+  color: rgba(255,255,255,.6);
+}
+
+.idea-delete {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255,60,60,.5);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.idea-delete:hover {
+  color: rgb(255,80,80);
+}

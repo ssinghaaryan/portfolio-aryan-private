@@ -7,6 +7,7 @@ const sections = [
   { name: "Photos", path: "/photos", emoji: "📷" },
   { name: "Notes", path: "/notes", emoji: "📝" },
   { name: "Finance", path: "/finance", emoji: "💰" },
+  { name: "Ideas", path: "/ideas", emoji: "💡" },
 ];
 
 const SectionSelector = () => {

@@ -1,7 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { Music2, Image, BookOpen, Wallet2, Lightbulb } from "lucide-react";
 import "./BottomNavbar.css";
 
 const HIDDEN_ROUTES = ["/login", "/"];
+
+const NAV_ITEMS = [
+  { label: "Music", path: "/music", icon: Music2 },
+  { label: "Photos", path: "/photos", icon: Image },
+  { label: "Notes", path: "/notes", icon: BookOpen },
+  { label: "Finance", path: "/finance", icon: Wallet2 },
+  { label: "Ideas", path: "/ideas", icon: Lightbulb },
+];
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -11,33 +20,20 @@ export default function BottomNav() {
 
   return (
     <div className="bottom-nav">
-      <div
-        className={`nav-item ${location.pathname === "/music" ? "active" : ""}`}
-        onClick={() => navigate("/music")}
-      >
-        <span>Music</span>
-      </div>
-      <div className="nav-divider" />
-      <div
-        className={`nav-item ${location.pathname === "/photos" ? "active" : ""}`}
-        onClick={() => navigate("/photos")}
-      >
-        <span>Photos</span>
-      </div>
-      <div className="nav-divider" />
-      <div
-        className={`nav-item ${location.pathname === "/notes" ? "active" : ""}`}
-        onClick={() => navigate("/notes")}
-      >
-        <span>Notes</span>
-      </div>
-      <div className="nav-divider" />
-      <div
-        className={`nav-item ${location.pathname === "/finance" ? "active" : ""}`}
-        onClick={() => navigate("/finance")}
-      >
-        <span>Finance</span>
-      </div>
+      {NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+        const isActive = location.pathname === item.path;
+        return (
+          <div
+            key={item.path}
+            className={`nav-item ${isActive ? "active" : ""}`}
+            onClick={() => navigate(item.path)}
+          >
+            <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+            <span className="nav-label">{item.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
