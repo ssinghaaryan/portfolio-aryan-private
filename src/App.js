@@ -18,17 +18,46 @@ function App() {
     <div id='app'>
       {/* <Navbar /> */}
       <ScrollToTop />
-      <Routes>
+      
+      {/* <Routes> */}
         {/* <Route path='/' element={<Home />} />
         <Route path='/projects' element={<Projects />} />
         <Route path='/history' element={<History />} /> */}
         {/* <Route path='/photos' element={<Photos />} /> */}
-        <Route path='/' element={<Music />} />
+        {/* <Route path='/' element={<Music />} /> */}
         {/* <Route path="/track" element={<Track />} /> */}
-        <Route path='/photos' element={<Photos />} />
+        {/* <Route path='/photos' element={<Photos />} />
         <Route path='/notes' element={<Notes />} />
-        <Route path='/finance' element={<Finance />} />
-        </Routes>
+        <Route path='/finance' element={<Finance />} /> */}
+        {/* </Routes> */}
+
+          <Routes>
+        {/* Public */}
+        <Route path='/login' element={<Login />} />
+
+        {/* Section selector — home */}
+        <Route path='/' element={
+          <ProtectedRoute><SectionSelector /></ProtectedRoute>
+        } />
+
+        {/* Protected sections */}
+        <Route path='/music' element={
+          <ProtectedRoute><Music /></ProtectedRoute>
+        } />
+        <Route path='/photos' element={
+          <ProtectedRoute><Photos /></ProtectedRoute>
+        } />
+        <Route path='/notes' element={
+          <ProtectedRoute><Notes /></ProtectedRoute>
+        } />
+        <Route path='/finance' element={
+          <ProtectedRoute><Finance /></ProtectedRoute>
+        } />
+
+        {/* Fallback */}
+        <Route path='*' element={<Navigate to="/" replace />} />
+      </Routes>
+        
       <BottomNavbar />
       <Toaster position="bottom-center"
         toastOptions={{
