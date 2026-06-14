@@ -49,17 +49,25 @@ export default function Music() {
 
 //------------Open in Spotify and YT Music----------------------//
 
-  const openSpotify = (song) => {
+const openExternalLink = (url) => {
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+const openSpotify = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  window.location.href = `https://open.spotify.com/search/${query}`;
+  openExternalLink(`https://open.spotify.com/search/${query}`);
 };
 
 const openYouTubeMusic = (song) => {
   const query = encodeURIComponent(`${song.trackName} ${song.artistName}`);
-  window.location.href = `https://music.youtube.com/search?q=${query}`;
+  openExternalLink(`https://music.youtube.com/search?q=${query}`);
 };
-
-
 
   // Searching for songs with the query passed.
   const searchSongs = async () => {
