@@ -35,6 +35,9 @@
   padding: 72px 28px 28px 28px;
 
   position: relative;
+  max-height: 85vh;
+  overflow-y: auto;
+  margin-bottom: 50px;
 }
 
 .note-viewer-text {
@@ -77,6 +80,8 @@
   flex-direction: column;
 
   gap: 16px;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
 .note-create-modal input,

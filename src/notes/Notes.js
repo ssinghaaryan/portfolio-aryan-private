@@ -33,6 +33,7 @@ export default function Notes() {
   "Books",
   "Ideas",
   "Notes",
+  "Journal",
 ];
 
     const loadNotes = async () => {
@@ -501,7 +502,7 @@ const openRandomNote = () => {
   <option>Books</option>
   <option>Ideas</option>
   <option>Notes</option>
-  <option>Principles</option>
+  <option>Journal</option>
 </select>
 
       <input
