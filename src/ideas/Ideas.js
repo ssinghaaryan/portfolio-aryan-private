@@ -53,6 +53,13 @@ useEffect(() => {
     loadItems();
   };
 
+  const handleEdit = async (id, updates) => {
+  await updateDoc(doc(db, "ideas", id), updates);
+  const updated = items.map(i => i.id === id ? { ...i, ...updates } : i);
+  setItems(updated);
+  setIdeasData(updated);
+};
+
   const active = items.filter(i => i.status === "active");
   const completed = items.filter(i => i.status === "completed");
   const displayed = activeTab === "active" ? active : completed;
@@ -96,6 +103,7 @@ useEffect(() => {
           item={item}
           onComplete={handleComplete}
           onDelete={handleDelete}
+          onEdit={handleEdit}
         />
       ))}
     </>

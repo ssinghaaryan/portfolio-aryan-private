@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./AddIdea.css";
+import { CheckSquare2, Lightbulb } from "lucide-react";
 
 export default function AddIdea({ onSave, onClose }) {
   const [title, setTitle] = useState("");
@@ -18,22 +19,49 @@ export default function AddIdea({ onSave, onClose }) {
 
         <div className="add-idea-handle" />
 
-        <h3 className="add-idea-heading">New {type === "idea" ? "Idea 💡" : "Task ✅"}</h3>
+        <h3 className="add-idea-heading">
+  {type === "idea" 
+    ? <> New Idea <Lightbulb size={18} style={{ verticalAlign: "top" }} /></>
+    : <> New Task <CheckSquare2 size={18} style={{ verticalAlign: "top" }} /></>
+  }
+</h3>
 
         {/* Type toggle */}
         <div className="add-idea-toggle">
-          <button
-            className={`toggle-btn ${type === "task" ? "active" : ""}`}
-            onClick={() => setType("task")}
-          >
-            ✅ Task
-          </button>
-          <button
-            className={`toggle-btn ${type === "idea" ? "active" : ""}`}
-            onClick={() => setType("idea")}
-          >
-            💡 Idea
-          </button>
+        <button
+  className={`toggle-btn ${type === "task" ? "active" : ""}`}
+  onClick={() => setType("task")}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+    ...(type === "task" ? {
+      background: "rgba(0, 122, 255, 0.12)",
+      borderColor: "#4a9eff",
+      color: "#4a9eff"
+    } : {})
+  }}
+>
+  <CheckSquare2 size={15} /> Task
+</button>
+<button
+  className={`toggle-btn ${type === "idea" ? "active" : ""}`}
+  onClick={() => setType("idea")}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+    ...(type === "idea" ? {
+      background: "rgba(255, 166, 0, 0.12)",
+      borderColor: "#ffaa00",
+      color: "#ffaa00"
+    } : {})
+  }}
+>
+  <Lightbulb size={15} /> Idea
+</button>
         </div>
 
         {/* Title */}

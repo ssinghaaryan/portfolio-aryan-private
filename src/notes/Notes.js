@@ -433,27 +433,33 @@ const openRandomNote = () => {
         This action cannot be undone.
       </p>
 
-      <div className="delete-actions">
+<div className="delete-actions">
+  <button
+    onClick={() => setShowDeleteConfirm(false)}
+  >
+    Cancel
+  </button>
 
-        <button
-          onClick={() =>
-            setShowDeleteConfirm(false)
-          }
-        >
-          Cancel
-        </button>
-
-        <button
+  <button
   onClick={() => {
-    setShowDeleteConfirm(true);
-    setShowNoteMenu(false);
-    setShowNoteViewer(false); // 👈 add this
+    deleteNote();
+    setShowDeleteConfirm(false);
+  }}
+  style={{
+    background: "rgba(255, 60, 60, 0.35)",
+    color: "rgb(255, 100, 100)",
+    border: "1px solid rgba(255, 60, 60, 0.4)",
+    padding: "10px 14px",
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontFamily: "inherit"
   }}
 >
   Delete
 </button>
 
-      </div>
+</div>
 
     </div>
 

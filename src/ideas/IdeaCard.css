@@ -16,8 +16,8 @@
 
 .idea-tick {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 1.5px solid rgba(255,255,255,.25);
   background: none;
@@ -83,6 +83,9 @@
   border-radius: 999px;
   background: rgba(255,255,255,.07);
   color: rgba(255,255,255,.55);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .idea-details {
@@ -123,4 +126,171 @@
 
 .idea-delete:hover {
   color: rgb(255,80,80);
+}
+
+.idea-row.editing {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.12);
+  align-items: flex-start;
+}
+
+.idea-edit-input {
+  width: 100%;
+  background: #242424 !important;
+  border: 1px solid #333 !important;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: white !important;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.idea-edit-input:focus {
+  outline: none;
+  border-color: #555 !important;
+}
+
+.idea-edit-toggles {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.idea-edit-toggle {
+  flex: 1;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  background: #1a1a1a !important;
+  color: rgba(255,255,255,.35) !important;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.idea-edit-toggle.active-task {
+  background: rgba(0,122,255,.12) !important;
+  border-color: #4a9eff !important;
+  color: #4a9eff !important;
+}
+
+.idea-edit-toggle.active-idea {
+  background: rgba(255,166,0,.12) !important;
+  border-color: #ffaa00 !important;
+  color: #ffaa00 !important;
+}
+
+.idea-edit-priorities {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.idea-edit-priority {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: #1a1a1a !important;
+  color: rgba(255,255,255,.25) !important;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.idea-edit-priority.active {
+  color: white !important;
+  border-color: white !important;
+}
+
+.idea-edit-textarea {
+  width: 100%;
+  background: #242424 !important;
+  border: 1px solid #333 !important;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: white !important;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.idea-edit-textarea:focus {
+  outline: none;
+  border-color: #555 !important;
+}
+
+.idea-edit-textarea::placeholder {
+  color: rgba(255,255,255,.2) !important;
+}
+
+.idea-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.idea-edit-cancel {
+  flex: 1;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: #1a1a1a !important;
+  color: rgba(255,255,255,.4) !important;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.idea-edit-confirm {
+  flex: 2;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none !important;
+  background: white !important;
+  color: black !important;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.idea-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.idea-edit-btn {
+  background: none !important;
+  border: none !important;
+  color: rgba(255,255,255,.3) !important;
+  cursor: pointer;
+  padding: 4px;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.idea-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
 }

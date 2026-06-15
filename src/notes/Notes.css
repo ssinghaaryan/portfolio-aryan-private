@@ -500,13 +500,9 @@
 }
 
 .delete-confirm-modal {
-
   width: min(90%, 340px);
-
   background: #191919;
-
   border-radius: 20px;
-
   padding: 24px;
 }
 
@@ -514,41 +510,22 @@
   margin-bottom: 10px;
 }
 
-.delete-confirm-modal .delete-btn {
-  background: rgb(255, 60, 60) !important;
-  color: white !important;
-  border: none !important;
-}
-
 .delete-actions {
-
   display: flex;
-
   justify-content: flex-end;
-
   gap: 10px;
-
   margin-top: 20px;
 }
 
 .delete-actions button {
-
-  border: none;
-
   padding: 10px 14px;
-
   border-radius: 12px;
-
   cursor: pointer;
-}
-
-.delete-btn {
-
-  background:
-    rgba(255,60,60,.15);
-
-  color:
-    rgb(255,100,100);
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: white;
 }
 
 .load-more-notes {
@@ -674,20 +651,4 @@
 .random-note-fab {
   width: 46px;
   height: 46px;
-}
-
-.delete-confirm-modal button {
-  background: rgba(255,255,255,.06);
-  color: white;
-  border: 1px solid rgba(255,255,255,.1);
-  padding: 10px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.delete-confirm-modal .delete-btn {
-  background: rgba(255,60,60,.15) !important;
-  color: rgb(255,100,100) !important;
-  border-color: rgba(255,60,60,.2) !important;
 }
