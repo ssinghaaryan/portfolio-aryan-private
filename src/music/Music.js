@@ -260,14 +260,9 @@ const renderMusicTile = (song) => (
       className="song-menu-btn"
       onClick={(e) => {
         e.stopPropagation();
-
-        const rect =
-          e.currentTarget.getBoundingClientRect();
-
+        const rect =e.currentTarget.getBoundingClientRect();
         setSelectedSong(song);
-
-        setMenuSongId(song.id);
-
+        setMenuSongId(song.id); 
         setMenuPosition({
           x: rect.right,
           y: rect.bottom
@@ -453,11 +448,11 @@ const addSongToPlaylist = async (
   songId,
   playlistId
 ) => {
+  // console.log("Called with:", songId, playlistId);
   try {
 
-    const song = savedSongs.find(
-      (s) => s.id === songId
-    );
+    const song = savedSongs.find((s) => s.id === songId);
+    // console.log("Found song:", song);
 
     if (!song) return;
 
@@ -586,21 +581,32 @@ const handleLongPressEnd = () => {
 
 </div>
 
-    <div className="music-toggle">
-<button
-  className={view === "collection" ? "music-active" : ""}
-  onClick={() => setView("collection")}
->
-  Collection
-</button>
+   <div className="music-controls-row">
+  <div className="music-toggle">
+    <button
+      className={view === "collection" ? "music-active" : ""}
+      onClick={() => setView("collection")}
+    >
+      Collection
+    </button>
+    <button
+      className={view === "timeline" ? "music-active" : ""}
+      onClick={() => setView("timeline")}
+    >
+      Timeline
+    </button>
+  </div>
 
-<button
-  className={view === "timeline" ? "music-active" : ""}
-  onClick={() => setView("timeline")}
->
-  Timeline
-</button>
+  {displayedSongs.length > 12 && (
+    <button
+      className="view-all-btn"
+      onClick={() => setShowLibrary(true)}
+    >
+      View All ({displayedSongs.length})
+    </button>
+  )}
 </div>
+
 {view === "collection" && (
 <div className="saved-grid">
   {visibleSongs.map(renderMusicTile)}
@@ -656,14 +662,14 @@ const handleLongPressEnd = () => {
   </div>
 )}
 
-{displayedSongs.length > 12 && (
+{/* {displayedSongs.length > 12 && (
   <button
     className="view-all-btn"
     onClick={() => setShowLibrary(true)}
   >
     View All ({displayedSongs.length})
   </button>
-)}
+)} */}
 
 {showLibrary && (
   <div className="library-overlay">
@@ -774,13 +780,16 @@ const handleLongPressEnd = () => {
           ref={inputRef}
           placeholder="Search songs, artists..."
           style={{
-            flex: 1,
-            padding: "12px 14px",
-            borderRadius: "15px",
-            border: "1px solid grey",
-            fontSize: "16px",
-            color: "white"
-          }}
+  flex: 1,
+  padding: "12px 14px",
+  borderRadius: "15px",
+  border: "1px solid #333",
+  fontSize: "16px",
+  color: "white",
+  background: "#242424",
+  outline: "none",
+  fontFamily: "inherit"
+}}
         />
 
         {searchMode === "web" && (
@@ -968,8 +977,6 @@ const handleLongPressEnd = () => {
 )}
 
 {menuSongId && selectedSong && (
-  
-
   <>
 
     <div
@@ -978,27 +985,41 @@ const handleLongPressEnd = () => {
         setMenuSongId(null)
       }
     />
+          {console.log("Menu position:", menuPosition)}
+   <div
+  className="floating-song-menu"
+  style={{
+    position: "fixed",
+    top: Math.min(
+      menuPosition.y + 8,
+      window.innerHeight - MENU_HEIGHT - 20
+    ),
+    left: Math.min(
+      menuPosition.x - MENU_WIDTH,
+      window.innerWidth - MENU_WIDTH - 20
+    ),
+    zIndex: 99999
+  }}
+>
+    {/* {console.log("Playlists at render:", playlists)} */}
+  {/* {console.log("Selected song:", selectedSong)} */}
+  {playlists.map((playlist) => {
+  const alreadyInPlaylist = selectedSong.playlistIds?.includes(playlist.id);
 
-    <div
-      className="floating-song-menu"
-      style={{
-  top:
-    window.innerHeight -
-    menuPosition.y <
-    MENU_HEIGHT
-      ? menuPosition.y - MENU_HEIGHT
-      : menuPosition.y + 8,
-
-  left:
-    window.innerWidth -
-    menuPosition.x <
-    MENU_WIDTH
-      ? menuPosition.x - MENU_WIDTH
-      : menuPosition.x
-}}
+  return (
+    <button
+      key={playlist.id}
+      onClick={(e) => {
+        e.stopPropagation();
+        addSongToPlaylist(selectedSong.id, playlist.id);
+        setMenuSongId(null);
+      }}
     >
-
-      {playlists.map((playlist) => {
+      {alreadyInPlaylist ? `✓ ${playlist.name}` : `+ ${playlist.name}`}
+    </button>
+  );
+})}
+      {/* {playlists.map((playlist) => {
 
         const alreadyInPlaylist =
           selectedSong.playlistIds?.includes(
@@ -1008,8 +1029,8 @@ const handleLongPressEnd = () => {
         return (
           <button
             key={playlist.id}
-            onClick={() => {
-
+            onClick={(e) => {
+              e.stopPropagation();
               addSongToPlaylist(
                 selectedSong.id,
                 playlist.id
@@ -1023,12 +1044,13 @@ const handleLongPressEnd = () => {
               : `+ ${playlist.name}`}
           </button>
         );
-      })}
+      })} */}
 
       <hr />
 
 <button
-  onClick={() => {
+  onClick={(e) => {
+    e.stopPropagation();
     openSpotify(selectedSong);
     setMenuSongId(null);
   }}
@@ -1038,7 +1060,8 @@ const handleLongPressEnd = () => {
 </button>
 
 <button
-  onClick={() => {
+  onClick={(e) => {
+    e.stopPropagation();
     openYouTubeMusic(selectedSong);
     setMenuSongId(null);
   }}
@@ -1050,12 +1073,9 @@ const handleLongPressEnd = () => {
 <hr />
 
 <button
-  onClick={() => {
-
-    deleteSong(
-      selectedSong.id
-    );
-
+  onClick={(e) => {
+    e.stopPropagation();
+    deleteSong(selectedSong.id);
     setMenuSongId(null);
   }}
 >

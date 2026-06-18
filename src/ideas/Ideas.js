@@ -89,7 +89,9 @@ useEffect(() => {
       {/* List */}
       <div className="ideas-list">
   {loading ? (
+  <div style={{ padding: "0 16px" }}>
     <IdeasSkeleton count={6} />
+  </div>
   ) : (
     <>
       {displayed.length === 0 && (

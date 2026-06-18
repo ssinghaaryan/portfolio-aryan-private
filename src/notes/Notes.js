@@ -494,9 +494,14 @@ const openRandomNote = () => {
 </h3>
       <select
   value={category}
-  onChange={(e) =>
-    setCategory(e.target.value)
-  }
+  onChange={(e) => {
+    setCategory(e.target.value);
+    if (e.target.value === "Journal") {
+      setAuthor("Me");
+    } else {
+      setAuthor("");
+    }
+  }}
 >
   <option>Quotes</option>
   <option>Books</option>

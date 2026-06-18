@@ -8,13 +8,13 @@ export default function IdeasSkeleton({ count = 6 }) {
           display: "flex",
           alignItems: "center",
           gap: 14,
-          padding: "16px",
+          padding: "12px 16px",
           marginBottom: 10,
           borderRadius: 16,
           border: "1px solid rgba(255,255,255,.05)"
         }}>
           <div className="skeleton" style={{ width: 28, height: 28, borderRadius: "50%", flexShrink: 0 }} />
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
             <div className="skeleton" style={{ height: 13, width: "70%" }} />
             <div className="skeleton" style={{ height: 10, width: "35%" }} />
           </div>

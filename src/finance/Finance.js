@@ -379,12 +379,13 @@ useEffect(() => {
   </h2>
 </div>
 
-    <div className="month-grid">
-  {loading ? (
+    {loading ? (
+  <div style={{ padding: "0 16px" }}>
     <FinanceSkeleton count={6} />
-  ) : (
-    <>
-      {months.map((month) => {
+  </div>
+) : (
+  <div className="month-grid">
+    {months.map((month) => {
 
   const monthTransactionsForCard =
     transactions.filter(
@@ -460,7 +461,7 @@ useEffect(() => {
 
       )
       })}
-    </>
+    </div>
   )}
 
   {showMonthModal && selectedMonth && (
@@ -934,8 +935,5 @@ useEffect(() => {
 </>
 
     </div>
-
-    
-</div>
   );
 }

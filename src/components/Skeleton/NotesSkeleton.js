@@ -1,6 +1,6 @@
 import "./Skeleton.css";
 
-const HEIGHTS = [180, 220, 160, 240, 190, 170];
+const HEIGHTS = [120, 140, 110, 130, 120, 115];
 
 export default function NotesSkeleton({ count = 6 }) {
   return (

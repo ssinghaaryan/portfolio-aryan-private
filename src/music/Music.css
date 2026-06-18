@@ -334,8 +334,13 @@
   border-radius: 999px;
   background: #2a2a2a;
   gap: 4px;
-  margin-bottom: 20px;
+}
 
+.music-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
 }
 
 .music-toggle button {
@@ -365,7 +370,7 @@
 }
 
 .view-all-btn {
-  margin-top: 16px;
+  /* margin-top: 16px; */
   border: none;
   border-radius: 12px;
   padding: 10px 14px;
@@ -449,7 +454,7 @@
 }
 
 .view-all-btn {
-  margin-top: 18px;
+  /* margin-top: 18px; */
 
   padding: 10px 18px;
 
