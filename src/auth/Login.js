@@ -7,6 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -14,19 +15,15 @@ const Login = () => {
       setError("Please enter both fields");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("https://iaryan.vercel.app/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
       const data = await res.json();
-
       if (data.success) {
         localStorage.setItem("auth_token", data.token);
         navigate("/");
@@ -47,36 +44,66 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-title">Hey, Aryan 👋</h1>
-        <p className="login-subtitle">Your personal space</p>
 
-        <input
-          className="login-input"
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          onKeyDown={handleKeyDown}
-          autoCapitalize="none"
-        />
-        <input
-          className="login-input"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
+        {/* Logo */}
+        <div className="login-logo-wrap">
+          <img src="/icon.png" alt="logo" className="login-logo" />
+        </div>
 
-        {error && <p className="login-error">{error}</p>}
+        {/* Heading */}
+        <div className="login-heading">
+          <h1 className="login-title">Welcome back.</h1>
+          {/* <p className="login-subtitle">Your vault is waiting.</p> */}
+        </div>
 
-        <button
-          className="login-btn"
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          {loading ? "Checking..." : "Let me in →"}
-        </button>
+        {/* Fields */}
+        <div className="login-fields">
+          <div className="login-field">
+            <label className="login-label">Username</label>
+            <input
+              className="login-input"
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoCapitalize="none"
+              autoCorrect="off"
+            />
+          </div>
+
+          <div className="login-field">
+            <label className="login-label">Password</label>
+            <div className="login-input-wrap">
+              <input
+                className="login-input"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                className="login-eye"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          {error && <p className="login-error">{error}</p>}
+
+          <button
+            className="login-btn"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
+        </div>
+
       </div>
     </div>
   );

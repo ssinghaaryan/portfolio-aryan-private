@@ -35,17 +35,15 @@
   padding: 72px 28px 28px 28px;
 
   position: relative;
-  max-height: 85vh;
+  max-height: 70vh;
   overflow-y: auto;
-  margin-bottom: 70px;
+  margin-bottom: 50px;
 }
 
 .note-viewer-text {
 
-  font-size: 24px;
-
+  font-size: 20px;
   line-height: 1.7;
-
   white-space: pre-wrap;
 }
 
