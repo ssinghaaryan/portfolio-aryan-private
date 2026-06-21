@@ -1,0 +1,240 @@
+.add-movie-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.add-movie-sheet {
+  width: 100%;
+  background: #191919;
+  border-radius: 24px 24px 0 0;
+  padding: 16px 24px calc(60px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.add-movie-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255,255,255,.15);
+  border-radius: 999px;
+  margin: 0 auto 8px;
+}
+
+.add-movie-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.add-movie-type-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.add-movie-type-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.4);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.add-movie-type-btn.active {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.2);
+  color: white;
+  font-weight: 600;
+}
+
+.add-movie-search-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-movie-input {
+  flex: 1;
+  background: #242424;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: white;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.add-movie-input:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.add-movie-search-btn {
+  width: 46px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  background: #242424;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-movie-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.add-movie-loading {
+  text-align: center;
+  color: rgba(255,255,255,.3);
+  padding: 20px 0;
+  font-size: 13px;
+}
+
+.add-movie-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.add-movie-result:hover {
+  background: rgba(255,255,255,.04);
+}
+
+.add-movie-result-poster {
+  width: 44px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.add-movie-result-poster-placeholder {
+  width: 44px;
+  height: 64px;
+  border-radius: 8px;
+  background: #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.3);
+  flex-shrink: 0;
+}
+
+.add-movie-result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.add-movie-result-year {
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  margin-top: 2px;
+}
+
+.add-movie-selected-poster {
+  width: 100px;
+  border-radius: 12px;
+  align-self: center;
+}
+
+.add-movie-status-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.add-movie-status-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.4);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.add-movie-status-btn.active {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.2);
+  color: white;
+  font-weight: 600;
+}
+
+.add-movie-rating {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.add-movie-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.add-movie-textarea {
+  width: 100%;
+  background: #242424;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: white;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.add-movie-textarea:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.add-movie-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.add-movie-cancel {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.5);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.add-movie-save {
+  flex: 2;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: white;
+  color: black;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}

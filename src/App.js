@@ -15,6 +15,7 @@ import Music from "./music/Music";
 import Notes from "../src/notes/Notes";
 import Finance from "../src/finance/Finance";
 import Ideas from "../src/ideas/Ideas";
+import Movies from "./movies/Movies";
 import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
@@ -63,6 +64,9 @@ function App() {
 
         {/* Fallback */}
         <Route path='*' element={<Navigate to="/" replace />} />
+
+        <Route path='/movies' element={
+        <ProtectedRoute><Movies /></ProtectedRoute>} />
       </Routes>
         
       <BottomNavbar />
@@ -73,7 +77,7 @@ function App() {
           },
         }}
       />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

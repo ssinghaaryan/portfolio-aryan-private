@@ -4,6 +4,7 @@ import { Music2, Image, BookOpen, Wallet, Lightbulb, ArrowUpRight } from "lucide
 import { useData } from "./context/DataContext";
 import "./SectionSelector.css";
 import selectorImage from "./assets/selector_image_1.jpeg";
+import { Clapperboard } from "lucide-react";
 
 const sections = [
   { name: "Music", path: "/music", icon: Music2 },
@@ -11,6 +12,7 @@ const sections = [
   { name: "Notes", path: "/notes", icon: BookOpen },
   { name: "Finance", path: "/finance", icon: Wallet },
   { name: "Ideas", path: "/ideas", icon: Lightbulb },
+  { name: "Movies", path: "/movies", icon: Clapperboard },
 ];
 
 const SectionSelector = () => {

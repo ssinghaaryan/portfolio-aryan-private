@@ -1,70 +1,81 @@
-.ideas-container {
-  min-height: 80vh;
+.movies-container {
+  min-height: 100vh;
   background: #0f0f0f;
   padding: 0 0 140px;
 }
 
-.ideas-header {
+.movies-header {
   padding: 80px 20px 0;
 }
 
-.ideas-title {
+.movies-title {
   font-size: 28px;
   font-weight: 700;
   color: white;
   margin: 0;
 }
 
-.ideas-tabs {
+.movies-filters {
+  display: flex;
+  gap: 10px;
+  padding: 20px 16px 0;
+}
+
+.movies-filter-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #2a2a2a;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.movies-filter-pill.active {
+  background: white;
+  color: black;
+}
+
+.movies-status-tabs {
   display: flex;
   gap: 0;
-  padding: 20px 20px 0;
+  padding: 16px 20px 0;
   border-bottom: 1px solid rgba(255,255,255,.08);
   margin-bottom: 16px;
 }
 
-.ideas-tab {
+.movies-status-tab {
   flex: 1;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
   color: rgba(255,255,255,.35);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 12px 0;
+  padding: 10px 0;
   cursor: pointer;
-  transition: all .2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
-.ideas-tab.active {
+.movies-status-tab.active {
   color: white;
   border-bottom-color: white;
 }
 
-.tab-count {
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.1);
-  color: rgba(255,255,255,.6);
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 16px;
 }
 
-.ideas-list {
-  padding: 8px 16px;
-}
-
-.ideas-empty {
+.movies-empty {
   text-align: center;
   color: rgba(255,255,255,.25);
   font-size: 14px;
   padding: 60px 0;
 }
 
-.ideas-fab {
+.movies-fab {
   position: fixed;
   right: 24px;
   bottom: 120px;
@@ -81,10 +92,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all .25s ease;
-}
-
-.ideas-fab:hover {
-  transform: translateY(-2px) scale(1.05);
-  border-color: rgba(255,255,255,.2);
 }
