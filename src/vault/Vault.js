@@ -10,23 +10,46 @@ import ReactMarkdown
 
 export default function Vault() {
 
-  const [content, setContent] =
+  const [notes, setNotes] =
+    useState([]);
+
+  const [selectedNote,
+         setSelectedNote] =
+    useState(null);
+
+  const [content,
+         setContent] =
     useState("");
 
   useEffect(() => {
 
-    loadWelcomeNote();
+    loadNotes();
 
   }, []);
 
-  const loadWelcomeNote =
-  async () => {
-
-    try {
+  const loadNotes =
+    async () => {
 
       const response =
         await fetch(
-          "/api/vault/read"
+          "/api/vault/tree"
+        );
+
+      const data =
+        await response.json();
+
+      setNotes(data);
+
+    };
+
+  const loadNote =
+    async (path) => {
+
+      const response =
+        await fetch(
+
+          `/api/vault/read?path=${path}`
+
         );
 
       const data =
@@ -36,27 +59,64 @@ export default function Vault() {
         data.content
       );
 
-    } catch (err) {
+      setSelectedNote(path);
 
-      console.error(err);
-
-    }
-
-  };
+    };
 
   return (
 
-    <div className="vault-page">
+    <div className="vault-layout">
 
-      <div className="vault-header">
+      <div
+        className="vault-sidebar"
+      >
 
-        <h1>
+        <h2>
           Vault
-        </h1>
+        </h2>
+
+        {notes.map(note => (
+
+          <div
+
+            key={note.path}
+
+            className={
+              selectedNote ===
+              note.path
+
+                ? "vault-note active"
+
+                : "vault-note"
+            }
+
+            onClick={() =>
+              loadNote(
+                note.path
+              )
+            }
+
+          >
+
+            {
+              note.path
+                .split("/")
+                .pop()
+                .replace(
+                  ".md",
+                  ""
+                )
+            }
+
+          </div>
+
+        ))}
 
       </div>
 
-      <div className="vault-content">
+      <div
+        className="vault-viewer"
+      >
 
         <ReactMarkdown>
 

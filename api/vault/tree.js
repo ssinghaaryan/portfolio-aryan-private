@@ -5,12 +5,10 @@ export default async function handler(
 
   try {
 
-    const { path } = req.query;
-
     const response =
       await fetch(
 
-        `https://api.github.com/repos/ssinghaaryan/betabase-vault/contents/${path}`,
+        "https://api.github.com/repos/ssinghaaryan/betabase-vault/git/trees/main?recursive=1",
 
         {
           headers: {
@@ -24,15 +22,26 @@ export default async function handler(
     const data =
       await response.json();
 
-    const content =
-      Buffer.from(
-        data.content,
-        "base64"
-      ).toString("utf8");
+    const notes =
+      data.tree.filter(
 
-    res.status(200).json({
-      content
-    });
+        item =>
+
+          item.path.startsWith(
+            "vault/"
+          )
+
+          &&
+
+          item.path.endsWith(
+            ".md"
+          )
+
+      );
+
+    res.status(200).json(
+      notes
+    );
 
   } catch (err) {
 
@@ -40,7 +49,7 @@ export default async function handler(
 
     res.status(500).json({
       error:
-        "Failed to load note"
+        "Failed loading vault"
     });
 
   }
