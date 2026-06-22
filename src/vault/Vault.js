@@ -21,6 +21,10 @@ export default function Vault() {
          setContent] =
     useState("");
 
+    const [expandedFolders,
+       setExpandedFolders] =
+  useState({});
+
   useEffect(() => {
 
     loadNotes();
@@ -39,6 +43,27 @@ export default function Vault() {
         await response.json();
 
       setNotes(data);
+
+      const folders = {};
+
+data.forEach(note => {
+
+  const parts =
+    note.path.split("/");
+
+  if (parts.length > 2) {
+
+    folders[
+      parts[1]
+    ] = true;
+
+  }
+
+});
+
+setExpandedFolders(
+  folders
+);
 
     };
 
@@ -63,6 +88,65 @@ export default function Vault() {
 
     };
 
+    const toggleFolder =
+  (folder) => {
+
+    setExpandedFolders(
+      prev => ({
+
+        ...prev,
+
+        [folder]:
+          !prev[folder]
+
+      })
+    );
+
+  };
+
+    const buildTree = () => {
+
+  const folders = {};
+
+  notes.forEach(note => {
+
+    const parts =
+      note.path.split("/");
+
+    if (parts.length === 2) {
+
+      if (!folders.root) {
+
+        folders.root = [];
+
+      }
+
+      folders.root.push(note);
+
+      return;
+
+    }
+
+    const folder =
+      parts[1];
+
+    if (!folders[folder]) {
+
+      folders[folder] = [];
+
+    }
+
+    folders[folder].push(note);
+
+  });
+
+  return folders;
+
+};
+
+const tree =
+  buildTree();
+
   return (
 
     <div className="vault-layout">
@@ -75,42 +159,96 @@ export default function Vault() {
           Vault
         </h2>
 
-        {notes.map(note => (
+        {tree?.root?.map(note => (
 
-          <div
+  <div
 
-            key={note.path}
+    key={note.path}
 
-            className={
-              selectedNote ===
-              note.path
+    className={
+      selectedNote ===
+      note.path
 
-                ? "vault-note active"
+        ? "vault-note active"
 
-                : "vault-note"
-            }
+        : "vault-note"
+    }
 
-            onClick={() =>
-              loadNote(
-                note.path
-              )
-            }
+    onClick={() =>
+      loadNote(note.path)
+    }
 
-          >
+  >
 
-            {
-              note.path
-                .split("/")
-                .pop()
-                .replace(
-                  ".md",
-                  ""
-                )
-            }
+    {
+      note.path
+        .split("/")
+        .pop()
+        .replace(".md", "")
+    }
 
-          </div>
+  </div>
 
-        ))}
+))}
+
+{Object.keys(tree || {})
+
+  .filter(
+    key => key !== "root"
+  )
+
+  .map(folder => (
+
+    <div
+      key={folder}
+      className="vault-folder"
+    >
+
+      <div
+  className="vault-folder-title"
+  onClick={() =>
+    toggleFolder(folder)
+  }
+>
+
+  {
+    expandedFolders[folder]
+      ? "▼"
+      : "▶"
+  }
+
+  {" "}
+
+  {folder}
+
+</div>
+
+    {expandedFolders[folder] &&
+  tree[folder].map(note => (
+
+    <div
+      key={note.path}
+      className={
+        selectedNote === note.path
+          ? "vault-note active"
+          : "vault-note"
+      }
+      onClick={() =>
+        loadNote(note.path)
+      }
+    >
+
+      {note.path
+        .split("/")
+        .pop()
+        .replace(".md", "")}
+
+    </div>
+
+))}
+    </div>
+
+))}
 
       </div>
 
