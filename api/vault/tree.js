@@ -22,6 +22,24 @@ export default async function handler(
     const data =
       await response.json();
 
+    console.log(
+      "GITHUB TREE RESPONSE:",
+      data
+    );
+
+    if (!data.tree) {
+
+      return res
+        .status(500)
+        .json({
+          error:
+            "GitHub tree not found",
+          github:
+            data
+        });
+
+    }
+
     const notes =
       data.tree.filter(
 
@@ -45,11 +63,16 @@ export default async function handler(
 
   } catch (err) {
 
-    console.error(err);
+    console.error(
+      "TREE ERROR:",
+      err
+    );
 
     res.status(500).json({
+
       error:
-        "Failed loading vault"
+        err.message
+
     });
 
   }
