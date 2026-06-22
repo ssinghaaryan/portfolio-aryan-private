@@ -1,0 +1,54 @@
+.vault-page {
+
+  min-height: 100vh;
+
+  color: white;
+
+  background:
+    rgb(18,18,20);
+
+  padding:
+    env(safe-area-inset-top)
+    20px
+    120px;
+}
+
+.vault-header {
+
+  margin-bottom: 30px;
+}
+
+.vault-header h1 {
+
+  font-size: 34px;
+
+  font-weight: 700;
+
+  margin: 0;
+}
+
+.vault-content {
+
+  max-width: 800px;
+
+  line-height: 1.8;
+
+  font-size: 17px;
+}
+
+.vault-content h1,
+.vault-content h2,
+.vault-content h3 {
+
+  margin-top: 30px;
+}
+
+.vault-content code {
+
+  background:
+    rgba(255,255,255,.08);
+
+  padding: 2px 6px;
+
+  border-radius: 6px;
+}

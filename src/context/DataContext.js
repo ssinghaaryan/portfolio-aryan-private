@@ -9,6 +9,7 @@ export function DataProvider({ children }) {
   const [ideasData, setIdeasData] = useState(null);
   const [photosData, setPhotosData] = useState(null);
   const [moviesData, setMoviesData] = useState(null);
+  const [vaultData, setVaultData] = useState(null);
 
   const clearAll = () => {
     setMusicData(null);
@@ -17,6 +18,7 @@ export function DataProvider({ children }) {
     setIdeasData(null);
     setPhotosData(null);
     setMoviesData(null);
+    setVaultData(null);
   };
 
   return (
@@ -27,6 +29,7 @@ export function DataProvider({ children }) {
       ideasData, setIdeasData,
       photosData, setPhotosData,
       moviesData, setMoviesData,
+      vaultData, setVaultData,
       clearAll
     }}>
       {children}

@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Music2, Image, BookOpen, Wallet2, Lightbulb } from "lucide-react";
+import { Music2, Image, BookOpen, Wallet2, Lightbulb, Vault, Clapperboard } from "lucide-react";
 import "./BottomNavbar.css";
-import { Clapperboard } from "lucide-react";
 
 const HIDDEN_ROUTES = ["/login", "/"];
 
@@ -12,6 +11,7 @@ const NAV_ITEMS = [
   { label: "Finance", path: "/finance", icon: Wallet2 },
   { label: "Ideas", path: "/ideas", icon: Lightbulb },
   { label: "Movies", path: "/movies", icon: Clapperboard },
+  { label: "Vault", path: "/vault", icon: Vault },
 ];
 
 export default function BottomNav() {
