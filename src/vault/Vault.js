@@ -398,13 +398,13 @@ export default function Vault() {
 
           {selectedNote && (
             <div className="vault-topbar-actions">
-              <button
-                className={`vault-icon-btn fav-btn ${favorites() ? "active-star" : ""}`}
+              {/* <button
+                className={`vault-icon-btn fav-btn ${isFavorite() ? "active-star" : ""}`}
                 onClick={toggleFavorite}
                 title="Favorite"
                 >
-                <Star size={16} fill={favorites() ? "#ffaa00" : "none"} color={favorites() ? "#ffaa00" : "currentColor"} />
-              </button>
+                <Star size={16} fill={isFavorite() ? "#ffaa00" : "none"} color={isFavorite() ? "#ffaa00" : "currentColor"} />
+              </button> */}
 
               <button
                 className="vault-icon-btn"
