@@ -41,6 +41,10 @@ const [selectedFolder,
        setEditMode] =
   useState(false);
 
+  const [backlinks,
+       setBacklinks] =
+  useState([]);
+
   useEffect(() => {
 
     loadNotes();
@@ -123,6 +127,7 @@ const [selectedFolder,
       );
 
       setSelectedNote(path);
+      loadBacklinks(path);
 
     };
 
@@ -459,6 +464,66 @@ const tree = buildTree();
 
   };
 
+  const loadBacklinks =
+  async (notePath) => {
+
+    const noteName =
+      notePath
+        .split("/")
+        .pop()
+        .replace(".md", "");
+
+    const linkedNotes =
+      [];
+
+    for (const note of notes) {
+
+      if (
+        note.path === notePath
+      ) continue;
+
+      try {
+
+        const response =
+          await fetch(
+
+            `/api/vault/read?path=${note.path}`
+
+          );
+
+        const data =
+          await response.json();
+
+        if (
+
+          data.content?.includes(
+
+            `[[${noteName}]]`
+
+          )
+
+        ) {
+
+          linkedNotes.push(
+            note
+          );
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+
+    }
+
+    setBacklinks(
+      linkedNotes
+    );
+
+  };
+
   return (
 
   <div className="vault-layout">
@@ -633,6 +698,47 @@ const tree = buildTree();
   ) : (
       <>
     {renderContent()}
+    {backlinks.length > 0 && (
+
+  <div
+    className="vault-backlinks"
+  >
+
+    <h3>
+      Referenced By
+    </h3>
+
+    {backlinks.map(note => (
+
+      <div
+
+        key={note.path}
+
+        className="backlink-item"
+
+        onClick={() =>
+          loadNote(
+            note.path
+          )
+        }
+
+      >
+
+        {note.path
+          .split("/")
+          .pop()
+          .replace(
+            ".md",
+            ""
+          )}
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
   </>
   )}
 
