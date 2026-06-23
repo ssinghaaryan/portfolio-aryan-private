@@ -282,8 +282,39 @@ const [selectedFolder,
 
 };
 
-const tree =
-  buildTree();
+const tree = buildTree();
+
+const openWikiLink =
+  async (noteName) => {
+
+    const target =
+      notes.find(note =>
+
+        note.path
+          .toLowerCase()
+          .endsWith(
+            `${noteName.toLowerCase()}.md`
+          )
+
+      );
+
+    if (!target) {
+
+      alert(
+        `Note "${noteName}" not found`
+      );
+
+      return;
+
+    }
+
+    await loadNote(
+      target.path
+    );
+
+    setEditMode(false);
+
+  };
 
   return (
 
@@ -452,11 +483,99 @@ const tree =
 
   ) : (
 
-    <ReactMarkdown>
+   <ReactMarkdown
 
-      {content}
+  components={{
 
-    </ReactMarkdown>
+    p({
+      children
+    }) {
+
+      const text =
+        children?.[0];
+
+      if (
+        typeof text !==
+        "string"
+      ) {
+
+        return (
+          <p>
+            {children}
+          </p>
+        );
+
+      }
+
+      const parts =
+        text.split(
+          /(\[\[.*?\]\])/
+        );
+
+      return (
+
+        <p>
+
+          {parts.map(
+            (
+              part,
+              index
+            ) => {
+
+              const match =
+                part.match(
+                  /^\[\[(.*?)\]\]$/
+                );
+
+              if (
+                match
+              ) {
+
+                const noteName =
+                  match[1];
+
+                return (
+
+                  <span
+
+                    key={index}
+
+                    className="wiki-link"
+
+                    onClick={() =>
+                      openWikiLink(
+                        noteName
+                      )
+                    }
+
+                  >
+
+                    {noteName}
+
+                  </span>
+
+                );
+
+              }
+
+              return part;
+
+            }
+          )}
+
+        </p>
+
+      );
+
+    }
+
+  }}
+
+>
+
+  {content}
+
+</ReactMarkdown>
 
   )}
 

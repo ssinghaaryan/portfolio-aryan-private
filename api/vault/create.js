@@ -13,7 +13,14 @@ export default async function handler(
     const path =
       `vault/${folder}/${noteName}.md`;
 
-      const content = `# ${noteName} Created: ${new Date().toLocaleDateString()}`;
+      const content =
+`# ${noteName}
+
+Created:
+${new Date()
+  .toLocaleDateString()}
+
+`;
 
 //     const content =
 

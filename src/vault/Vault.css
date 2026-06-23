@@ -157,3 +157,17 @@
 
   font-family: inherit;
 }
+
+.wiki-link {
+
+  color: #7ab7ff;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.wiki-link:hover {
+
+  text-decoration: underline;
+}
