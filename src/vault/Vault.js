@@ -568,6 +568,11 @@ const tree = buildTree();
       children
     }) {
 
+      console.log(
+        "WIKI LINK",
+        href
+      );
+
       if (
         href?.startsWith(
           "wiki:"
@@ -625,7 +630,6 @@ const tree = buildTree();
   )}
 
 </ReactMarkdown>
-
   )}
 
 </div>
