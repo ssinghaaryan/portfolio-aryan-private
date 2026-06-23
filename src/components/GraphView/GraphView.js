@@ -1,6 +1,5 @@
-import {
-  ForceGraph2D
-} from "react-force-graph";
+import ForceGraph2D
+  from "react-force-graph-2d";
 
 export default function GraphView({
   graphData,
@@ -17,17 +16,9 @@ export default function GraphView({
     >
 
       <ForceGraph2D
-
-        graphData={
-          graphData
-        }
-
+        graphData={graphData}
         nodeLabel="id"
-
-        onNodeClick={
-          onNodeClick
-        }
-
+        onNodeClick={onNodeClick}
       />
 
     </div>
