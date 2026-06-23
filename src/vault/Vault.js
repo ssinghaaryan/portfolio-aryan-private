@@ -218,6 +218,55 @@ const [selectedFolder,
 
   };
 
+  const deleteNote =
+  async () => {
+
+    if (
+      !selectedNote
+    ) return;
+
+    const confirmed =
+      window.confirm(
+        "Delete this note?"
+      );
+
+    if (
+      !confirmed
+    ) return;
+
+    await fetch(
+      "/api/vault/delete",
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          path:
+            selectedNote
+
+        })
+
+      }
+    );
+
+    setContent("");
+
+    setSelectedNote(
+      null
+    );
+
+    loadNotes();
+
+  };
+
     const toggleFolder =
   (folder) => {
 
@@ -450,6 +499,12 @@ const openWikiLink =
         : "Edit"}
 
     </button>
+
+    <button
+  onClick={deleteNote}
+>
+  Delete
+</button>
 
     {editMode && (
 
