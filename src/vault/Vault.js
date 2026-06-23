@@ -69,11 +69,33 @@ const [renameValue,
        setRenameValue] =
   useState("");
 
+  const [recentNotes,
+       setRecentNotes] =
+  useState([]);
+
   useEffect(() => {
 
-    loadNotes();
+  loadNotes();
 
-  }, []);
+  const savedRecent =
+
+    localStorage.getItem(
+      "vault-recent"
+    );
+
+  if (savedRecent) {
+
+    setRecentNotes(
+
+      JSON.parse(
+        savedRecent
+      )
+
+    );
+
+  }
+
+}, []);
 
   const loadNotes =
   async () => {
@@ -152,6 +174,29 @@ const [renameValue,
 
       setSelectedNote(path);
       loadBacklinks(path);
+      const updatedRecent = [
+
+  path,
+
+  ...recentNotes.filter(
+    note => note !== path
+  )
+
+].slice(0, 10);
+
+setRecentNotes(
+  updatedRecent
+);
+
+localStorage.setItem(
+
+  "vault-recent",
+
+  JSON.stringify(
+    updatedRecent
+  )
+
+);
 
     };
 
@@ -793,6 +838,46 @@ Create it?`
       <h2>
         Vault
       </h2>
+
+      {recentNotes.length > 0 && (
+
+  <div
+    className="vault-recent"
+  >
+
+    <h4>
+      Recent
+    </h4>
+
+    {recentNotes.map(path => (
+
+      <div
+
+        key={path}
+
+        className="vault-note"
+
+        onClick={() =>
+          loadNote(path)
+        }
+
+      >
+
+        {path
+          .split("/")
+          .pop()
+          .replace(
+            ".md",
+            ""
+          )}
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
 
       <input
 
