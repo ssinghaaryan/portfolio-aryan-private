@@ -18,11 +18,6 @@ export default async function handler(
 
   try {
 
-    const {
-      path,
-      content
-    } = req.body;
-
     const token =
       process.env.GITHUB_TOKEN;
 
@@ -32,27 +27,147 @@ export default async function handler(
     const repo =
       "betabase-vault";
 
-    const fileResponse =
-      await fetch(
+    const {
+      action
+    } = req.body;
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    /*
+    ======================
+    SAVE NOTE
+    ======================
+    */
 
-        {
-          headers: {
-            Authorization:
-              `token ${token}`
+    if (
+      action === "save"
+      ||
+      !action
+    ) {
+
+      const {
+        path,
+        content
+      } = req.body;
+
+      const fileResponse =
+        await fetch(
+
+          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+
+          {
+            headers: {
+              Authorization:
+                `token ${token}`
+            }
           }
-        }
 
-      );
+        );
 
-    const fileData =
-      await fileResponse.json();
+      const fileData =
+        await fileResponse.json();
 
-    const updateResponse =
+      const updateResponse =
+        await fetch(
+
+          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+
+          {
+
+            method: "PUT",
+
+            headers: {
+
+              Authorization:
+                `token ${token}`,
+
+              "Content-Type":
+                "application/json"
+
+            },
+
+            body: JSON.stringify({
+
+              message:
+                `Update ${path}`,
+
+              content:
+                Buffer
+                  .from(content)
+                  .toString(
+                    "base64"
+                  ),
+
+              sha:
+                fileData.sha
+
+            })
+
+          }
+
+        );
+
+      const updateData =
+        await updateResponse.json();
+
+      return res
+        .status(200)
+        .json(updateData);
+
+    }
+
+    /*
+    ======================
+    RENAME NOTE
+    ======================
+    */
+
+    if (
+      action === "rename"
+    ) {
+
+      const {
+        oldPath,
+        newName
+      } = req.body;
+
+      const fileResponse =
+        await fetch(
+
+          `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
+
+          {
+            headers: {
+              Authorization:
+                `token ${token}`
+            }
+          }
+
+        );
+
+      const fileData =
+        await fileResponse.json();
+
+      const content =
+        Buffer
+          .from(
+            fileData.content,
+            "base64"
+          )
+          .toString(
+            "utf8"
+          );
+
+      const folder =
+        oldPath.substring(
+          0,
+          oldPath.lastIndexOf("/")
+        );
+
+      const newPath =
+        `${folder}/${newName}.md`;
+
       await fetch(
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        `https://api.github.com/repos/${owner}/${repo}/contents/${newPath}`,
 
         {
 
@@ -71,14 +186,43 @@ export default async function handler(
           body: JSON.stringify({
 
             message:
-              `Update ${path}`,
+              `Rename ${oldPath}`,
 
             content:
               Buffer
                 .from(content)
                 .toString(
                   "base64"
-                ),
+                )
+
+          })
+
+        }
+
+      );
+
+      await fetch(
+
+        `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
+
+        {
+
+          method: "DELETE",
+
+          headers: {
+
+            Authorization:
+              `token ${token}`,
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body: JSON.stringify({
+
+            message:
+              `Delete old file`,
 
             sha:
               fileData.sha
@@ -89,12 +233,20 @@ export default async function handler(
 
       );
 
-    const updateData =
-      await updateResponse.json();
+      return res
+        .status(200)
+        .json({
+          success: true
+        });
 
-    res.status(200).json(
-      updateData
-    );
+    }
+
+    return res
+      .status(400)
+      .json({
+        error:
+          "Unknown action"
+      });
 
   } catch (err) {
 
