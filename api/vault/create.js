@@ -13,12 +13,14 @@ export default async function handler(
     const path =
       `vault/${folder}/${noteName}.md`;
 
-    const content =
+      const content = `# ${noteName} Created: ${new Date().toLocaleDateString()}`;
 
-`# ${noteName}
+//     const content =
 
-Created from BetaBase Vault.
-`;
+// `# ${noteName}
+
+// Created from BetaBase Vault.
+// `;
 
     const response =
       await fetch(

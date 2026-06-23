@@ -162,34 +162,51 @@ const [selectedFolder,
 
   };
 
-    const createNote =
+  const createNote =
   async () => {
 
     if (
       !newNoteName.trim()
     ) return;
 
-    await fetch(
-      "/api/vault/create",
-      {
-        method: "POST",
+    const response =
+      await fetch(
+        "/api/vault/create",
+        {
 
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
+          method: "POST",
 
-        body: JSON.stringify({
+          headers: {
 
-          folder:
-            selectedFolder,
+            "Content-Type":
+              "application/json"
 
-          noteName:
-            newNoteName
+          },
 
-        })
-      }
+          body: JSON.stringify({
+
+            folder:
+              selectedFolder,
+
+            noteName:
+              newNoteName
+
+          })
+
+        }
+      );
+
+    const data =
+      await response.json();
+
+    const newPath =
+      `vault/${selectedFolder}/${newNoteName}.md`;
+
+    await loadNote(
+      newPath
     );
+
+    setEditMode(true);
 
     setShowCreateNote(
       false
@@ -198,6 +215,7 @@ const [selectedFolder,
     setNewNoteName("");
 
     loadNotes();
+
   };
 
     const toggleFolder =
