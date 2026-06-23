@@ -53,6 +53,14 @@ const [selectedFolder,
        setSearchResults] =
   useState([]);
 
+  const [showCreateFolder,
+       setShowCreateFolder] =
+  useState(false);
+
+const [newFolderName,
+       setNewFolderName] =
+  useState("");
+
   useEffect(() => {
 
     loadNotes();
@@ -226,6 +234,46 @@ const [selectedFolder,
     );
 
     setNewNoteName("");
+
+    loadNotes();
+
+  };
+
+  const createFolder =
+  async () => {
+
+    if (
+      !newFolderName.trim()
+    ) return;
+
+    await fetch(
+      "/api/vault/create-folder",
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          folderName:
+            newFolderName
+
+        })
+
+      }
+    );
+
+    setShowCreateFolder(
+      false
+    );
+
+    setNewFolderName("");
 
     loadNotes();
 
@@ -750,6 +798,17 @@ Create it?`
         + New Note
       </button>
 
+      <button
+  className="new-folder-btn"
+  onClick={() =>
+    setShowCreateFolder(true)
+  }
+>
+
+  + Folder
+
+</button>
+
       {tree?.root?.map(note => (
 
         <div
@@ -1034,6 +1093,56 @@ Create it?`
       </div>
 
     )}
+
+    {showCreateFolder && (
+
+  <div
+    className="vault-modal-overlay"
+    onClick={() =>
+      setShowCreateFolder(false)
+    }
+  >
+
+    <div
+      className="vault-modal"
+      onClick={(e) =>
+        e.stopPropagation()
+      }
+    >
+
+      <h3>
+        Create Folder
+      </h3>
+
+      <input
+
+        placeholder="Folder Name"
+
+        value={
+          newFolderName
+        }
+
+        onChange={(e) =>
+          setNewFolderName(
+            e.target.value
+          )
+        }
+
+      />
+
+      <button
+        onClick={createFolder}
+      >
+
+        Create Folder
+
+      </button>
+
+    </div>
+
+  </div>
+
+)}
 
   </div>
 
