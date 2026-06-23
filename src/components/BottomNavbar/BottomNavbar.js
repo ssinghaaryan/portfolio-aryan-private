@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Music2, Image, BookOpen, Wallet2, Lightbulb, Vault, Clapperboard } from "lucide-react";
 import "./BottomNavbar.css";
 
-const HIDDEN_ROUTES = ["/login", "/"];
+const HIDDEN_ROUTES = ["/login", "/", "/vault"];
 
 const NAV_ITEMS = [
   { label: "Music", path: "/music", icon: Music2 },
