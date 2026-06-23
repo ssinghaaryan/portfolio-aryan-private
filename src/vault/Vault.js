@@ -73,9 +73,14 @@ const [renameValue,
        setRecentNotes] =
   useState([]);
 
+  const [favorites,
+       setFavorites] =
+  useState([]);
+
   useEffect(() => {
 
   loadNotes();
+  loadFavorites();
 
   const savedRecent =
 
@@ -152,6 +157,49 @@ const [renameValue,
     setExpandedFolders(
       folders
     );
+
+  };
+
+  const loadFavorites =
+  async () => {
+
+    try {
+
+      const response =
+        await fetch(
+
+          "/api/vault/read?path=vault/System/Favorites.md"
+
+        );
+
+      const data =
+        await response.json();
+
+      const matches =
+
+        data.content.match(
+          /\[\[(.*?)\]\]/g
+        ) || [];
+
+      const parsed =
+        matches.map(link =>
+
+          link.replace(
+            /\[\[|\]\]/g,
+            ""
+          )
+
+        );
+
+      setFavorites(
+        parsed
+      );
+
+    } catch {
+
+      setFavorites([]);
+
+    }
 
   };
 
@@ -692,6 +740,115 @@ Create it?`
 
   };
 
+  const isFavorite =
+  () => {
+
+    if (
+      !selectedNote
+    ) return false;
+
+    const noteName =
+      selectedNote
+        .split("/")
+        .pop()
+        .replace(
+          ".md",
+          ""
+        );
+
+    return favorites.includes(
+      noteName
+    );
+
+  };
+
+  const toggleFavorite =
+  async () => {
+
+    if (
+      !selectedNote
+    ) return;
+
+    const noteName =
+      selectedNote
+        .split("/")
+        .pop()
+        .replace(
+          ".md",
+          ""
+        );
+
+    let updated;
+
+    if (
+      favorites.includes(
+        noteName
+      )
+    ) {
+
+      updated =
+        favorites.filter(
+          fav =>
+            fav !== noteName
+        );
+
+    } else {
+
+      updated = [
+
+        ...favorites,
+
+        noteName
+
+      ];
+
+    }
+
+    const content =
+
+      "# Favorites\n\n" +
+
+      updated
+        .map(
+          note =>
+            `[[${note}]]`
+        )
+        .join("\n");
+
+    await fetch(
+      "/api/vault/save",
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          action:
+            "save",
+
+          path:
+            "vault/System/Favorites.md",
+
+          content
+
+        })
+
+      }
+    );
+
+    setFavorites(
+      updated
+    );
+
+  };
+
   const loadBacklinks =
   async (notePath) => {
 
@@ -838,6 +995,40 @@ Create it?`
       <h2>
         Vault
       </h2>
+
+      {favorites.length > 0 && (
+
+  <div
+    className="vault-favorites"
+  >
+
+    <h4>
+      ⭐ Favorites
+    </h4>
+
+    {favorites.map(note => (
+
+      <div
+
+        key={note}
+
+        className="vault-note"
+
+        onClick={() =>
+          openWikiLink(note)
+        }
+
+      >
+
+        {note}
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
 
       {recentNotes.length > 0 && (
 
@@ -1117,6 +1308,20 @@ Create it?`
 >
 
   Rename
+
+</button>
+
+<button
+  onClick={
+    toggleFavorite
+  }
+>
+
+  {
+    isFavorite()
+      ? "★"
+      : "☆"
+  }
 
 </button>
 
