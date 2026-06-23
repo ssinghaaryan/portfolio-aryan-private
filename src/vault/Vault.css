@@ -211,3 +211,23 @@
     underline;
 
 }
+
+.vault-search {
+
+  width: 100%;
+
+  padding: 8px;
+
+  margin-bottom: 12px;
+
+  border-radius: 6px;
+
+  border: 1px solid #333;
+
+}
+
+.search-results {
+
+  margin-bottom: 16px;
+
+}

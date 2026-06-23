@@ -45,6 +45,14 @@ const [selectedFolder,
        setBacklinks] =
   useState([]);
 
+  const [searchTerm,
+       setSearchTerm] =
+  useState("");
+
+  const [searchResults,
+       setSearchResults] =
+  useState([]);
+
   useEffect(() => {
 
     loadNotes();
@@ -524,6 +532,81 @@ const tree = buildTree();
 
   };
 
+  const searchNotes =
+  async (term) => {
+
+    setSearchTerm(term);
+
+    if (!term.trim()) {
+
+      setSearchResults([]);
+
+      return;
+
+    }
+
+    const results = [];
+
+    for (const note of notes) {
+
+      try {
+
+        const response =
+          await fetch(
+
+            `/api/vault/read?path=${note.path}`
+
+          );
+
+        const data =
+          await response.json();
+
+        const fileName =
+          note.path
+            .split("/")
+            .pop()
+            .replace(
+              ".md",
+              ""
+            );
+
+        const matchesTitle =
+          fileName
+            .toLowerCase()
+            .includes(
+              term.toLowerCase()
+            );
+
+        const matchesContent =
+          data.content
+            ?.toLowerCase()
+            .includes(
+              term.toLowerCase()
+            );
+
+        if (
+          matchesTitle ||
+          matchesContent
+        ) {
+
+          results.push(note);
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+
+    }
+
+    setSearchResults(
+      results
+    );
+
+  };
+
   return (
 
   <div className="vault-layout">
@@ -535,6 +618,78 @@ const tree = buildTree();
       <h2>
         Vault
       </h2>
+
+      <input
+
+  className="vault-search"
+
+  placeholder="Search..."
+
+  value={searchTerm}
+
+  onChange={(e) =>
+  searchNotes(
+    e.target.value
+  )
+}
+
+/>
+
+{searchTerm && (
+
+  <div
+    className="search-results"
+  >
+
+    {searchResults.map(note => (
+
+      <div
+
+        key={note.path}
+
+        className="vault-note"
+
+        onClick={() => {
+
+          loadNote(
+            note.path
+          );
+
+          setSearchTerm("");
+
+        }}
+
+      >
+
+        <>
+
+  <div>
+
+    {note.path
+      .split("/")
+      .pop()
+      .replace(
+        ".md",
+        ""
+      )}
+
+  </div>
+
+  <small>
+
+    {note.path}
+
+  </small>
+
+</>
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
 
       <button
         className="new-note-btn"
