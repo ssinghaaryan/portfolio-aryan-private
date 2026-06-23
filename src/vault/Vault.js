@@ -5,6 +5,7 @@ import {
   Trash2, Save, Plus, FolderPlus, Search, Menu, X,
   FileText, Pencil
 } from "lucide-react";
+import GraphView from "./GraphView";
 import "./Vault.css";
 
 export default function Vault() {
@@ -26,6 +27,8 @@ export default function Vault() {
   const [recentNotes, setRecentNotes] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showGraph,setShowGraph] = useState(false);
+  const [graphCache, setGraphCache] = useState({});
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const editorRef = useRef(null);
@@ -36,6 +39,105 @@ export default function Vault() {
     const savedRecent = localStorage.getItem("vault-recent");
     if (savedRecent) setRecentNotes(JSON.parse(savedRecent));
   }, []);
+
+  useEffect(() => {
+
+  const handleKeyDown =
+    (e) => {
+
+      const isMac =
+        navigator.platform
+          .toUpperCase()
+          .includes("MAC");
+
+      const cmd =
+        isMac
+          ? e.metaKey
+          : e.ctrlKey;
+
+      // Save
+
+      if (
+        cmd &&
+        e.key === "s"
+      ) {
+
+        e.preventDefault();
+
+        if (
+          selectedNote &&
+          editMode
+        ) {
+
+          saveNote();
+
+        }
+
+      }
+
+      // Search
+
+      if (
+        cmd &&
+        e.key === "k"
+      ) {
+
+        e.preventDefault();
+
+        document
+          .querySelector(
+            ".vault-search"
+          )
+          ?.focus();
+
+      }
+
+      // Edit
+
+      if (
+        e.key === "e" &&
+        selectedNote
+      ) {
+
+        setEditMode(
+          prev => !prev
+        );
+
+      }
+
+    };
+
+  window.addEventListener(
+    "keydown",
+    handleKeyDown
+  );
+
+  return () => {
+
+    window.removeEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+  };
+
+}, [
+  selectedNote,
+  editMode,
+  content
+]);
+
+useEffect(() => {
+
+  if (
+    notes.length
+  ) {
+
+    buildGraphCache();
+
+  }
+
+}, [notes]);
 
   const loadNotes = async () => {
     const response = await fetch("/api/vault/tree");
@@ -194,17 +296,81 @@ localStorage.setItem(
 };
 
   const confirmDelete = async () => {
+
   await fetch("/api/vault/delete", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ path: selectedNote })
+    headers: {
+      "Content-Type":
+        "application/json"
+    },
+    body: JSON.stringify({
+      path: selectedNote
+    })
   });
-  const updatedRecent = recentNotes.filter(n => n !== selectedNote);
-  setRecentNotes(updatedRecent);
-  localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
+
+  const deletedNoteName =
+    selectedNote
+      .split("/")
+      .pop()
+      .replace(".md", "");
+
+  const updatedFavorites =
+    favorites.filter(
+      fav =>
+        fav !== deletedNoteName
+    );
+
+  setFavorites(
+    updatedFavorites
+  );
+
+  const favContent =
+    "# Favorites\n\n" +
+    updatedFavorites
+      .map(
+        note =>
+          `[[${note}]]`
+      )
+      .join("\n");
+
+  await fetch(
+    "/api/vault/save",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json"
+      },
+      body: JSON.stringify({
+        path:
+          "vault/System/Favorites.md",
+        content:
+          favContent
+      })
+    }
+  );
+
+  const updatedRecent =
+    recentNotes.filter(
+      n =>
+        n !== selectedNote
+    );
+
+  setRecentNotes(
+    updatedRecent
+  );
+
+  localStorage.setItem(
+    "vault-recent",
+    JSON.stringify(
+      updatedRecent
+    )
+  );
+
   setContent("");
   setSelectedNote(null);
   setShowDeleteConfirm(false);
+
   loadNotes();
 };
 
@@ -356,6 +522,123 @@ const buildTree = () => {
   return folders;
 
 };
+
+const buildGraphCache =
+  async () => {
+
+    const cache = {};
+
+    for (
+      const note of notes
+    ) {
+
+      try {
+
+        const res =
+          await fetch(
+
+            `/api/vault/read?path=${note.path}`
+
+          );
+
+        const data =
+          await res.json();
+
+        const matches =
+          [
+            ...data.content.matchAll(
+              /\[\[(.*?)\]\]/g
+            )
+          ].map(
+            m => m[1]
+          );
+
+        cache[
+          note.path
+        ] = matches;
+
+      }
+
+      catch {}
+
+    }
+
+    setGraphCache(
+      cache
+    );
+
+  };
+
+const buildGraphData =
+  () => {
+
+    const nodes = [];
+    const links = [];
+
+    notes.forEach(note => {
+
+      const noteName =
+        note.path
+          .split("/")
+          .pop()
+          .replace(
+            ".md",
+            ""
+          );
+
+      nodes.push({
+
+        id:
+          noteName,
+
+        path:
+          note.path
+
+      });
+
+    });
+
+    notes.forEach(note => {
+
+      const noteName =
+        note.path
+          .split("/")
+          .pop()
+          .replace(
+            ".md",
+            ""
+          );
+
+      const matches =
+        graphCache[
+          note.path
+        ] || [];
+
+      matches.forEach(
+        target => {
+
+          links.push({
+
+            source:
+              noteName,
+
+            target
+
+          });
+
+        }
+      );
+
+    });
+
+    return {
+
+      nodes,
+      links
+
+    };
+
+  };
 
   const renderContent = () => {
     const parts = content.split(/(\[\[.*?\]\])/);
@@ -553,6 +836,9 @@ const buildTree = () => {
             <button className="vault-icon-btn mobile-only" onClick={() => setSidebarOpen(true)}>
               <Menu size={18} />
             </button>
+            <button className="vault-icon-btn" onClick={() => setShowGraph(!showGraph)}>
+              Graph
+            </button>
             {selectedNote && (
               <div className="vault-breadcrumb">
                 {folderName && <span className="vault-breadcrumb-folder">{folderName}</span>}
@@ -607,39 +893,134 @@ const buildTree = () => {
 
         {/* Content area */}
         <div className="vault-content">
-          {!selectedNote ? (
-            <div className="vault-empty-state">
-              <div className="vault-empty-icon">⌘</div>
-              <p>Select a note or create a new one</p>
+        <div className="vault-content">
+
+  {showGraph ? (
+
+    <GraphView
+
+      graphData={
+        buildGraphData()
+      }
+
+      onNodeClick={
+        node =>
+          loadNote(
+            node.path
+          )
+      }
+
+    />
+
+  ) : (
+
+    !selectedNote ? (
+
+      <div className="vault-empty-state">
+
+        <div className="vault-empty-icon">
+          ⌘
+        </div>
+
+        <p>
+          Select a note or create a new one
+        </p>
+
+      </div>
+
+    ) : editMode ? (
+
+      <textarea
+
+        ref={editorRef}
+
+        className="vault-editor"
+
+        value={content}
+
+        onChange={(e) =>
+          setContent(
+            e.target.value
+          )
+        }
+
+        placeholder="Start writing..."
+
+      />
+
+    ) : (
+
+      <div className="vault-preview">
+
+        <h1
+          className="vault-note-title"
+        >
+          {noteName}
+        </h1>
+
+        <div
+          className="vault-markdown"
+        >
+          {renderContent()}
+        </div>
+
+        {backlinks.length > 0 && (
+
+          <div
+            className="vault-backlinks"
+          >
+
+            <div
+              className="vault-backlinks-label"
+            >
+
+              Linked from
+
             </div>
-          ) : editMode ? (
-            <textarea
-              ref={editorRef}
-              className="vault-editor"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Start writing..."
-            />
-          ) : (
-            <div className="vault-preview">
-              <h1 className="vault-note-title">{noteName}</h1>
-              <div className="vault-markdown">
-                {renderContent()}
+
+            {backlinks.map(note => (
+
+              <div
+
+                key={note.path}
+
+                className="vault-backlink-item"
+
+                onClick={() =>
+                  loadNote(
+                    note.path
+                  )
+                }
+
+              >
+
+                <FileText
+                  size={12}
+                />
+
+                {note.path
+                  .split("/")
+                  .pop()
+                  .replace(
+                    ".md",
+                    ""
+                  )}
+
               </div>
 
-              {backlinks.length > 0 && (
-                <div className="vault-backlinks">
-                  <div className="vault-backlinks-label">Linked from</div>
-                  {backlinks.map(note => (
-                    <div key={note.path} className="vault-backlink-item" onClick={() => loadNote(note.path)}>
-                      <FileText size={12} />
-                      {note.path.split("/").pop().replace(".md", "")}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
+
+    )
+
+  )}
+
+</div>
         </div>
       </main>
 
