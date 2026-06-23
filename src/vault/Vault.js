@@ -356,6 +356,69 @@ const tree = buildTree();
 
   };
 
+  const renderContent = () => {
+
+  const parts =
+    content.split(
+      /(\[\[.*?\]\])/
+    );
+
+  return parts.map(
+    (part, index) => {
+
+      const match =
+        part.match(
+          /^\[\[(.*?)\]\]$/
+        );
+
+      if (match) {
+
+        const noteName =
+          match[1];
+
+        return (
+
+          <button
+
+            key={index}
+
+            type="button"
+
+            className="wiki-link"
+
+            onClick={() =>
+              openWikiLink(
+                noteName
+              )
+            }
+
+          >
+
+            {noteName}
+
+          </button>
+
+        );
+
+      }
+
+      return (
+
+        <ReactMarkdown
+          key={index}
+        >
+
+          {part}
+
+        </ReactMarkdown>
+
+      );
+
+    }
+  );
+
+};
+
   const openWikiLink =
   async (noteName) => {
 
@@ -568,83 +631,7 @@ const tree = buildTree();
     />
 
   ) : (
-
-  <ReactMarkdown
-
-  components={{
-
-    a({
-  href,
-  children
-}) {
-
-  if (
-    href?.startsWith(
-      "wiki:"
-    )
-  ) {
-
-    const noteName =
-      href.replace(
-        "wiki:",
-        ""
-      );
-
-    return (
-
-      <button
-
-        type="button"
-
-        className="wiki-link"
-
-        onClick={(e) => {
-
-          e.preventDefault();
-
-          e.stopPropagation();
-
-          openWikiLink(
-            noteName
-          );
-
-        }}
-
-      >
-
-        {children}
-
-      </button>
-
-    );
-
-  }
-
-  return (
-
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-    >
-
-      {children}
-
-    </a>
-
-  );
-
-}
-
-  }}
-
->
-
-  {renderWikiLinks(
-    content
-  )}
-
-</ReactMarkdown>
+      {renderContent}
   )}
 
 </div>
