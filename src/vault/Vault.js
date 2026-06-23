@@ -631,7 +631,9 @@ const tree = buildTree();
     />
 
   ) : (
-      {renderContent}
+      <>
+    {renderContent()}
+  </>
   )}
 
 </div>
