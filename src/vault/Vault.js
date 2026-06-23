@@ -36,6 +36,10 @@ const [selectedFolder,
     const [expandedFolders,
        setExpandedFolders] =
   useState({});
+  
+  const [editMode,
+       setEditMode] =
+  useState(false);
 
   useEffect(() => {
 
@@ -121,6 +125,42 @@ const [selectedFolder,
       setSelectedNote(path);
 
     };
+
+    const saveNote =
+  async () => {
+
+    await fetch(
+      "/api/vault/save",
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          path:
+            selectedNote,
+
+          content
+
+        })
+
+      }
+    );
+
+    setEditMode(false);
+
+    alert(
+      "Saved"
+    );
+
+  };
 
     const createNote =
   async () => {
@@ -341,16 +381,68 @@ const tree =
     </div>
 
     <div
-      className="vault-viewer"
+  className="vault-viewer"
+>
+
+  <div
+    className="vault-toolbar"
+  >
+
+    <button
+      onClick={() =>
+        setEditMode(
+          !editMode
+        )
+      }
     >
 
-      <ReactMarkdown>
+      {editMode
+        ? "Preview"
+        : "Edit"}
 
-        {content}
+    </button>
 
-      </ReactMarkdown>
+    {editMode && (
 
-    </div>
+      <button
+        onClick={saveNote}
+      >
+
+        Save
+
+      </button>
+
+    )}
+
+  </div>
+
+  {editMode ? (
+
+    <textarea
+
+      className="vault-editor"
+
+      value={content}
+
+      onChange={(e) =>
+        setContent(
+          e.target.value
+        )
+      }
+
+    />
+
+  ) : (
+
+    <ReactMarkdown>
+
+      {content}
+
+    </ReactMarkdown>
+
+  )}
+
+</div>
 
     {showCreateNote && (
 
