@@ -359,6 +359,11 @@ const tree = buildTree();
   const openWikiLink =
   async (noteName) => {
 
+    console.log(
+      "CLICKED",
+      noteName
+    );
+
     const target =
       notes.find(note =>
 
@@ -369,6 +374,11 @@ const tree = buildTree();
           )
 
       );
+
+    console.log(
+      "FOUND TARGET",
+      target
+    );
 
     if (!target) {
 
@@ -564,62 +574,67 @@ const tree = buildTree();
   components={{
 
     a({
-      href,
-      children
-    }) {
+  href,
+  children
+}) {
 
-      console.log(
-        "WIKI LINK",
-        href
+  if (
+    href?.startsWith(
+      "wiki:"
+    )
+  ) {
+
+    const noteName =
+      href.replace(
+        "wiki:",
+        ""
       );
 
-      if (
-        href?.startsWith(
-          "wiki:"
-        )
-      ) {
+    return (
 
-        const noteName =
-          href.replace(
-            "wiki:",
-            ""
+      <button
+
+        type="button"
+
+        className="wiki-link"
+
+        onClick={(e) => {
+
+          e.preventDefault();
+
+          e.stopPropagation();
+
+          openWikiLink(
+            noteName
           );
 
-        return (
+        }}
 
-          <span
+      >
 
-            className="wiki-link"
+        {children}
 
-            onClick={() =>
-              openWikiLink(
-                noteName
-              )
-            }
+      </button>
 
-          >
+    );
 
-            {children}
+  }
 
-          </span>
+  return (
 
-        );
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+    >
 
-      }
+      {children}
 
-      return (
+    </a>
 
-        <a
-          href={href}
-        >
+  );
 
-          {children}
-
-        </a>
-
-      );
-
-    }
+}
 
   }}
 

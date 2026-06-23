@@ -160,11 +160,19 @@
 
 .wiki-link {
 
+  background: none;
+
+  border: none;
+
+  padding: 0;
+
   color: #6aa9ff;
 
   cursor: pointer;
 
-  font-weight: 500;
+  font-size: inherit;
+
+  font-family: inherit;
 }
 
 .wiki-link:hover {
