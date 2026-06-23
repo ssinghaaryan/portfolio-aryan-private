@@ -421,12 +421,52 @@ const buildTree = () => {
         {!searchTerm && favorites.length > 0 && (
           <div className="vault-section">
             <div className="vault-section-label">Favorites</div>
-            {favorites.map(fav => (
-              <div key={fav} className={`vault-note-item ${noteName === fav ? "active" : ""}`} onClick={() => openWikiLink(fav)}>
-                <Star size={11} className="vault-note-icon fav" />
-                <span>{fav}</span>
-              </div>
-            ))}
+            {favorites
+
+  .filter(fav =>
+
+    notes.some(note =>
+
+      note.path
+        .toLowerCase()
+        .endsWith(
+          `${fav.toLowerCase()}.md`
+        )
+
+    )
+
+  )
+
+  .map(fav => (
+
+    <div
+
+      key={fav}
+
+      className={`vault-note-item ${
+        noteName === fav
+          ? "active"
+          : ""
+      }`}
+
+      onClick={() =>
+        openWikiLink(fav)
+      }
+
+    >
+
+      <Star
+        size={11}
+        className="vault-note-icon fav"
+      />
+
+      <span>
+        {fav}
+      </span>
+
+    </div>
+
+))}
           </div>
         )}
 

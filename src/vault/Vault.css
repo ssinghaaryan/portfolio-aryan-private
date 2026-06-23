@@ -3,7 +3,7 @@
 ======================== */
 .vault-layout {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   background: #0d0d0f;
   color: #dcddde;
   font-family: "SF Mono", "Source Code Pro", monospace;
@@ -597,6 +597,7 @@
 }
 
 @media (max-width: 768px) {
+
   .mobile-only {
     display: flex;
   }
@@ -606,9 +607,12 @@
     left: 0;
     top: 0;
     bottom: 0;
-    z-index: 1000;
-    transform: translateX(-100%);
+
     width: 280px;
+
+    z-index: 1000;
+
+    transform: translateX(-100%);
   }
 
   .vault-sidebar.open {
@@ -617,20 +621,99 @@
 
   .vault-sidebar-overlay {
     display: block;
+
     position: fixed;
+
     inset: 0;
-    background: rgba(0,0,0,.5);
+
+    background: rgba(
+      0,
+      0,
+      0,
+      0.55
+    );
+
     z-index: 999;
-    backdrop-filter: blur(2px);
   }
 
   .vault-content {
-    padding: 24px 20px;
+    padding: 18px;
+  }
+
+  .vault-note-title {
+
+    font-size: 22px;
+
+    margin-bottom: 20px;
+
+  }
+
+  .vault-markdown {
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+  }
+
+  .vault-editor {
+
+    font-size: 14px;
+
+    min-height: calc(
+      100vh - 120px
+    );
+
   }
 
   .vault-topbar {
-    padding: 10px 16px;
+
+    padding: 10px 12px;
+
   }
+
+  .vault-breadcrumb {
+
+    font-size: 12px;
+
+    max-width: 150px;
+
+    overflow: hidden;
+
+  }
+
+  .vault-topbar-actions {
+
+    gap: 2px;
+
+  }
+
+  .vault-icon-btn {
+
+    width: 30px;
+
+    height: 30px;
+
+  }
+
+  .vault-save-btn {
+
+    padding: 6px 10px;
+
+    font-size: 11px;
+
+  }
+
+  .vault-modal {
+
+    width: calc(
+      100vw - 32px
+    );
+
+    max-width: 360px;
+
+  }
+
 }
 
 .vault-sidebar,
