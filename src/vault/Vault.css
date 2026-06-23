@@ -464,6 +464,7 @@
   padding: 1px 6px;
   border-radius: 4px;
   transition: background .15s;
+  margin: 0 3px;
 }
 
 .wiki-link:hover {
@@ -630,4 +631,24 @@
   .vault-topbar {
     padding: 10px 16px;
   }
+}
+
+.vault-sidebar,
+.vault-section,
+.vault-search-results,
+.vault-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.vault-sidebar::-webkit-scrollbar,
+.vault-section::-webkit-scrollbar,
+.vault-search-results::-webkit-scrollbar,
+.vault-content::-webkit-scrollbar {
+  display: none;
+}
+
+.vault-icon-btn.fav-btn:hover {
+  background: rgba(255,170,0,.1);
+  color: #ffaa00;
 }

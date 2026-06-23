@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { 
   ChevronRight, ChevronDown, Star, Edit3, Eye, 
   Trash2, Save, Plus, FolderPlus, Search, Menu, X,
-  FileText
+  FileText, Pencil
 } from "lucide-react";
 import "./Vault.css";
 
@@ -27,6 +27,7 @@ export default function Vault() {
   const [favorites, setFavorites] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -110,16 +111,24 @@ export default function Vault() {
   };
 
   const deleteNote = async () => {
-    if (!selectedNote || !window.confirm("Delete this note?")) return;
-    await fetch("/api/vault/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: selectedNote })
-    });
-    setContent("");
-    setSelectedNote(null);
-    loadNotes();
-  };
+  if (!selectedNote) return;
+  setShowDeleteConfirm(true);
+};
+
+  const confirmDelete = async () => {
+  await fetch("/api/vault/delete", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path: selectedNote })
+  });
+  const updatedRecent = recentNotes.filter(n => n !== selectedNote);
+  setRecentNotes(updatedRecent);
+  localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
+  setContent("");
+  setSelectedNote(null);
+  setShowDeleteConfirm(false);
+  loadNotes();
+};
 
   const renameNote = async () => {
     if (!selectedNote) return;
@@ -199,28 +208,28 @@ export default function Vault() {
     await loadNote(target.path);
   };
 
-  const isFavorite = () => {
-    if (!selectedNote) return false;
-    return favorites.includes(selectedNote.split("/").pop().replace(".md", ""));
-  };
-
   const buildTree = () => {
-    const folders = {};
-    if (!Array.isArray(notes)) return folders;
-    notes.forEach(note => {
-      const parts = note.path.split("/");
-      if (note.path.endsWith(".gitkeep")) return;
-      if (parts.length === 2) {
-        if (!folders.root) folders.root = [];
-        folders.root.push(note);
-        return;
-      }
-      const folder = parts[1];
-      if (!folders[folder]) folders[folder] = [];
-      folders[folder].push(note);
-    });
-    return folders;
-  };
+  const folders = {};
+  if (!Array.isArray(notes)) return folders;
+  notes.forEach(note => {
+    if (note.path.endsWith(".gitkeep")) return; // skip early
+    const parts = note.path.split("/");
+    if (parts.length === 2) {
+      if (!folders.root) folders.root = [];
+      folders.root.push(note);
+      return;
+    }
+    const folder = parts[1];
+    if (folder === "System") return; // fix #3 too
+    if (!folders[folder]) folders[folder] = [];
+    folders[folder].push(note);
+  });
+  // remove empty folders
+  Object.keys(folders).forEach(key => {
+    if (folders[key].length === 0) delete folders[key];
+  });
+  return folders;
+};
 
   const renderContent = () => {
     const parts = content.split(/(\[\[.*?\]\])/);
@@ -390,10 +399,10 @@ export default function Vault() {
           {selectedNote && (
             <div className="vault-topbar-actions">
               <button
-                className={`vault-icon-btn ${isFavorite() ? "active-star" : ""}`}
+                className={`vault-icon-btn fav-btn ${isFavorite() ? "active-star" : ""}`}
                 onClick={toggleFavorite}
                 title="Favorite"
-              >
+                >
                 <Star size={16} fill={isFavorite() ? "#ffaa00" : "none"} color={isFavorite() ? "#ffaa00" : "currentColor"} />
               </button>
 
@@ -402,7 +411,7 @@ export default function Vault() {
                 onClick={() => { setRenameValue(noteName); setShowRename(true); }}
                 title="Rename"
               >
-                <FileText size={16} />
+                <Pencil size={16} />
               </button>
 
               <button
@@ -534,6 +543,30 @@ export default function Vault() {
           </div>
         </div>
       )}
+
+      {showDeleteConfirm && (
+  <div className="vault-modal-overlay" onClick={() => setShowDeleteConfirm(false)}>
+    <div className="vault-modal" onClick={e => e.stopPropagation()}>
+      <h3>Delete Note?</h3>
+      <p style={{ fontSize: 13, color: "rgba(255,255,255,.5)", margin: 0 }}>
+        "{noteName}" will be permanently deleted from your vault.
+      </p>
+      <div className="vault-modal-actions">
+        <button className="vault-modal-cancel" onClick={() => setShowDeleteConfirm(false)}>
+          Cancel
+        </button>
+        <button
+          className="vault-modal-confirm"
+          onClick={confirmDelete}
+          style={{ background: "rgba(255,60,60,.8)" }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
