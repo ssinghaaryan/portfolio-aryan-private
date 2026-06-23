@@ -5,7 +5,7 @@ import {
   Trash2, Save, Plus, FolderPlus, Search, Menu, X,
   FileText, Pencil
 } from "lucide-react";
-import GraphView from "./components/GraphView/GraphView";
+import GraphView from "./components/GraphView/GraphView.js";
 import "./Vault.css";
 
 export default function Vault() {
