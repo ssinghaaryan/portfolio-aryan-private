@@ -61,6 +61,14 @@ const [newFolderName,
        setNewFolderName] =
   useState("");
 
+  const [showRename,
+       setShowRename] =
+  useState(false);
+
+const [renameValue,
+       setRenameValue] =
+  useState("");
+
   useEffect(() => {
 
     loadNotes();
@@ -322,6 +330,68 @@ const [newFolderName,
 
     setSelectedNote(
       null
+    );
+
+    loadNotes();
+
+  };
+
+  const renameNote =
+  async () => {
+
+    if (
+      !selectedNote
+    ) return;
+
+    await fetch(
+      "/api/vault/save",
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          action:
+            "rename",
+
+          oldPath:
+            selectedNote,
+
+          newName:
+            renameValue
+
+        })
+
+      }
+    );
+
+    const folder =
+      selectedNote.substring(
+
+        0,
+
+        selectedNote.lastIndexOf(
+          "/"
+        )
+
+      );
+
+    const newPath =
+      `${folder}/${renameValue}.md`;
+
+    setSelectedNote(
+      newPath
+    );
+
+    setShowRename(
+      false
     );
 
     loadNotes();
@@ -934,6 +1004,38 @@ Create it?`
     </button>
 
     <button
+
+  onClick={() => {
+
+    if (
+      !selectedNote
+    ) return;
+
+    setRenameValue(
+
+      selectedNote
+        .split("/")
+        .pop()
+        .replace(
+          ".md",
+          ""
+        )
+
+    );
+
+    setShowRename(
+      true
+    );
+
+  }}
+
+>
+
+  Rename
+
+</button>
+
+    <button
   onClick={deleteNote}
 >
   Delete
@@ -1017,6 +1119,56 @@ Create it?`
   )}
 
 </div>
+
+{showRename && (
+
+  <div
+    className="vault-modal-overlay"
+    onClick={() =>
+      setShowRename(false)
+    }
+  >
+
+    <div
+      className="vault-modal"
+      onClick={(e) =>
+        e.stopPropagation()
+      }
+    >
+
+      <h3>
+        Rename Note
+      </h3>
+
+      <input
+
+        value={
+          renameValue
+        }
+
+        onChange={(e) =>
+          setRenameValue(
+            e.target.value
+          )
+        }
+
+      />
+
+      <button
+        onClick={
+          renameNote
+        }
+      >
+
+        Save
+
+      </button>
+
+    </div>
+
+  </div>
+
+)}
 
     {showCreateNote && (
 
