@@ -458,13 +458,60 @@ const tree = buildTree();
 
     if (!target) {
 
-      alert(
-        `${noteName} not found`
-      );
+  const createNew =
+    window.confirm(
 
-      return;
+      `${noteName} doesn't exist.
+
+Create it?`
+
+    );
+
+  if (!createNew) {
+
+    return;
+
+  }
+
+  await fetch(
+    "/api/vault/create",
+    {
+
+      method: "POST",
+
+      headers: {
+
+        "Content-Type":
+          "application/json"
+
+      },
+
+      body: JSON.stringify({
+
+        folder:
+          selectedFolder,
+
+        noteName
+
+      })
 
     }
+  );
+
+  await loadNotes();
+
+  const newPath =
+    `vault/${selectedFolder}/${noteName}.md`;
+
+  await loadNote(
+    newPath
+  );
+
+  setEditMode(true);
+
+  return;
+
+}
 
     await loadNote(
       target.path
@@ -677,9 +724,12 @@ const tree = buildTree();
 
   <small>
 
-    {note.path}
+  {note.path.replace(
+    "vault/",
+    ""
+  )}
 
-  </small>
+</small>
 
 </>
 
