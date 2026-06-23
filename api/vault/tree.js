@@ -41,21 +41,29 @@ export default async function handler(
     }
 
     const notes =
-      data.tree.filter(
+  data.tree.filter(
 
-        item =>
+    item =>
 
-          item.path.startsWith(
-            "vault/"
-          )
+      item.path.startsWith(
+        "vault/"
+      )
 
-          &&
+      &&
 
-          item.path.endsWith(
-            ".md"
-          )
+      (
+        item.path.endsWith(
+          ".md"
+        )
 
-      );
+        ||
+
+        item.path.endsWith(
+          ".gitkeep"
+        )
+      )
+
+  );
 
     res.status(200).json(
       notes

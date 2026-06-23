@@ -376,15 +376,25 @@ const [newFolderName,
     }
 
     const folder =
-      parts[1];
+  parts[1];
 
-    if (!folders[folder]) {
+if (!folders[folder]) {
 
-      folders[folder] = [];
+  folders[folder] = [];
 
-    }
+}
 
-    folders[folder].push(note);
+if (
+  note.path.endsWith(
+    ".gitkeep"
+  )
+) {
+
+  return;
+
+}
+
+folders[folder].push(note);
 
   });
 
