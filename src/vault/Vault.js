@@ -42,6 +42,29 @@ export default function Vault() {
     const data = await response.json();
     if (!Array.isArray(data)) { setNotes([]); return; }
     setNotes(data);
+    const validPaths =
+  data.map(
+    note => note.path
+  );
+
+const cleanedRecent =
+  recentNotes.filter(
+    path =>
+      validPaths.includes(
+        path
+      )
+  );
+
+setRecentNotes(
+  cleanedRecent
+);
+
+localStorage.setItem(
+  "vault-recent",
+  JSON.stringify(
+    cleanedRecent
+  )
+);
     const folders = {};
     data.forEach(note => {
       const parts = note.path.split("/");
@@ -60,17 +83,72 @@ export default function Vault() {
   };
 
   const loadNote = async (path) => {
-    const response = await fetch(`/api/vault/read?path=${path}`);
-    const data = await response.json();
-    setContent(data.content);
-    setSelectedNote(path);
-    setEditMode(false);
-    setSidebarOpen(false);
-    loadBacklinks(path);
-    const updatedRecent = [path, ...recentNotes.filter(n => n !== path)].slice(0, 8);
-    setRecentNotes(updatedRecent);
-    localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
-  };
+
+  if (!path) {
+
+    return;
+
+  }
+
+  const noteExists =
+    notes.some(
+      note =>
+        note.path === path
+    );
+
+  if (!noteExists) {
+
+    console.log(
+      "Note no longer exists:",
+      path
+    );
+
+    return;
+
+  }
+
+  const response =
+    await fetch(
+      `/api/vault/read?path=${path}`
+    );
+
+  const data =
+    await response.json();
+
+  setContent(
+    data.content
+  );
+
+  setSelectedNote(path);
+
+  setEditMode(false);
+
+  setSidebarOpen(false);
+
+  loadBacklinks(path);
+
+  const updatedRecent = [
+
+    path,
+
+    ...recentNotes.filter(
+      n => n !== path
+    )
+
+  ].slice(0, 8);
+
+  setRecentNotes(
+    updatedRecent
+  );
+
+  localStorage.setItem(
+    "vault-recent",
+    JSON.stringify(
+      updatedRecent
+    )
+  );
+
+};
 
   const saveNote = async () => {
     setSaving(true);
@@ -158,6 +236,26 @@ export default function Vault() {
     setFavorites(updated);
   };
 
+  const isFavorite = () => {
+
+  if (!selectedNote) {
+
+    return false;
+
+  }
+
+  const noteName =
+    selectedNote
+      .split("/")
+      .pop()
+      .replace(".md", "");
+
+  return favorites.includes(
+    noteName
+  );
+
+};
+
   const loadBacklinks = async (notePath) => {
     const noteName = notePath.split("/").pop().replace(".md", "");
     const linked = [];
@@ -208,27 +306,55 @@ export default function Vault() {
     await loadNote(target.path);
   };
 
-  const buildTree = () => {
+const buildTree = () => {
+
   const folders = {};
-  if (!Array.isArray(notes)) return folders;
+
+  if (!Array.isArray(notes))
+    return folders;
+
   notes.forEach(note => {
-    if (note.path.endsWith(".gitkeep")) return; // skip early
-    const parts = note.path.split("/");
-    if (parts.length === 2) {
-      if (!folders.root) folders.root = [];
-      folders.root.push(note);
-      return;
+
+    const parts =
+      note.path.split("/");
+
+    if (
+      parts.length < 3
+    ) return;
+
+    const folder =
+      parts[1];
+
+    if (
+      folder === "System"
+    ) return;
+
+    if (
+      !folders[folder]
+    ) {
+
+      folders[folder] = [];
+
     }
-    const folder = parts[1];
-    if (folder === "System") return; // fix #3 too
-    if (!folders[folder]) folders[folder] = [];
-    folders[folder].push(note);
+
+    if (
+      note.path.endsWith(
+        ".gitkeep"
+      )
+    ) {
+
+      return;
+
+    }
+
+    folders[folder].push(
+      note
+    );
+
   });
-  // remove empty folders
-  Object.keys(folders).forEach(key => {
-    if (folders[key].length === 0) delete folders[key];
-  });
+
   return folders;
+
 };
 
   const renderContent = () => {
@@ -308,7 +434,7 @@ export default function Vault() {
         {!searchTerm && recentNotes.length > 0 && (
           <div className="vault-section">
             <div className="vault-section-label">Recent</div>
-            {recentNotes.slice(0, 5).map(path => (
+            {recentNotes.filter(path =>notes.some(note =>note.path === path)).slice(0,5).map(path => (
               <div key={path} className={`vault-note-item ${selectedNote === path ? "active" : ""}`} onClick={() => loadNote(path)}>
                 <FileText size={11} className="vault-note-icon" />
                 <span>{path.split("/").pop().replace(".md", "")}</span>
@@ -398,13 +524,13 @@ export default function Vault() {
 
           {selectedNote && (
             <div className="vault-topbar-actions">
-              {/* <button
+              <button
                 className={`vault-icon-btn fav-btn ${isFavorite() ? "active-star" : ""}`}
                 onClick={toggleFavorite}
                 title="Favorite"
                 >
                 <Star size={16} fill={isFavorite() ? "#ffaa00" : "none"} color={isFavorite() ? "#ffaa00" : "currentColor"} />
-              </button> */}
+              </button>
 
               <button
                 className="vault-icon-btn"
