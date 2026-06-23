@@ -569,76 +569,71 @@ const buildGraphCache =
 
   };
 
-const buildGraphData =
-  () => {
+const buildGraphData = () => {
 
-    const nodes = [];
-    const links = [];
+  const nodes = [];
+  const links = [];
 
-    notes.forEach(note => {
+  const connectionCount = {};
 
-      const noteName =
-        note.path
-          .split("/")
-          .pop()
-          .replace(
-            ".md",
-            ""
-          );
+  notes.forEach(note => {
 
-      nodes.push({
+    const noteName =
+      note.path
+        .split("/")
+        .pop()
+        .replace(".md", "");
 
-        id:
-          noteName,
+    connectionCount[noteName] = 0;
 
-        path:
-          note.path
+    nodes.push({
+      id: noteName,
+      path: note.path
+    });
 
+  });
+
+  notes.forEach(note => {
+
+    const noteName =
+      note.path
+        .split("/")
+        .pop()
+        .replace(".md", "");
+
+    const matches =
+      graphCache[note.path] || [];
+
+    matches.forEach(target => {
+
+      links.push({
+        source: noteName,
+        target
       });
 
-    });
+      connectionCount[noteName] =
+        (connectionCount[noteName] || 0) + 1;
 
-    notes.forEach(note => {
-
-      const noteName =
-        note.path
-          .split("/")
-          .pop()
-          .replace(
-            ".md",
-            ""
-          );
-
-      const matches =
-        graphCache[
-          note.path
-        ] || [];
-
-      matches.forEach(
-        target => {
-
-          links.push({
-
-            source:
-              noteName,
-
-            target
-
-          });
-
-        }
-      );
+      connectionCount[target] =
+        (connectionCount[target] || 0) + 1;
 
     });
 
-    return {
+  });
 
-      nodes,
-      links
+  nodes.forEach(node => {
 
-    };
+    node.connections =
+      connectionCount[node.id] || 0;
 
+  });
+
+  return {
+    nodes,
+    links
   };
+
+};
 
   const renderContent = () => {
     const parts = content.split(/(\[\[.*?\]\])/);
