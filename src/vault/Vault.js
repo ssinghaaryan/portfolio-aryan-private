@@ -311,7 +311,7 @@ const renameFolder = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "rename-folder",
-      folderName: showFolderOptions,
+      folderName: targetFolder,
       newFolderName: renameFolderValue.trim()
     })
   });
@@ -335,7 +335,7 @@ const deleteFolder = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "delete-folder",
-      folderName: showFolderOptions
+      folderName: targetFolder
     })
   });
   if (selectedNote?.includes(`vault/${showFolderOptions}/`)) {
@@ -864,6 +864,7 @@ const buildGraphData = () => {
         <div className="vault-folder-menu" onClick={e => e.stopPropagation()}>
           <button onClick={() => {
             setRenameFolderValue(folder);
+            setTargetFolder(folder);
             setShowRenameFolder(true);
             setShowFolderOptions(null);
           }}>
@@ -872,6 +873,7 @@ const buildGraphData = () => {
           <button
             className="danger"
             onClick={() => {
+              setTargetFolder(folder); 
               setShowDeleteFolder(true);
               setShowFolderOptions(null);
             }}
@@ -1232,7 +1234,7 @@ const buildGraphData = () => {
     <div className="vault-modal" onClick={e => e.stopPropagation()}>
       <h3>Delete Folder?</h3>
       <p style={{ fontSize: 13, color: "rgba(255,255,255,.5)", margin: 0 }}>
-        "{showFolderOptions}" and all notes inside will be permanently deleted.
+        "{targetFolder}" and all notes inside will be permanently deleted.
       </p>
       <div className="vault-modal-actions">
         <button className="vault-modal-cancel" onClick={() => setShowDeleteFolder(false)}>
