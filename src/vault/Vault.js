@@ -31,6 +31,11 @@ export default function Vault() {
   const [graphCache, setGraphCache] = useState({});
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showFolderOptions, setShowFolderOptions] = useState(null);
+  const [showRenameFolder, setShowRenameFolder] = useState(false);
+  const [showDeleteFolder, setShowDeleteFolder] = useState(false);
+  const [renameFolderValue, setRenameFolderValue] = useState("");
+  const [folderLoading, setFolderLoading] = useState(false);
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -295,6 +300,51 @@ localStorage.setItem(
   });
   setShowCreateFolder(false);
   setNewFolderName("");
+  loadNotes();
+};
+
+const renameFolder = async () => {
+  if (!renameFolderValue.trim() || !showFolderOptions) return;
+  setFolderLoading(true);
+  await fetch("/api/vault/ops", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "rename-folder",
+      folderName: showFolderOptions,
+      newFolderName: renameFolderValue.trim()
+    })
+  });
+  if (selectedNote?.includes(`vault/${showFolderOptions}/`)) {
+    setSelectedNote(selectedNote.replace(
+      `vault/${showFolderOptions}/`,
+      `vault/${renameFolderValue}/`
+    ));
+  }
+  setFolderLoading(false);
+  setShowRenameFolder(false);
+  setShowFolderOptions(null);
+  loadNotes();
+};
+
+const deleteFolder = async () => {
+  if (!showFolderOptions) return;
+  setFolderLoading(true);
+  await fetch("/api/vault/ops", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "delete-folder",
+      folderName: showFolderOptions
+    })
+  });
+  if (selectedNote?.includes(`vault/${showFolderOptions}/`)) {
+    setSelectedNote(null);
+    setContent("");
+  }
+  setFolderLoading(false);
+  setShowDeleteFolder(false);
+  setShowFolderOptions(null);
   loadNotes();
 };
 
@@ -788,17 +838,49 @@ const buildGraphData = () => {
 
             {/* Folders */}
             {Object.keys(tree).filter(k => k !== "root").sort().map(folder => (
-              <div key={folder} className="vault-folder">
-                <div
-                  className="vault-folder-row"
-                  onClick={() => setExpandedFolders(prev => ({ ...prev, [folder]: !prev[folder] }))}
-                >
-                  {expandedFolders[folder]
-                    ? <ChevronDown size={13} />
-                    : <ChevronRight size={13} />
-                  }
-                  <span className="vault-folder-name">{folder}</span>
-                </div>
+  <div key={folder} className="vault-folder">
+    <div className="vault-folder-row">
+      <div
+        className="vault-folder-row-left"
+        onClick={() => setExpandedFolders(prev => ({ ...prev, [folder]: !prev[folder] }))}
+      >
+        {expandedFolders[folder]
+          ? <ChevronDown size={13} />
+          : <ChevronRight size={13} />
+        }
+        <span className="vault-folder-name">{folder}</span>
+      </div>
+      <button
+        className="vault-folder-menu-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowFolderOptions(showFolderOptions === folder ? null : folder);
+        }}
+      >
+        ⋯
+      </button>
+
+      {showFolderOptions === folder && (
+        <div className="vault-folder-menu" onClick={e => e.stopPropagation()}>
+          <button onClick={() => {
+            setRenameFolderValue(folder);
+            setShowRenameFolder(true);
+            setShowFolderOptions(null);
+          }}>
+            Rename
+          </button>
+          <button
+            className="danger"
+            onClick={() => {
+              setShowDeleteFolder(true);
+              setShowFolderOptions(null);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
 
                 {expandedFolders[folder] && (
                   <div className="vault-folder-notes">
@@ -1111,6 +1193,58 @@ const buildGraphData = () => {
           style={{ background: "rgba(255,60,60,.8)" }}
         >
           Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Rename Folder Modal */}
+{showRenameFolder && (
+  <div className="vault-modal-overlay" onClick={() => setShowRenameFolder(false)}>
+    <div className="vault-modal" onClick={e => e.stopPropagation()}>
+      <h3>Rename Folder</h3>
+      <input
+        value={renameFolderValue}
+        onChange={e => setRenameFolderValue(e.target.value)}
+        onKeyDown={e => e.key === "Enter" && renameFolder()}
+        autoFocus
+      />
+      <div className="vault-modal-actions">
+        <button className="vault-modal-cancel" onClick={() => setShowRenameFolder(false)}>
+          Cancel
+        </button>
+        <button
+          className="vault-modal-confirm"
+          onClick={renameFolder}
+          disabled={folderLoading}
+        >
+          {folderLoading ? "Renaming..." : "Rename"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Delete Folder Modal */}
+{showDeleteFolder && (
+  <div className="vault-modal-overlay" onClick={() => setShowDeleteFolder(false)}>
+    <div className="vault-modal" onClick={e => e.stopPropagation()}>
+      <h3>Delete Folder?</h3>
+      <p style={{ fontSize: 13, color: "rgba(255,255,255,.5)", margin: 0 }}>
+        "{showFolderOptions}" and all notes inside will be permanently deleted.
+      </p>
+      <div className="vault-modal-actions">
+        <button className="vault-modal-cancel" onClick={() => setShowDeleteFolder(false)}>
+          Cancel
+        </button>
+        <button
+          className="vault-modal-confirm"
+          onClick={deleteFolder}
+          disabled={folderLoading}
+          style={{ background: "rgba(255,60,60,.8)" }}
+        >
+          {folderLoading ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>
