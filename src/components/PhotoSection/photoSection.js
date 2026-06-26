@@ -35,7 +35,8 @@ const Photo = () => {
     setLoading(true);
     try {
       // const res = await fetch(`/api/list?skip=${skip}&limit=${limit}`);
-      const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
+      // const res = await fetch(`https://iaryan.vercel.app/api/list?skip=${skip}&limit=${limit}`);
+      const res = await fetch(`https://iaryan.vercel.app/api/photos?skip=${skip}&limit=${limit}`);
       // const res = await fetch("https://iaryan.vercel.app/api/list?skip=0&limit=5");
       const data = await res.json();
       if (!data.length) {
@@ -61,7 +62,8 @@ const Photo = () => {
 
     const loadStats = async () => {
     try {
-      const res = await fetch("https://iaryan.vercel.app/api/photos-stats");
+      // const res = await fetch("https://iaryan.vercel.app/api/photos-stats");
+      const res = await fetch("/api/photos?action=stats");
       const data = await res.json();
       setStats(data);
     } catch (err) {

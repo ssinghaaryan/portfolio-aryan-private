@@ -1,264 +1,272 @@
-export default async function handler(
-  req,
-  res
-) {
+// export default async function handler(
+//   req,
+//   res
+// ) {
 
-  if (
-    req.method !== "POST"
-  ) {
+//   if (
+//     req.method !== "POST"
+//   ) {
 
-    return res
-      .status(405)
-      .json({
-        error:
-          "Method not allowed"
-      });
+//     return res
+//       .status(405)
+//       .json({
+//         error:
+//           "Method not allowed"
+//       });
 
-  }
+//   }
 
-  try {
+//   try {
 
-    const token =
-      process.env.GITHUB_TOKEN;
+//     const token =
+//       process.env.GITHUB_TOKEN;
 
-    const owner =
-      "ssinghaaryan";
+//     const owner =
+//       "ssinghaaryan";
 
-    const repo =
-      "betabase-vault";
+//     const repo =
+//       "betabase-vault";
 
-    const {
-      action
-    } = req.body;
+//     const {
+//   action,
+//   path,
+//   content,
+//   oldPath,
+//   newName,
+//   oldFolder,
+//   newFolder
+// } = req.body;
 
-    /*
-    ======================
-    SAVE NOTE
-    ======================
-    */
+//     /*
+//     ======================
+//     SAVE NOTE
+//     ======================
+//     */
 
-    if (
-      action === "save"
-      ||
-      !action
-    ) {
+//     if (
+//       action === "save"
+//       ||
+//       !action
+//     ) {
 
-      const {
-        path,
-        content
-      } = req.body;
+//       const {
+//         path,
+//         content
+//       } = req.body;
 
-      const fileResponse =
-        await fetch(
+//       const fileResponse =
+//         await fetch(
 
-          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+//           `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
 
-          {
-            headers: {
-              Authorization:
-                `token ${token}`
-            }
-          }
+//           {
+//             headers: {
+//               Authorization:
+//                 `token ${token}`
+//             }
+//           }
 
-        );
+//         );
 
-      const fileData =
-        await fileResponse.json();
+//       const fileData =
+//         await fileResponse.json();
 
-      const updateResponse =
-        await fetch(
+//       const updateResponse =
+//         await fetch(
 
-          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+//           `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
 
-          {
+//           {
 
-            method: "PUT",
+//             method: "PUT",
 
-            headers: {
+//             headers: {
 
-              Authorization:
-                `token ${token}`,
+//               Authorization:
+//                 `token ${token}`,
 
-              "Content-Type":
-                "application/json"
+//               "Content-Type":
+//                 "application/json"
 
-            },
+//             },
 
-            body: JSON.stringify({
+//             body: JSON.stringify({
 
-              message:
-                `Update ${path}`,
+//               message:
+//                 `Update ${path}`,
 
-              content:
-                Buffer
-                  .from(content)
-                  .toString(
-                    "base64"
-                  ),
+//               content:
+//                 Buffer
+//                   .from(content)
+//                   .toString(
+//                     "base64"
+//                   ),
 
-              sha:
-                fileData.sha
+//               sha:
+//                 fileData.sha
 
-            })
+//             })
 
-          }
+//           }
 
-        );
+//         );
 
-      const updateData =
-        await updateResponse.json();
+//       const updateData =
+//         await updateResponse.json();
 
-      return res
-        .status(200)
-        .json(updateData);
+//       return res
+//         .status(200)
+//         .json(updateData);
 
-    }
+//     }
 
-    /*
-    ======================
-    RENAME NOTE
-    ======================
-    */
+//     /*
+//     ======================
+//     RENAME NOTE
+//     ======================
+//     */
 
-    if (
-      action === "rename"
-    ) {
+//     if (
+//       action === "rename"
+//     ) {
 
-      const {
-        oldPath,
-        newName
-      } = req.body;
+//       const {
+//         oldPath,
+//         newName,
+//         newFolder,
+//         oldFolder
+//       } = req.body;
 
-      const fileResponse =
-        await fetch(
+//       const fileResponse =
+//         await fetch(
 
-          `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
+//           `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
 
-          {
-            headers: {
-              Authorization:
-                `token ${token}`
-            }
-          }
+//           {
+//             headers: {
+//               Authorization:
+//                 `token ${token}`
+//             }
+//           }
 
-        );
+//         );
 
-      const fileData =
-        await fileResponse.json();
+//       const fileData =
+//         await fileResponse.json();
 
-      const content =
-        Buffer
-          .from(
-            fileData.content,
-            "base64"
-          )
-          .toString(
-            "utf8"
-          );
+//       const content =
+//         Buffer
+//           .from(
+//             fileData.content,
+//             "base64"
+//           )
+//           .toString(
+//             "utf8"
+//           );
 
-      const folder =
-        oldPath.substring(
-          0,
-          oldPath.lastIndexOf("/")
-        );
+//       const folder =
+//         oldPath.substring(
+//           0,
+//           oldPath.lastIndexOf("/")
+//         );
 
-      const newPath =
-        `${folder}/${newName}.md`;
+//       const newPath =
+//         `${folder}/${newName}.md`;
 
-      await fetch(
+//       await fetch(
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${newPath}`,
+//         `https://api.github.com/repos/${owner}/${repo}/contents/${newPath}`,
 
-        {
+//         {
 
-          method: "PUT",
+//           method: "PUT",
 
-          headers: {
+//           headers: {
 
-            Authorization:
-              `token ${token}`,
+//             Authorization:
+//               `token ${token}`,
 
-            "Content-Type":
-              "application/json"
+//             "Content-Type":
+//               "application/json"
 
-          },
+//           },
 
-          body: JSON.stringify({
+//           body: JSON.stringify({
 
-            message:
-              `Rename ${oldPath}`,
+//             message:
+//               `Rename ${oldPath}`,
 
-            content:
-              Buffer
-                .from(content)
-                .toString(
-                  "base64"
-                )
+//             content:
+//               Buffer
+//                 .from(content)
+//                 .toString(
+//                   "base64"
+//                 )
 
-          })
+//           })
 
-        }
+//         }
 
-      );
+//       );
 
-      await fetch(
+//       await fetch(
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
+//         `https://api.github.com/repos/${owner}/${repo}/contents/${oldPath}`,
 
-        {
+//         {
 
-          method: "DELETE",
+//           method: "DELETE",
 
-          headers: {
+//           headers: {
 
-            Authorization:
-              `token ${token}`,
+//             Authorization:
+//               `token ${token}`,
 
-            "Content-Type":
-              "application/json"
+//             "Content-Type":
+//               "application/json"
 
-          },
+//           },
 
-          body: JSON.stringify({
+//           body: JSON.stringify({
 
-            message:
-              `Delete old file`,
+//             message:
+//               `Delete old file`,
 
-            sha:
-              fileData.sha
+//             sha:
+//               fileData.sha
 
-          })
+//           })
 
-        }
+//         }
 
-      );
+//       );
 
-      return res
-        .status(200)
-        .json({
-          success: true
-        });
+//       return res
+//         .status(200)
+//         .json({
+//           success: true
+//         });
 
-    }
+//     }
 
-    return res
-      .status(400)
-      .json({
-        error:
-          "Unknown action"
-      });
+//     return res
+//       .status(400)
+//       .json({
+//         error:
+//           "Unknown action"
+//       });
 
-  } catch (err) {
+//   } catch (err) {
 
-    console.error(err);
+//     console.error(err);
 
-    res.status(500).json({
+//     res.status(500).json({
 
-      error:
-        "Failed saving note"
+//       error:
+//         "Failed saving note"
 
-    });
+//     });
 
-  }
+//   }
 
-}
+// }

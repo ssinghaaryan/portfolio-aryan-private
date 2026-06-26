@@ -19,7 +19,8 @@ const Login = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("https://iaryan.vercel.app/api/login", {
+      // const res = await fetch("https://iaryan.vercel.app/api/login", {
+      const res = await fetch("https://iaryan.vercel.app/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

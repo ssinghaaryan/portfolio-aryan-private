@@ -140,7 +140,8 @@ useEffect(() => {
 }, [notes]);
 
   const loadNotes = async () => {
-    const response = await fetch("/api/vault/tree");
+    // const response = await fetch("/api/vault/tree");
+    const response = await fetch("/api/vault/ops");
     const data = await response.json();
     if (!Array.isArray(data)) { setNotes([]); return; }
     setNotes(data);
@@ -254,7 +255,7 @@ localStorage.setItem(
 
   const saveNote = async () => {
     setSaving(true);
-    await fetch("/api/vault/save", {
+    await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: selectedNote, content })
@@ -265,7 +266,7 @@ localStorage.setItem(
 
   const createNote = async () => {
     if (!newNoteName.trim()) return;
-    await fetch("/api/vault/create", {
+    await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ folder: selectedFolder, noteName: newNoteName })
@@ -280,7 +281,7 @@ localStorage.setItem(
 
   const createFolder = async () => {
     if (!newFolderName.trim()) return;
-    await fetch("/api/vault/create-folder", {
+    await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ folderName: newFolderName })
@@ -297,7 +298,7 @@ localStorage.setItem(
 
   const confirmDelete = async () => {
 
-  await fetch("/api/vault/delete", {
+  await fetch("/api/vault/ops", {
     method: "POST",
     headers: {
       "Content-Type":
@@ -334,7 +335,7 @@ localStorage.setItem(
       .join("\n");
 
   await fetch(
-    "/api/vault/save",
+    "/api/vault/ops",
     {
       method: "POST",
       headers: {
@@ -376,7 +377,7 @@ localStorage.setItem(
 
   const renameNote = async () => {
     if (!selectedNote) return;
-    await fetch("/api/vault/save", {
+    await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "rename", oldPath: selectedNote, newName: renameValue })
@@ -394,7 +395,7 @@ localStorage.setItem(
       ? favorites.filter(f => f !== noteName)
       : [...favorites, noteName];
     const favContent = "# Favorites\n\n" + updated.map(n => `[[${n}]]`).join("\n");
-    await fetch("/api/vault/save", {
+    await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "save", path: "vault/System/Favorites.md", content: favContent })
@@ -458,7 +459,7 @@ localStorage.setItem(
     const target = notes.find(n => n.path.toLowerCase().endsWith(`${noteName.toLowerCase()}.md`));
     if (!target) {
       if (window.confirm(`"${noteName}" doesn't exist. Create it?`)) {
-        await fetch("/api/vault/create", {
+        await fetch("/api/vault/ops", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ folder: selectedFolder || "Personal", noteName })

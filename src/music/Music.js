@@ -92,7 +92,8 @@ const openYouTubeMusic = (song) => {
 
     try {
       const res = await fetch(
-        `https://iaryan.vercel.app/api/music-search?q=${encodeURIComponent(searchTerm)}`
+        // `https://iaryan.vercel.app/api/music-search?q=${encodeURIComponent(searchTerm)}`
+        `/api/search?mode=music&q=${encodeURIComponent(searchTerm)}`
       );
 
       const data = await res.json();

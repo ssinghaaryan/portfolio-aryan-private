@@ -17,7 +17,8 @@ export default function AddMovie({ onSave, onClose, editMode, existingItem }) {
     if (!searchTerm.trim()) return;
     setSearching(true);
     try {
-      const res = await fetch(`/api/movie-search?q=${encodeURIComponent(searchTerm)}&type=${searchType}`);
+      // const res = await fetch(`/api/movie-search?q=${encodeURIComponent(searchTerm)}&type=${searchType}`);
+      const res = await fetch(`/api/search?mode=movie&q=${encodeURIComponent(searchTerm)}&type=${searchType}`);
       const data = await res.json();
       setResults(data);
     } catch (err) {

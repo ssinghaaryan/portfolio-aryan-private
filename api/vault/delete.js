@@ -1,104 +1,104 @@
-export default async function handler(
-  req,
-  res
-) {
+// export default async function handler(
+//   req,
+//   res
+// ) {
 
-  if (
-    req.method !== "POST"
-  ) {
+//   if (
+//     req.method !== "POST"
+//   ) {
 
-    return res
-      .status(405)
-      .json({
-        error:
-          "Method not allowed"
-      });
+//     return res
+//       .status(405)
+//       .json({
+//         error:
+//           "Method not allowed"
+//       });
 
-  }
+//   }
 
-  try {
+//   try {
 
-    const {
-      path
-    } = req.body;
+//     const {
+//       path
+//     } = req.body;
 
-    const token =
-      process.env.GITHUB_TOKEN;
+//     const token =
+//       process.env.GITHUB_TOKEN;
 
-    const owner =
-      "ssinghaaryan";
+//     const owner =
+//       "ssinghaaryan";
 
-    const repo =
-      "betabase-vault";
+//     const repo =
+//       "betabase-vault";
 
-    const fileResponse =
-      await fetch(
+//     const fileResponse =
+//       await fetch(
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+//         `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
 
-        {
-          headers: {
-            Authorization:
-              `token ${token}`
-          }
-        }
+//         {
+//           headers: {
+//             Authorization:
+//               `token ${token}`
+//           }
+//         }
 
-      );
+//       );
 
-    const fileData =
-      await fileResponse.json();
+//     const fileData =
+//       await fileResponse.json();
 
-    const deleteResponse =
-      await fetch(
+//     const deleteResponse =
+//       await fetch(
 
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+//         `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
 
-        {
+//         {
 
-          method: "DELETE",
+//           method: "DELETE",
 
-          headers: {
+//           headers: {
 
-            Authorization:
-              `token ${token}`,
+//             Authorization:
+//               `token ${token}`,
 
-            "Content-Type":
-              "application/json"
+//             "Content-Type":
+//               "application/json"
 
-          },
+//           },
 
-          body: JSON.stringify({
+//           body: JSON.stringify({
 
-            message:
-              `Delete ${path}`,
+//             message:
+//               `Delete ${path}`,
 
-            sha:
-              fileData.sha
+//             sha:
+//               fileData.sha
 
-          })
+//           })
 
-        }
+//         }
 
-      );
+//       );
 
-    const deleteData =
-      await deleteResponse.json();
+//     const deleteData =
+//       await deleteResponse.json();
 
-    res.status(200).json(
-      deleteData
-    );
+//     res.status(200).json(
+//       deleteData
+//     );
 
-  } catch (err) {
+//   } catch (err) {
 
-    console.error(err);
+//     console.error(err);
 
-    res.status(500).json({
+//     res.status(500).json({
 
-      error:
-        "Failed deleting note"
+//       error:
+//         "Failed deleting note"
 
-    });
+//     });
 
-  }
+//   }
 
-}
+// }
