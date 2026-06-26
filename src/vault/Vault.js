@@ -36,7 +36,7 @@ export default function Vault() {
   const [showDeleteFolder, setShowDeleteFolder] = useState(false);
   const [renameFolderValue, setRenameFolderValue] = useState("");
   const [folderLoading, setFolderLoading] = useState(false);
-  const [targetFolder, setTargetFolder] = useState("");
+  const [targetFolder, setTargetFolder] = useState(null);
   const editorRef = useRef(null);
 
   useEffect(() => {
