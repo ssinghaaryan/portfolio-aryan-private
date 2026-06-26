@@ -258,38 +258,45 @@ localStorage.setItem(
     await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: selectedNote, content })
+      body: JSON.stringify({ action: "save", path: selectedNote, content })
     });
     setSaving(false);
     setEditMode(false);
   };
 
   const createNote = async () => {
-    if (!newNoteName.trim()) return;
-    await fetch("/api/vault/ops", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ folder: selectedFolder, noteName: newNoteName })
-    });
-    const newPath = `vault/${selectedFolder}/${newNoteName}.md`;
-    await loadNotes();
-    await loadNote(newPath);
-    setEditMode(true);
-    setShowCreateNote(false);
-    setNewNoteName("");
-  };
+  if (!newNoteName.trim()) return;
+  await fetch("/api/vault/ops", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      action: "create",
+      folder: selectedFolder, 
+      noteName: newNoteName 
+    })
+  });
+  const newPath = `vault/${selectedFolder}/${newNoteName}.md`;
+  await loadNotes();
+  await loadNote(newPath);
+  setEditMode(true);
+  setShowCreateNote(false);
+  setNewNoteName("");
+};
 
   const createFolder = async () => {
-    if (!newFolderName.trim()) return;
-    await fetch("/api/vault/ops", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ folderName: newFolderName })
-    });
-    setShowCreateFolder(false);
-    setNewFolderName("");
-    loadNotes();
-  };
+  if (!newFolderName.trim()) return;
+  await fetch("/api/vault/ops", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      action: "create-folder",  // 👈 missing
+      folderName: newFolderName 
+    })
+  });
+  setShowCreateFolder(false);
+  setNewFolderName("");
+  loadNotes();
+};
 
   const deleteNote = async () => {
   if (!selectedNote) return;
@@ -305,6 +312,7 @@ localStorage.setItem(
         "application/json"
     },
     body: JSON.stringify({
+      action: "delete",
       path: selectedNote
     })
   });
@@ -343,10 +351,9 @@ localStorage.setItem(
           "application/json"
       },
       body: JSON.stringify({
-        path:
-          "vault/System/Favorites.md",
-        content:
-          favContent
+        action: "save",
+        path:"vault/System/Favorites.md",
+        content:favContent
       })
     }
   );
@@ -462,7 +469,7 @@ localStorage.setItem(
         await fetch("/api/vault/ops", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ folder: selectedFolder || "Personal", noteName })
+          body: JSON.stringify({ action: "create", folder: selectedFolder || "Personal", noteName })
         });
         await loadNotes();
         await loadNote(`vault/${selectedFolder || "Personal"}/${noteName}.md`);
