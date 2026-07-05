@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { 
   ChevronRight, ChevronDown, Star, Edit3, Eye, 
   Trash2, Save, Plus, FolderPlus, Search, Menu, X,
-  FileText, Pencil, FileEdit
+  FileText, Pencil, FileEdit, PanelLeft
 } from "lucide-react";
 import GraphView from "../components/GraphView/GraphView";
 import "./Vault.css";
@@ -39,6 +39,7 @@ export default function Vault() {
   const [noteError, setNoteError] = useState(null);
   const [vaultLoading, setVaultLoading] = useState(false);
   const [vaultLoadingMsg, setVaultLoadingMsg] = useState("");
+  const [initialLoading, setInitialLoading] = useState(true);
   const [folderLoading, setFolderLoading] = useState(false);
   const [targetFolder, setTargetFolder] = useState(null);
   const editorRef = useRef(null);
@@ -111,41 +112,25 @@ useEffect(() => {
 }, [notes]);
 
   const loadNotes = async () => {
-    // const response = await fetch("/api/vault/tree");
+  try {
     const response = await fetch("/api/vault/ops");
     const data = await response.json();
     if (!Array.isArray(data)) { setNotes([]); return; }
     setNotes(data);
-    const validPaths =
-  data.map(
-    note => note.path
-  );
-
-const cleanedRecent =
-  recentNotes.filter(
-    path =>
-      validPaths.includes(
-        path
-      )
-  );
-
-setRecentNotes(
-  cleanedRecent
-);
-
-localStorage.setItem(
-  "vault-recent",
-  JSON.stringify(
-    cleanedRecent
-  )
-);
+    const validPaths = data.map(note => note.path);
+    const cleanedRecent = recentNotes.filter(path => validPaths.includes(path));
+    setRecentNotes(cleanedRecent);
+    localStorage.setItem("vault-recent", JSON.stringify(cleanedRecent));
     const folders = {};
     data.forEach(note => {
       const parts = note.path.split("/");
       if (parts.length > 2) folders[parts[1]] = true;
     });
     setExpandedFolders(folders);
-  };
+  } finally {
+    setInitialLoading(false); // 👈 always clear on completion
+  }
+};
 
   const loadFavorites = async () => {
     try {
@@ -589,6 +574,13 @@ const buildGraphData = () => {
 
   return (
     <div className="vault-layout">
+    {/* Initial load screen */}
+    {initialLoading && (
+      <div className="vault-initial-loading">
+        <div className="vault-spinner" />
+        <span className="vault-loading-msg">Opening vault...</span>
+      </div>
+    )}
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -795,9 +787,18 @@ const buildGraphData = () => {
         {/* Top bar */}
         <div className="vault-topbar">
           <div className="vault-topbar-left">
-            <button className="vault-icon-btn mobile-only" onClick={() => setSidebarOpen(true)}>
+            {/* Mobile sidebar trigger — bottom left */}
+              {!sidebarOpen && (
+                <button
+                className="vault-sidebar-trigger mobile-only"
+                onClick={() => setSidebarOpen(true)}
+                >
+                  <PanelLeft size={20} />
+                </button>
+              )}
+            {/* <button className="vault-icon-btn mobile-only" onClick={() => setSidebarOpen(true)}>
               <Menu size={18} />
-            </button>
+            </button> */}
             {/* <button className="vault-icon-btn" onClick={() => setShowGraph(!showGraph)}>
               Graph
             </button> */}
