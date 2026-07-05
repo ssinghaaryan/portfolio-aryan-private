@@ -210,6 +210,7 @@ const loadNote = async (path) => {
 
  const createNote = async () => {
   if (!newNoteName.trim()) return;
+  setShowCreateNote(false); // 👈 close modal first
   await withLoading("Creating note...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
@@ -220,44 +221,27 @@ const loadNote = async (path) => {
     await loadNotes();
     await loadNote(newPath);
     setEditMode(true);
-    setShowCreateNote(false);
     setNewNoteName("");
   });
 };
 
  const createFolder = async () => {
   if (!newFolderName.trim()) return;
+  setShowCreateFolder(false); // 👈 close modal first
   await withLoading("Creating folder...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "create-folder", folderName: newFolderName })
     });
-    setShowCreateFolder(false);
     setNewFolderName("");
-    await loadNotes();
-  });
-};
-
-const renameFolder = async () => {
-  if (!renameFolderValue.trim() || !targetFolder) return;
-  await withLoading("Renaming folder...", async () => {
-    await fetch("/api/vault/ops", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "rename-folder", folderName: targetFolder, newFolderName: renameFolderValue.trim() })
-    });
-    if (selectedNote?.includes(`vault/${targetFolder}/`)) {
-      setSelectedNote(selectedNote.replace(`vault/${targetFolder}/`, `vault/${renameFolderValue}/`));
-    }
-    setShowRenameFolder(false);
-    setTargetFolder(null);
     await loadNotes();
   });
 };
 
 const deleteFolder = async () => {
   if (!targetFolder) return;
+  setShowDeleteFolder(false); // 👈 close modal first
   await withLoading("Deleting folder...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
@@ -268,7 +252,6 @@ const deleteFolder = async () => {
       setSelectedNote(null);
       setContent("");
     }
-    setShowDeleteFolder(false);
     setTargetFolder(null);
     await loadNotes();
   });
@@ -280,6 +263,7 @@ const deleteFolder = async () => {
 };
 
  const confirmDelete = async () => {
+  setShowDeleteConfirm(false); // 👈 close modal first
   await withLoading("Deleting...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
@@ -300,13 +284,13 @@ const deleteFolder = async () => {
     localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
     setContent("");
     setSelectedNote(null);
-    setShowDeleteConfirm(false);
     await loadNotes();
   });
 };
 
  const renameNote = async () => {
   if (!selectedNote) return;
+  setShowRename(false); // 👈 close modal first
   await withLoading("Renaming...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
@@ -315,7 +299,23 @@ const deleteFolder = async () => {
     });
     const folder = selectedNote.substring(0, selectedNote.lastIndexOf("/"));
     setSelectedNote(`${folder}/${renameValue}.md`);
-    setShowRename(false);
+    await loadNotes();
+  });
+};
+
+const renameFolder = async () => {
+  if (!renameFolderValue.trim() || !targetFolder) return;
+  await withLoading("Renaming folder...", async () => {
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "rename-folder", folderName: targetFolder, newFolderName: renameFolderValue.trim() })
+    });
+    if (selectedNote?.includes(`vault/${targetFolder}/`)) {
+      setSelectedNote(selectedNote.replace(`vault/${targetFolder}/`, `vault/${renameFolderValue}/`));
+    }
+    setShowRenameFolder(false);
+    setTargetFolder(null);
     await loadNotes();
   });
 };
