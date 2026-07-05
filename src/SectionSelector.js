@@ -42,39 +42,38 @@ const SectionSelector = () => {
   };
 
   return (
-    <div className="selector-container">
+  <div className="selector-container">
+    {/* Background image */}
+    <div
+      className="selector-bg"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    />
 
-      {/* Header */}
-      <div className="selector-header">
-        <button className="logout-btn" onClick={handleLogout}>
-          Sign out
-        </button>
-      </div>
-
-      {/* Image strip */}
-      <div className="selector-image-slot">
-        <img src={bgImage} alt="" className="selector-image" />
-      </div>
-
-      {/* 2x3 grid */}
-      <div className="selector-grid">
-        {sections.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div
-              key={s.name}
-              className="selector-tile"
-              onClick={() => navigate(s.path)}
-            >
-              <Icon size={22} strokeWidth={1.5} />
-              <span className="tile-name">{s.name}</span>
-            </div>
-          );
-        })}
-      </div>
-
+    {/* Header */}
+    <div className="selector-header">
+      <button className="logout-btn" onClick={handleLogout}>
+        Sign out
+      </button>
     </div>
-  );
+
+    {/* Grid */}
+    <div className="selector-grid">
+      {sections.map((s) => {
+        const Icon = s.icon;
+        return (
+          <div
+            key={s.name}
+            className="selector-tile"
+            onClick={() => navigate(s.path)}
+          >
+            <Icon size={22} strokeWidth={1.5} />
+            <span className="tile-name">{s.name}</span>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);
 };
 
 export default SectionSelector;

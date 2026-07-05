@@ -37,6 +37,8 @@ export default function Vault() {
   const [renameFolderValue, setRenameFolderValue] = useState("");
   const [noteLoading, setNoteLoading] = useState(false);
   const [noteError, setNoteError] = useState(null);
+  const [vaultLoading, setVaultLoading] = useState(false);
+  const [vaultLoadingMsg, setVaultLoadingMsg] = useState("");
   const [folderLoading, setFolderLoading] = useState(false);
   const [targetFolder, setTargetFolder] = useState(null);
   const editorRef = useRef(null);
@@ -154,6 +156,17 @@ localStorage.setItem(
     } catch { setFavorites([]); }
   };
 
+  const withLoading = async (msg, fn) => {
+  setVaultLoading(true);
+  setVaultLoadingMsg(msg);
+  try {
+    await fn();
+  } finally {
+    setVaultLoading(false);
+    setVaultLoadingMsg("");
+  }
+};
+
 const loadNote = async (path) => {
   if (!path) return;
   const noteExists = notes.some(note => note.path === path);
@@ -184,94 +197,81 @@ const loadNote = async (path) => {
   }
 };
 
-  const saveNote = async () => {
-    setSaving(true);
+ const saveNote = async () => {
+  await withLoading("Saving...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "save", path: selectedNote, content })
     });
-    setSaving(false);
     setEditMode(false);
-  };
-
-  const createNote = async () => {
-  if (!newNoteName.trim()) return;
-  await fetch("/api/vault/ops", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      action: "create",
-      folder: selectedFolder, 
-      noteName: newNoteName 
-    })
   });
-  const newPath = `vault/${selectedFolder}/${newNoteName}.md`;
-  await loadNotes();
-  await loadNote(newPath);
-  setEditMode(true);
-  setShowCreateNote(false);
-  setNewNoteName("");
 };
 
-  const createFolder = async () => {
-  if (!newFolderName.trim()) return;
-  await fetch("/api/vault/ops", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      action: "create-folder",  // 👈 missing
-      folderName: newFolderName 
-    })
+ const createNote = async () => {
+  if (!newNoteName.trim()) return;
+  await withLoading("Creating note...", async () => {
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "create", folder: selectedFolder, noteName: newNoteName })
+    });
+    const newPath = `vault/${selectedFolder}/${newNoteName}.md`;
+    await loadNotes();
+    await loadNote(newPath);
+    setEditMode(true);
+    setShowCreateNote(false);
+    setNewNoteName("");
   });
-  setShowCreateFolder(false);
-  setNewFolderName("");
-  loadNotes();
+};
+
+ const createFolder = async () => {
+  if (!newFolderName.trim()) return;
+  await withLoading("Creating folder...", async () => {
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "create-folder", folderName: newFolderName })
+    });
+    setShowCreateFolder(false);
+    setNewFolderName("");
+    await loadNotes();
+  });
 };
 
 const renameFolder = async () => {
-  if (!renameFolderValue.trim() || !showFolderOptions) return;
-  setFolderLoading(true);
-  await fetch("/api/vault/ops", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "rename-folder",
-      folderName: targetFolder,
-      newFolderName: renameFolderValue.trim()
-    })
+  if (!renameFolderValue.trim() || !targetFolder) return;
+  await withLoading("Renaming folder...", async () => {
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "rename-folder", folderName: targetFolder, newFolderName: renameFolderValue.trim() })
+    });
+    if (selectedNote?.includes(`vault/${targetFolder}/`)) {
+      setSelectedNote(selectedNote.replace(`vault/${targetFolder}/`, `vault/${renameFolderValue}/`));
+    }
+    setShowRenameFolder(false);
+    setTargetFolder(null);
+    await loadNotes();
   });
-  if (selectedNote?.includes(`vault/${showFolderOptions}/`)) {
-    setSelectedNote(selectedNote.replace(
-      `vault/${showFolderOptions}/`,
-      `vault/${renameFolderValue}/`
-    ));
-  }
-  setFolderLoading(false);
-  setShowRenameFolder(false);
-  setShowFolderOptions(null);
-  loadNotes();
 };
 
 const deleteFolder = async () => {
-  if (!showFolderOptions) return;
-  setFolderLoading(true);
-  await fetch("/api/vault/ops", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "delete-folder",
-      folderName: targetFolder
-    })
+  if (!targetFolder) return;
+  await withLoading("Deleting folder...", async () => {
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete-folder", folderName: targetFolder })
+    });
+    if (selectedNote?.includes(`vault/${targetFolder}/`)) {
+      setSelectedNote(null);
+      setContent("");
+    }
+    setShowDeleteFolder(false);
+    setTargetFolder(null);
+    await loadNotes();
   });
-  if (selectedNote?.includes(`vault/${showFolderOptions}/`)) {
-    setSelectedNote(null);
-    setContent("");
-  }
-  setFolderLoading(false);
-  setShowDeleteFolder(false);
-  setShowFolderOptions(null);
-  loadNotes();
 };
 
   const deleteNote = async () => {
@@ -279,87 +279,35 @@ const deleteFolder = async () => {
   setShowDeleteConfirm(true);
 };
 
-  const confirmDelete = async () => {
-
-  await fetch("/api/vault/ops", {
-    method: "POST",
-    headers: {
-      "Content-Type":
-        "application/json"
-    },
-    body: JSON.stringify({
-      action: "delete",
-      path: selectedNote
-    })
-  });
-
-  const deletedNoteName =
-    selectedNote
-      .split("/")
-      .pop()
-      .replace(".md", "");
-
-  const updatedFavorites =
-    favorites.filter(
-      fav =>
-        fav !== deletedNoteName
-    );
-
-  setFavorites(
-    updatedFavorites
-  );
-
-  const favContent =
-    "# Favorites\n\n" +
-    updatedFavorites
-      .map(
-        note =>
-          `[[${note}]]`
-      )
-      .join("\n");
-
-  await fetch(
-    "/api/vault/ops",
-    {
+ const confirmDelete = async () => {
+  await withLoading("Deleting...", async () => {
+    await fetch("/api/vault/ops", {
       method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json"
-      },
-      body: JSON.stringify({
-        action: "save",
-        path:"vault/System/Favorites.md",
-        content:favContent
-      })
-    }
-  );
-
-  const updatedRecent =
-    recentNotes.filter(
-      n =>
-        n !== selectedNote
-    );
-
-  setRecentNotes(
-    updatedRecent
-  );
-
-  localStorage.setItem(
-    "vault-recent",
-    JSON.stringify(
-      updatedRecent
-    )
-  );
-
-  setContent("");
-  setSelectedNote(null);
-  setShowDeleteConfirm(false);
-
-  loadNotes();
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", path: selectedNote })
+    });
+    const deletedNoteName = selectedNote.split("/").pop().replace(".md", "");
+    const updatedFavorites = favorites.filter(fav => fav !== deletedNoteName);
+    setFavorites(updatedFavorites);
+    const favContent = "# Favorites\n\n" + updatedFavorites.map(n => `[[${n}]]`).join("\n");
+    await fetch("/api/vault/ops", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "save", path: "vault/System/Favorites.md", content: favContent })
+    });
+    const updatedRecent = recentNotes.filter(n => n !== selectedNote);
+    setRecentNotes(updatedRecent);
+    localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
+    setContent("");
+    setSelectedNote(null);
+    setShowDeleteConfirm(false);
+    await loadNotes();
+  });
 };
 
-  const renameNote = async () => {
-    if (!selectedNote) return;
+ const renameNote = async () => {
+  if (!selectedNote) return;
+  await withLoading("Renaming...", async () => {
     await fetch("/api/vault/ops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -368,8 +316,9 @@ const deleteFolder = async () => {
     const folder = selectedNote.substring(0, selectedNote.lastIndexOf("/"));
     setSelectedNote(`${folder}/${renameValue}.md`);
     setShowRename(false);
-    loadNotes();
-  };
+    await loadNotes();
+  });
+};
 
   const toggleFavorite = async () => {
     if (!selectedNote) return;
@@ -1179,19 +1128,14 @@ const buildGraphData = () => {
   </div>
 )}
 
-{/* Note loading spinner */}
-{noteLoading && (
+{/* Unified loading overlay */}
+{(noteLoading || vaultLoading) && (
   <div className="vault-note-loading">
-    <div className="vault-spinner" />
-  </div>
-)}
-
-{/* Note error */}
-{noteError && (
-  <div className="vault-note-loading" onClick={() => setNoteError(null)}>
-    <div className="vault-note-error" onClick={e => e.stopPropagation()}>
-      <p>{noteError}</p>
-      <button onClick={() => setNoteError(null)}>Dismiss</button>
+    <div className="vault-loading-inner">
+      <div className="vault-spinner" />
+      {vaultLoadingMsg && (
+        <span className="vault-loading-msg">{vaultLoadingMsg}</span>
+      )}
     </div>
   </div>
 )}

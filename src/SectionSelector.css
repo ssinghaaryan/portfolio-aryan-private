@@ -38,20 +38,6 @@ body:has(.selector-container) {
   color: rgba(255,255,255,.6);
 }
 
-/* Image strip */
-.selector-image-slot {
-  flex-shrink: 0;
-  padding: 8px 0 16px;
-}
-
-.selector-image {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 16px;
-  opacity: 0.75;
-}
-
 /* Grid */
 .selector-grid {
   display: grid;
@@ -78,6 +64,76 @@ body:has(.selector-container) {
 
 .selector-tile:active {
   background: #222;
+  transform: scale(0.97);
+  color: white;
+}
+
+.tile-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,.6);
+  font-family: "Geist Mono", monospace;
+  letter-spacing: 0.5px;
+}
+
+.selector-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(24px);
+  opacity: 0.15;
+  transform: scale(1.1);
+  z-index: 0;
+}
+
+.selector-container {
+  height: 100vh;
+  background: #0f0f0f;
+  padding: env(safe-area-inset-top) 20px calc(80px + env(safe-area-inset-bottom)) 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: "Geist Mono", monospace;
+  position: relative;
+  z-index: 1;
+}
+
+.selector-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 0 20px;
+  flex-shrink: 0;
+}
+
+.selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.selector-tile {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: rgba(255,255,255,.6);
+  transition: all .2s ease;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(10px);
+}
+
+.selector-tile:active {
+  background: rgba(255,255,255,.1);
   transform: scale(0.97);
   color: white;
 }
