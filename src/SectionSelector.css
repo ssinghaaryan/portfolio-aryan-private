@@ -4,10 +4,9 @@ body:has(.selector-container) {
 }
 
 .selector-container {
-  min-height: 90vh;
-  height: 90vh;
+  height: 100vh;
   background: #0f0f0f;
-  padding: 60px 28px 40px;
+  padding: env(safe-area-inset-top) 20px 40px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -19,7 +18,8 @@ body:has(.selector-container) {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding-top: env(safe-area-inset-top);
+  padding: 12px 0;
+  flex-shrink: 0;
 }
 
 .logout-btn {
@@ -38,79 +38,54 @@ body:has(.selector-container) {
   color: rgba(255,255,255,.6);
 }
 
-/* Image slot */
+/* Image strip */
 .selector-image-slot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px 0;
-}
-
-.selector-image-placeholder {
-  width: 100%;
-  height: 100%;
-  /* empty for now — drop image here later */
+  flex-shrink: 0;
+  padding: 8px 0 16px;
 }
 
 .selector-image {
   width: 100%;
-  height: 180px;
+  height: 140px;
   object-fit: cover;
   border-radius: 16px;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-/* Section list */
-.selector-list {
+/* Grid */
+.selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.selector-tile {
+  background: #181818;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px;
   display: flex;
   flex-direction: column;
-}
-
-.selector-row {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 0;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  color: rgba(255,255,255,.6);
+  transition: all .2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.selector-row:active {
-  opacity: 0.4;
-}
-
-.selector-row-name {
-  font-size: 22px;
-  font-weight: 200;
-  color: rgba(255,255,255,.7);
-  letter-spacing: -0.5px;
-  font-family: "Geist Mono", monospace;
-  transition: color 0.2s;
-}
-
-.selector-row:hover .selector-row-name {
+.selector-tile:active {
+  background: #222;
+  transform: scale(0.97);
   color: white;
 }
 
-.selector-row-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255,255,255,.2);
-}
-
-.selector-arrow {
-  transition: transform 0.2s;
-}
-
-.selector-row:hover .selector-arrow {
-  transform: translate(2px, -2px);
-  color: rgba(255,255,255,.4);
-}
-
-.selector-divider {
-  height: 1px;
-  background: rgba(255,255,255,.06);
-  width: 100%;
+.tile-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,.6);
+  font-family: "Geist Mono", monospace;
+  letter-spacing: 0.5px;
 }

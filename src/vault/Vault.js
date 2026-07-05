@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { 
   ChevronRight, ChevronDown, Star, Edit3, Eye, 
   Trash2, Save, Plus, FolderPlus, Search, Menu, X,
-  FileText, Pencil
+  FileText, Pencil, FileEdit
 } from "lucide-react";
 import GraphView from "../components/GraphView/GraphView";
 import "./Vault.css";
@@ -35,6 +35,8 @@ export default function Vault() {
   const [showRenameFolder, setShowRenameFolder] = useState(false);
   const [showDeleteFolder, setShowDeleteFolder] = useState(false);
   const [renameFolderValue, setRenameFolderValue] = useState("");
+  const [noteLoading, setNoteLoading] = useState(false);
+  const [noteError, setNoteError] = useState(null);
   const [folderLoading, setFolderLoading] = useState(false);
   const [targetFolder, setTargetFolder] = useState(null);
   const editorRef = useRef(null);
@@ -48,70 +50,31 @@ export default function Vault() {
 
   useEffect(() => {
 
-  const handleKeyDown =
-    (e) => {
+  const handleKeyDown = (e) => {
+  // Don't trigger shortcuts if user is typing in any input/textarea
+  if (
+    e.target.tagName === "INPUT" ||
+    e.target.tagName === "TEXTAREA" ||
+    e.target.isContentEditable
+  ) return;
 
-      const isMac =
-        navigator.platform
-          .toUpperCase()
-          .includes("MAC");
+  const isMac = navigator.platform.toUpperCase().includes("MAC");
+  const cmd = isMac ? e.metaKey : e.ctrlKey;
 
-      const cmd =
-        isMac
-          ? e.metaKey
-          : e.ctrlKey;
+  if (cmd && e.key === "s") {
+    e.preventDefault();
+    if (selectedNote && editMode) saveNote();
+  }
 
-      // Save
+  if (cmd && e.key === "k") {
+    e.preventDefault();
+    document.querySelector(".vault-search")?.focus();
+  }
 
-      if (
-        cmd &&
-        e.key === "s"
-      ) {
-
-        e.preventDefault();
-
-        if (
-          selectedNote &&
-          editMode
-        ) {
-
-          saveNote();
-
-        }
-
-      }
-
-      // Search
-
-      if (
-        cmd &&
-        e.key === "k"
-      ) {
-
-        e.preventDefault();
-
-        document
-          .querySelector(
-            ".vault-search"
-          )
-          ?.focus();
-
-      }
-
-      // Edit
-
-      if (
-        e.key === "e" &&
-        selectedNote
-      ) {
-
-        setEditMode(
-          prev => !prev
-        );
-
-      }
-
-    };
+  if (e.key === "e" && selectedNote) {
+    setEditMode(prev => !prev);
+  }
+};
 
   window.addEventListener(
     "keydown",
@@ -191,72 +154,34 @@ localStorage.setItem(
     } catch { setFavorites([]); }
   };
 
-  const loadNote = async (path) => {
+const loadNote = async (path) => {
+  if (!path) return;
+  const noteExists = notes.some(note => note.path === path);
+  if (!noteExists) return;
 
-  if (!path) {
+  setNoteLoading(true);
+  setNoteError(null);
 
-    return;
+  try {
+    const response = await fetch(`/api/vault/read?path=${path}`);
+    if (!response.ok) throw new Error("Failed to load note");
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
 
+    setContent(data.content);
+    setSelectedNote(path);
+    setEditMode(false);
+    if (window.innerWidth <= 768) setSidebarOpen(false);
+    loadBacklinks(path);
+
+    const updatedRecent = [path, ...recentNotes.filter(n => n !== path)].slice(0, 8);
+    setRecentNotes(updatedRecent);
+    localStorage.setItem("vault-recent", JSON.stringify(updatedRecent));
+  } catch (err) {
+    setNoteError(err.message || "Something went wrong loading this note.");
+  } finally {
+    setNoteLoading(false);
   }
-
-  const noteExists =
-    notes.some(
-      note =>
-        note.path === path
-    );
-
-  if (!noteExists) {
-
-    console.log(
-      "Note no longer exists:",
-      path
-    );
-
-    return;
-
-  }
-
-  const response =
-    await fetch(
-      `/api/vault/read?path=${path}`
-    );
-
-  const data =
-    await response.json();
-
-  setContent(
-    data.content
-  );
-
-  setSelectedNote(path);
-
-  setEditMode(false);
-
-  setSidebarOpen(false);
-
-  loadBacklinks(path);
-
-  const updatedRecent = [
-
-    path,
-
-    ...recentNotes.filter(
-      n => n !== path
-    )
-
-  ].slice(0, 8);
-
-  setRecentNotes(
-    updatedRecent
-  );
-
-  localStorage.setItem(
-    "vault-recent",
-    JSON.stringify(
-      updatedRecent
-    )
-  );
-
 };
 
   const saveNote = async () => {
@@ -924,9 +849,9 @@ const buildGraphData = () => {
             <button className="vault-icon-btn mobile-only" onClick={() => setSidebarOpen(true)}>
               <Menu size={18} />
             </button>
-            <button className="vault-icon-btn" onClick={() => setShowGraph(!showGraph)}>
+            {/* <button className="vault-icon-btn" onClick={() => setShowGraph(!showGraph)}>
               Graph
-            </button>
+            </button> */}
             {selectedNote && (
               <div className="vault-breadcrumb">
                 {folderName && <span className="vault-breadcrumb-folder">{folderName}</span>}
@@ -959,7 +884,7 @@ const buildGraphData = () => {
                 onClick={() => setEditMode(!editMode)}
                 title={editMode ? "Preview" : "Edit"}
               >
-                {editMode ? <Eye size={16} /> : <Edit3 size={16} />}
+                {editMode ? <Eye size={16} /> : <FileEdit size={16} />}
               </button>
 
               {editMode && (
@@ -1250,6 +1175,23 @@ const buildGraphData = () => {
           {folderLoading ? "Deleting..." : "Delete"}
         </button>
       </div>
+    </div>
+  </div>
+)}
+
+{/* Note loading spinner */}
+{noteLoading && (
+  <div className="vault-note-loading">
+    <div className="vault-spinner" />
+  </div>
+)}
+
+{/* Note error */}
+{noteError && (
+  <div className="vault-note-loading" onClick={() => setNoteError(null)}>
+    <div className="vault-note-error" onClick={e => e.stopPropagation()}>
+      <p>{noteError}</p>
+      <button onClick={() => setNoteError(null)}>Dismiss</button>
     </div>
   </div>
 )}
