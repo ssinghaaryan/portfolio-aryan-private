@@ -38,10 +38,10 @@ export default function handler(req, res) {
   if (req.method === "POST") {
     const { username, password } = req.body;
     const validUsername = process.env.LOGIN_USERNAME;
-    const validPassword = process.env.TRACK_PASSWORD;
+    const validPassword = process.env.LOGIN_PASSWORD;
 
     if (username === validUsername && password === validPassword) {
-      return res.status(200).json({ success: true, token: process.env.TRACK_PASSWORD });
+      return res.status(200).json({ success: true, token: process.env.LOGIN_PASSWORD });
     }
     return res.status(401).json({ success: false, error: "Invalid credentials" });
   }
