@@ -98,6 +98,8 @@
 .book-card {
   cursor: pointer;
   transition: transform .2s;
+  display: flex;      
+  flex-direction: column;
 }
 
 .book-card:active {
@@ -112,12 +114,15 @@
   overflow: hidden;
   background: #1a1a1a;
   box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  flex-shrink: 0;
 }
 
 .book-cover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
+  display: block;
 }
 
 .book-cover-placeholder {
