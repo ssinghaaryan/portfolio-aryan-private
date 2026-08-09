@@ -99,8 +99,9 @@
 .book-card {
   cursor: pointer;
   transition: transform .2s;
-  display: flex;      
+  display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .book-card:active {
@@ -110,8 +111,7 @@
 .book-cover-wrap {
   position: relative;
   width: 100%;
-  height: 0;
-  padding-bottom: 150%;
+  height: 140px; /* fixed height, no percentage */
   border-radius: 10px;
   overflow: hidden;
   background: #1a1a1a;
@@ -131,6 +131,9 @@
 }
 
 .book-cover-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -140,7 +143,6 @@
   font-weight: 700;
   color: rgba(255,255,255,.2);
   background: #1e1e1e;
-  position: relative;
 }
 
 .book-category-badge {
