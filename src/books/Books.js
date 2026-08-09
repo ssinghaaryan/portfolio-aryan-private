@@ -52,14 +52,22 @@ export default function Books() {
     };
 
   // Add form state
-  const [addCategory, setAddCategory] = useState("Fiction");
+  const [addCategory, setAddCategory] = useState([]);
   const [addNote, setAddNote] = useState("");
   const [selectedResult, setSelectedResult] = useState(null);
 
   // Edit state
   const [editNote, setEditNote] = useState("");
-  const [editCategory, setEditCategory] = useState("");
+  const [editCategory, setEditCategory] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+
+  const toggleCategory = (cat, current, setter) => {
+  if (current.includes(cat)) {
+    setter(current.filter(c => c !== cat));
+  } else {
+    setter([...current, cat]);
+  }
+};
 
   const loadBooks = async () => {
     setLoading(true);
@@ -153,7 +161,13 @@ export default function Books() {
   const openDetail = (book) => {
   setSelectedBook(book);
   setEditNote(book.note || "");
-  setEditCategory(book.category || "Fiction");
+  setEditCategory(
+  Array.isArray(book.category)
+    ? book.category
+    : book.category
+    ? [book.category] // handle old single-string data
+    : []
+);
   setEditTitle(book.title || "");
   setEditAuthor(book.author || "");
   setEditYear(book.year || "");
@@ -163,8 +177,12 @@ export default function Books() {
 
   const allCategories = ["All", ...CATEGORIES];
   const filteredBooks = categoryFilter === "All"
-    ? books
-    : books.filter(b => b.category === categoryFilter);
+  ? books
+  : books.filter(b =>
+      Array.isArray(b.category)
+        ? b.category.includes(categoryFilter)
+        : b.category === categoryFilter
+    );
 
   return (
   <div className="books-container">
@@ -214,8 +232,12 @@ export default function Books() {
                 </div>
               )}
               {book.category && (
-                <span className="book-category-badge">{book.category}</span>
-              )}
+  <span className="book-category-badge">
+    {Array.isArray(book.category)
+      ? book.category.slice(0, 2).join(", ")
+      : book.category}
+  </span>
+)}
             </div>
             <div className="book-info">
               <div className="book-title">{book.title}</div>
@@ -291,16 +313,16 @@ export default function Books() {
               </div>
               <div className="books-form-label">Category</div>
               <div className="books-category-select">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat}
-                    className={`books-cat-btn ${addCategory === cat ? "active" : ""}`}
-                    onClick={() => setAddCategory(cat)}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+  {CATEGORIES.map(cat => (
+    <button
+      key={cat}
+      className={`books-cat-btn ${addCategory.includes(cat) ? "active" : ""}`}
+      onClick={() => toggleCategory(cat, addCategory, setAddCategory)}
+    >
+      {cat}
+    </button>
+  ))}
+</div>
               <div className="books-form-label">Note (optional)</div>
               <textarea
                 className="books-note-input"
@@ -392,16 +414,16 @@ export default function Books() {
               />
               <div className="books-form-label">Category</div>
               <div className="books-category-select">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat}
-                    className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
-                    onClick={() => setEditCategory(cat)}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+  {CATEGORIES.map(cat => (
+    <button
+      key={cat}
+      className={`books-cat-btn ${editCategory.includes(cat) ? "active" : ""}`}
+      onClick={() => toggleCategory(cat, editCategory, setEditCategory)}
+    >
+      {cat}
+    </button>
+  ))}
+</div>
               <div className="books-form-label">Note</div>
               <textarea
                 className="books-note-input"
@@ -417,7 +439,14 @@ export default function Books() {
             </>
           ) : (
             <>
-              <div className="books-detail-category">{selectedBook.category}</div>
+              <div className="books-detail-categories">
+  {(Array.isArray(selectedBook.category)
+    ? selectedBook.category
+    : [selectedBook.category]
+  ).filter(Boolean).map(cat => (
+    <span key={cat} className="books-detail-category">{cat}</span>
+  ))}
+</div>
               {selectedBook.note && (
                 <div className="books-detail-note">{selectedBook.note}</div>
               )}

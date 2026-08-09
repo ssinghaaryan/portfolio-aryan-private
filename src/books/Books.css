@@ -531,7 +531,7 @@
 
 .books-detail-category {
   display: inline-block;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: rgba(255,255,255,.07);
   color: rgba(255,255,255,.55);
@@ -618,4 +618,10 @@
 .books-overlay-center {
   align-items: center;
   justify-content: center;
+}
+
+.books-detail-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
