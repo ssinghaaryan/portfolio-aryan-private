@@ -238,8 +238,10 @@ export default function Books() {
               {book.category && (
   <span className="book-category-badge">
     {Array.isArray(book.category)
-      ? book.category.slice(0, 1).join(", ")
-      : book.category}
+      ? book.category[0]  // just first one, no join
+      : typeof book.category === "string"
+      ? book.category     // plain string, show as is
+      : ""}
   </span>
 )}
             </div>
