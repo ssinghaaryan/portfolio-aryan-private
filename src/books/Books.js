@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { IKContext, IKUpload } from "imagekitio-react";
+import React, { useRef, useState, useEffect } from "react";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { db } from "../Firebase";
 import { Plus, Search, X } from "lucide-react";
@@ -35,6 +36,16 @@ export default function Books() {
   const [searching, setSearching] = useState(false);
   const [adding, setAdding] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("All");
+
+    const coverUploadRef = useRef(null);
+    const handleCoverUpload = async (res) => {
+    await updateDoc(doc(db, "books", selectedBook.id), {
+    coverUrl: res.url
+    });
+    const updated = { ...selectedBook, coverUrl: res.url };
+    setSelectedBook(updated);
+    loadBooks();
+    };
 
   // Add form state
   const [addCategory, setAddCategory] = useState("Fiction");
@@ -310,6 +321,30 @@ export default function Books() {
                 {selectedBook.year && <div className="books-detail-year">{selectedBook.year}</div>}
               </div>
             </div>
+
+            <IKContext
+  publicKey={process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY}
+  urlEndpoint={process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT}
+  authenticator={async () => {
+    const response = await fetch("/api/auth");
+    return await response.json();
+  }}
+>
+  <IKUpload
+    ref={coverUploadRef}
+    fileName={`book_cover_${Date.now()}.jpg`}
+    folder="/books"
+    onSuccess={handleCoverUpload}
+    onError={(err) => console.error("Cover upload error:", err)}
+    style={{ display: "none" }}
+  />
+  <button
+    className="books-change-cover-btn"
+    onClick={() => coverUploadRef.current?.click()}
+  >
+    Change Cover
+  </button>
+</IKContext>
 
             {isEditing ? (
               <>

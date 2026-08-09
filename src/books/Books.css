@@ -577,3 +577,21 @@
   font-family: inherit;
   cursor: pointer;
 }
+
+.books-change-cover-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.5);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all .15s;
+}
+
+.books-change-cover-btn:hover {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.8);
+}
