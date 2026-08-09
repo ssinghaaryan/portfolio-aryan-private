@@ -3,12 +3,12 @@
 //   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
 //   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-//   if (req.method === "OPTIONS") return res.status(200).end();
+//    if (req.method === "OPTIONS") return res.status(200).end();
 
 //   try {
 //     const { q, type = "movie" } = req.query;
 
-//     if (!q) return res.status(400).json({ error: "Query required" });
+//      if (!q) return res.status(400).json({ error: "Query required" });
 
 //     const endpoint = type === "tv" ? "tv" : "movie";
 
@@ -39,15 +39,15 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === "OPTIONS") return res.status(200).end();
+    if (req.method === "OPTIONS") return res.status(200).end();
 
   const { q, type, mode } = req.query;
 
-  if (!q) return res.status(400).json({ error: "Query required" });
+    if (!q) return res.status(400).json({ error: "Query required" });
 
   try {
     // mode=music → iTunes search (was api/music-search)
-    if (mode === "music") {
+      if (mode === "music") {
       const response = await fetch(
         `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=20`
       );
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     }
 
     // mode=movie → TMDB search (was api/movie-search)
-    if (mode === "movie") {
+      if (mode === "movie") {
       const endpoint = type === "tv" ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(q)}`;
       const response = await fetch(url);
@@ -74,26 +74,25 @@ export default async function handler(req, res) {
     }
 
     // mode=books → Google Books API (no key needed for basic search)
-    if (mode === "books") {
-      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=15&printType=books`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const results = (data.items || []).map(item => {
-        const info = item.volumeInfo;
-        const isbn = info.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier
-          || info.industryIdentifiers?.find(id => id.type === "ISBN_10")?.identifier;
-        return {
-          googleId: item.id,
-          title: info.title || "Unknown Title",
-          author: info.authors?.join(", ") || "Unknown Author",
-          year: info.publishedDate?.slice(0, 4) || "",
-          description: info.description || "",
-          coverUrl: info.imageLinks?.thumbnail?.replace("http://", "https://") || null,
-          isbn: isbn || null
-        };
-      });
-      return res.status(200).json(results);
-    }
+  if (mode === "books") {
+  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=15&fields=key,title,author_name,first_publish_year,isbn,cover_i`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const results = (data.docs || []).map(item => {
+    const coverId = item.cover_i;
+    return {
+      googleId: item.key?.replace("/works/", "") || Math.random().toString(),
+      title: item.title || "Unknown Title",
+      author: item.author_name?.join(", ") || "Unknown Author",
+      year: item.first_publish_year?.toString() || "",
+      coverUrl: coverId
+        ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+        : null,
+      isbn: item.isbn?.[0] || null
+    };
+  });
+  return res.status(200).json(results);
+}
 
     return res.status(400).json({ error: "mode required: music or movie or books" });
 
