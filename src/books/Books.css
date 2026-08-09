@@ -176,7 +176,6 @@
   background: rgba(0,0,0,.6);
   z-index: 9999;
   display: flex;
-  align-items: flex-end;
 }
 
 /* Search sheet */
@@ -608,6 +607,15 @@
   height: 22px;
   border-radius: 50%;
   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.books-overlay-bottom {
+  align-items: flex-end;
+}
+
+.books-overlay-center {
   align-items: center;
   justify-content: center;
 }

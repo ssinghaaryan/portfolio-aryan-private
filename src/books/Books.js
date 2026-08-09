@@ -129,24 +129,37 @@ export default function Books() {
   };
 
   const handleUpdate = async () => {
-    if (!selectedBook) return;
-    await updateDoc(doc(db, "books", selectedBook.id), {
-      note: editNote.trim(),
-      category: editCategory
-    });
-    setIsEditing(false);
-    const updated = { ...selectedBook, note: editNote, category: editCategory };
-    setSelectedBook(updated);
-    loadBooks();
+  if (!selectedBook) return;
+  await updateDoc(doc(db, "books", selectedBook.id), {
+    note: editNote.trim(),
+    category: editCategory,
+    title: editTitle.trim(),
+    author: editAuthor.trim(),
+    year: editYear.trim()
+  });
+  setIsEditing(false);
+  const updated = {
+    ...selectedBook,
+    note: editNote,
+    category: editCategory,
+    title: editTitle,
+    author: editAuthor,
+    year: editYear
   };
+  setSelectedBook(updated);
+  loadBooks();
+};
 
   const openDetail = (book) => {
-    setSelectedBook(book);
-    setEditNote(book.note || "");
-    setEditCategory(book.category || "Fiction");
-    setIsEditing(false);
-    setShowDetail(true);
-  };
+  setSelectedBook(book);
+  setEditNote(book.note || "");
+  setEditCategory(book.category || "Fiction");
+  setEditTitle(book.title || "");
+  setEditAuthor(book.author || "");
+  setEditYear(book.year || "");
+  setIsEditing(false);
+  setShowDetail(true);
+};
 
   const allCategories = ["All", ...CATEGORIES];
   const filteredBooks = categoryFilter === "All"
@@ -154,247 +167,269 @@ export default function Books() {
     : books.filter(b => b.category === categoryFilter);
 
   return (
-    <div className="books-container">
-      <div className="books-header">
-        <h2 className="books-title">Books</h2>
-        <button className="books-add-btn" onClick={() => setShowSearch(true)}>
-          <Plus size={20} />
-        </button>
-      </div>
-
-      {/* Category filters */}
-      <div className="books-filters">
-        {allCategories.map(cat => (
-          <button
-            key={cat}
-            className={`books-filter-pill ${categoryFilter === cat ? "active" : ""}`}
-            onClick={() => setCategoryFilter(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Grid */}
-      {loading ? (
-        <div className="books-loading">
-          <div className="books-spinner" />
-        </div>
-      ) : (
-        <div className="books-grid">
-          {filteredBooks.map(book => (
-            <div className="book-cover-wrap">
-  {book.coverUrl && !brokenCovers[book.id] ? (
-    <img
-      src={book.coverUrl}
-      alt={book.title}
-      className="book-cover"
-      onError={() => setBrokenCovers(prev => ({ ...prev, [book.id]: true }))}
-    />
-  ) : (
-    <div className="book-cover-placeholder">
-      <span>{book.title?.[0]}</span>
-      {brokenCovers[book.id] && (
-        <div className="book-cover-broken">⚠</div>
-      )}
+  <div className="books-container">
+    <div className="books-header">
+      <h2 className="books-title">Books</h2>
+      <button className="books-add-btn" onClick={() => setShowSearch(true)}>
+        <Plus size={20} />
+      </button>
     </div>
-  )}
-  {book.category && (
-    <span className="book-category-badge">{book.category}</span>
-  )}
-</div>
-          ))}
-          {filteredBooks.length === 0 && !loading && (
-            <div className="books-empty">No books yet. Add one →</div>
-          )}
-        </div>
-      )}
 
-      {/* Search overlay */}
-      {showSearch && (
-        <div className="books-overlay" onClick={() => { setShowSearch(false); setSelectedResult(null); setSearchResults([]); setSearchTerm(""); }}>
-          <div className="books-sheet" onClick={e => e.stopPropagation()}>
-            <div className="books-sheet-handle" />
+    {/* Category filters */}
+    <div className="books-filters">
+      {allCategories.map(cat => (
+        <button
+          key={cat}
+          className={`books-filter-pill ${categoryFilter === cat ? "active" : ""}`}
+          onClick={() => setCategoryFilter(cat)}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
 
-            {!selectedResult ? (
-              <>
-                <h3 className="books-sheet-title">Find a Book</h3>
-                <div className="books-search-row">
-                  <input
-                    className="books-search-input"
-                    placeholder="Search by title or author..."
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && searchBooks()}
-                    autoFocus
-                  />
-                  <button className="books-search-btn" onClick={searchBooks}>
-                    <Search size={18} />
-                  </button>
-                </div>
-
-                <div className="books-results">
-                  {searching && <div className="books-searching">Searching...</div>}
-                  {searchResults.map(book => (
-                    <div
-                      key={book.googleId}
-                      className="books-result-row"
-                      onClick={() => handleSelectResult(book)}
-                    >
-                      {book.coverUrl ? (
-                        <img src={book.coverUrl} alt={book.title} className="books-result-cover" />
-                      ) : (
-                        <div className="books-result-cover-placeholder">{book.title?.[0]}</div>
-                      )}
-                      <div className="books-result-info">
-                        <div className="books-result-title">{book.title}</div>
-                        <div className="books-result-author">{book.author} {book.year && `· ${book.year}`}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="books-confirm-header">
-                  <button className="books-back-btn" onClick={() => setSelectedResult(null)}>← Back</button>
-                  <h3 className="books-sheet-title">Add to Collection</h3>
-                </div>
-
-                <div className="books-confirm-book">
-                  {selectedResult.coverUrl ? (
-                    <img src={selectedResult.coverUrl} alt={selectedResult.title} className="books-confirm-cover" />
-                  ) : (
-                    <div className="books-confirm-cover-placeholder">{selectedResult.title?.[0]}</div>
-                  )}
-                  <div>
-                    <div className="books-confirm-title">{selectedResult.title}</div>
-                    <div className="books-confirm-author">{selectedResult.author} {selectedResult.year && `· ${selectedResult.year}`}</div>
-                  </div>
-                </div>
-
-                <div className="books-form-label">Category</div>
-                <div className="books-category-select">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat}
-                      className={`books-cat-btn ${addCategory === cat ? "active" : ""}`}
-                      onClick={() => setAddCategory(cat)}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="books-form-label">Note (optional)</div>
-                <textarea
-                  className="books-note-input"
-                  placeholder="Why do you want to read this?"
-                  value={addNote}
-                  onChange={e => setAddNote(e.target.value)}
-                  rows={3}
+    {/* Grid */}
+    {loading ? (
+      <div className="books-loading">
+        <div className="books-spinner" />
+      </div>
+    ) : (
+      <div className="books-grid">
+        {filteredBooks.map(book => (
+          <div key={book.id} className="book-card" onClick={() => openDetail(book)}>
+            <div className="book-cover-wrap">
+              {book.coverUrl && !brokenCovers[book.id] ? (
+                <img
+                  src={book.coverUrl}
+                  alt={book.title}
+                  className="book-cover"
+                  onError={() => setBrokenCovers(prev => ({ ...prev, [book.id]: true }))}
                 />
-
-                <div className="books-confirm-actions">
-                  <button className="books-cancel-btn" onClick={() => setSelectedResult(null)}>Cancel</button>
-                  <button className="books-save-btn" onClick={handleAdd} disabled={adding}>
-                    {adding ? "Adding..." : "Add to Collection"}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Detail overlay */}
-      {showDetail && selectedBook && (
-        <div className="books-overlay" onClick={() => { setShowDetail(false); setIsEditing(false); }}>
-          <div className="books-detail" onClick={e => e.stopPropagation()}>
-            <button className="books-detail-close" onClick={() => { setShowDetail(false); setIsEditing(false); }}>
-              <X size={16} />
-            </button>
-
-            <div className="books-detail-top">
-              {selectedBook.coverUrl ? (
-                <img src={selectedBook.coverUrl} alt={selectedBook.title} className="books-detail-cover" />
               ) : (
-                <div className="books-detail-cover-placeholder">{selectedBook.title?.[0]}</div>
-              )}
-              <div className="books-detail-meta">
-                <div className="books-detail-title">{selectedBook.title}</div>
-                <div className="books-detail-author">{selectedBook.author}</div>
-                {selectedBook.year && <div className="books-detail-year">{selectedBook.year}</div>}
-              </div>
-            </div>
-
-            <IKContext
-  publicKey={process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY}
-  urlEndpoint={process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT}
-  authenticator={async () => {
-    const response = await fetch("/api/auth");
-    return await response.json();
-  }}
->
-  <IKUpload
-    ref={coverUploadRef}
-    fileName={`book_cover_${Date.now()}.jpg`}
-    folder="/books"
-    onSuccess={handleCoverUpload}
-    onError={(err) => console.error("Cover upload error:", err)}
-    style={{ display: "none" }}
-  />
-  <button
-    className="books-change-cover-btn"
-    onClick={() => coverUploadRef.current?.click()}
-  >
-    Change Cover
-  </button>
-</IKContext>
-
-            {isEditing ? (
-              <>
-                <div className="books-form-label">Category</div>
-                <div className="books-category-select">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat}
-                      className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
-                      onClick={() => setEditCategory(cat)}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                <div className="book-cover-placeholder">
+                  <span>{book.title?.[0]}</span>
+                  {brokenCovers[book.id] && (
+                    <div className="book-cover-broken">⚠</div>
+                  )}
                 </div>
+              )}
+              {book.category && (
+                <span className="book-category-badge">{book.category}</span>
+              )}
+            </div>
+            <div className="book-info">
+              <div className="book-title">{book.title}</div>
+              <div className="book-author">{book.author}</div>
+            </div>
+          </div>
+        ))}
+        {filteredBooks.length === 0 && (
+          <div className="books-empty">No books yet. Add one →</div>
+        )}
+      </div>
+    )}
 
-                <div className="books-form-label">Note</div>
-                <textarea
-                  className="books-note-input"
-                  value={editNote}
-                  onChange={e => setEditNote(e.target.value)}
-                  rows={4}
+    {/* Search overlay — slides from bottom */}
+    {showSearch && (
+      <div className="books-overlay books-overlay-bottom" onClick={() => { setShowSearch(false); setSelectedResult(null); setSearchResults([]); setSearchTerm(""); }}>
+        <div className="books-sheet" onClick={e => e.stopPropagation()}>
+          <div className="books-sheet-handle" />
+
+          {!selectedResult ? (
+            <>
+              <h3 className="books-sheet-title">Find a Book</h3>
+              <div className="books-search-row">
+                <input
+                  className="books-search-input"
+                  placeholder="Search by title or author..."
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && searchBooks()}
                   autoFocus
                 />
-                <div className="books-confirm-actions">
-                  <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-                  <button className="books-save-btn" onClick={handleUpdate}>Save</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="books-detail-category">{selectedBook.category}</div>
-                {selectedBook.note && (
-                  <div className="books-detail-note">{selectedBook.note}</div>
+                <button className="books-search-btn" onClick={searchBooks}>
+                  <Search size={18} />
+                </button>
+              </div>
+              <div className="books-results">
+                {searching && <div className="books-searching">Searching...</div>}
+                {searchResults.map(book => (
+                  <div
+                    key={book.googleId}
+                    className="books-result-row"
+                    onClick={() => handleSelectResult(book)}
+                  >
+                    {book.coverUrl ? (
+                      <img src={book.coverUrl} alt={book.title} className="books-result-cover" />
+                    ) : (
+                      <div className="books-result-cover-placeholder">{book.title?.[0]}</div>
+                    )}
+                    <div className="books-result-info">
+                      <div className="books-result-title">{book.title}</div>
+                      <div className="books-result-author">{book.author} {book.year && `· ${book.year}`}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="books-confirm-header">
+                <button className="books-back-btn" onClick={() => setSelectedResult(null)}>← Back</button>
+                <h3 className="books-sheet-title">Add to Collection</h3>
+              </div>
+              <div className="books-confirm-book">
+                {selectedResult.coverUrl ? (
+                  <img src={selectedResult.coverUrl} alt={selectedResult.title} className="books-confirm-cover" />
+                ) : (
+                  <div className="books-confirm-cover-placeholder">{selectedResult.title?.[0]}</div>
                 )}
-                <div className="books-detail-actions">
-                  <button className="books-edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
-                  <button className="books-delete-btn" onClick={() => handleDelete(selectedBook.id)}>Delete</button>
+                <div>
+                  <div className="books-confirm-title">{selectedResult.title}</div>
+                  <div className="books-confirm-author">{selectedResult.author} {selectedResult.year && `· ${selectedResult.year}`}</div>
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+              <div className="books-form-label">Category</div>
+              <div className="books-category-select">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    className={`books-cat-btn ${addCategory === cat ? "active" : ""}`}
+                    onClick={() => setAddCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="books-form-label">Note (optional)</div>
+              <textarea
+                className="books-note-input"
+                placeholder="Why do you want to read this?"
+                value={addNote}
+                onChange={e => setAddNote(e.target.value)}
+                rows={3}
+              />
+              <div className="books-confirm-actions">
+                <button className="books-cancel-btn" onClick={() => setSelectedResult(null)}>Cancel</button>
+                <button className="books-save-btn" onClick={handleAdd} disabled={adding}>
+                  {adding ? "Adding..." : "Add to Collection"}
+                </button>
+              </div>
+            </>
+          )}
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+
+    {/* Detail overlay — centered */}
+    {showDetail && selectedBook && (
+      <div className="books-overlay books-overlay-center" onClick={() => { setShowDetail(false); setIsEditing(false); }}>
+        <div className="books-detail" onClick={e => e.stopPropagation()}>
+          <button className="books-detail-close" onClick={() => { setShowDetail(false); setIsEditing(false); }}>
+            <X size={16} />
+          </button>
+
+          <div className="books-detail-top">
+            {selectedBook.coverUrl ? (
+              <img src={selectedBook.coverUrl} alt={selectedBook.title} className="books-detail-cover" />
+            ) : (
+              <div className="books-detail-cover-placeholder">{selectedBook.title?.[0]}</div>
+            )}
+            <div className="books-detail-meta">
+              <div className="books-detail-title">{selectedBook.title}</div>
+              <div className="books-detail-author">{selectedBook.author}</div>
+              {selectedBook.year && <div className="books-detail-year">{selectedBook.year}</div>}
+            </div>
+          </div>
+
+          <IKContext
+            publicKey={process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY}
+            urlEndpoint={process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT}
+            authenticator={async () => {
+              const response = await fetch("/api/auth");
+              return await response.json();
+            }}
+          >
+            <IKUpload
+              ref={coverUploadRef}
+              fileName={`book_cover_${Date.now()}.jpg`}
+              folder="/books"
+              onSuccess={handleCoverUpload}
+              onError={(err) => console.error("Cover upload error:", err)}
+              style={{ display: "none" }}
+            />
+            <button
+              className="books-change-cover-btn"
+              onClick={() => coverUploadRef.current?.click()}
+            >
+              Change Cover
+            </button>
+          </IKContext>
+
+          {isEditing ? (
+            <>
+              <div className="books-form-label">Title</div>
+              <input
+                className="books-search-input"
+                value={editTitle}
+                onChange={e => setEditTitle(e.target.value)}
+                placeholder="Book title"
+              />
+              <div className="books-form-label">Author</div>
+              <input
+                className="books-search-input"
+                value={editAuthor}
+                onChange={e => setEditAuthor(e.target.value)}
+                placeholder="Author name"
+              />
+              <div className="books-form-label">Year</div>
+              <input
+                className="books-search-input"
+                value={editYear}
+                onChange={e => setEditYear(e.target.value)}
+                placeholder="Publication year"
+                style={{ width: "30%" }}
+              />
+              <div className="books-form-label">Category</div>
+              <div className="books-category-select">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
+                    onClick={() => setEditCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="books-form-label">Note</div>
+              <textarea
+                className="books-note-input"
+                value={editNote}
+                onChange={e => setEditNote(e.target.value)}
+                rows={3}
+                placeholder="Your thoughts..."
+              />
+              <div className="books-confirm-actions">
+                <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
+                <button className="books-save-btn" onClick={handleUpdate}>Save</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="books-detail-category">{selectedBook.category}</div>
+              {selectedBook.note && (
+                <div className="books-detail-note">{selectedBook.note}</div>
+              )}
+              <div className="books-detail-actions">
+                <button className="books-edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
+                <button className="books-delete-btn" onClick={() => handleDelete(selectedBook.id)}>Delete</button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+);
 }
