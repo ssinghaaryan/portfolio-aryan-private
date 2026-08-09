@@ -129,37 +129,24 @@ export default function Books() {
   };
 
   const handleUpdate = async () => {
-  if (!selectedBook) return;
-  await updateDoc(doc(db, "books", selectedBook.id), {
-    note: editNote.trim(),
-    category: editCategory,
-    title: editTitle.trim(),
-    author: editAuthor.trim(),
-    year: editYear.trim()
-  });
-  setIsEditing(false);
-  const updated = {
-    ...selectedBook,
-    note: editNote,
-    category: editCategory,
-    title: editTitle,
-    author: editAuthor,
-    year: editYear
+    if (!selectedBook) return;
+    await updateDoc(doc(db, "books", selectedBook.id), {
+      note: editNote.trim(),
+      category: editCategory
+    });
+    setIsEditing(false);
+    const updated = { ...selectedBook, note: editNote, category: editCategory };
+    setSelectedBook(updated);
+    loadBooks();
   };
-  setSelectedBook(updated);
-  loadBooks();
-};
 
   const openDetail = (book) => {
-  setSelectedBook(book);
-  setEditNote(book.note || "");
-  setEditCategory(book.category || "Fiction");
-  setEditTitle(book.title || "");
-  setEditAuthor(book.author || "");
-  setEditYear(book.year || "");
-  setIsEditing(false);
-  setShowDetail(true);
-};
+    setSelectedBook(book);
+    setEditNote(book.note || "");
+    setEditCategory(book.category || "Fiction");
+    setIsEditing(false);
+    setShowDetail(true);
+  };
 
   const allCategories = ["All", ...CATEGORIES];
   const filteredBooks = categoryFilter === "All"
