@@ -161,16 +161,20 @@ export default function Books() {
   const openDetail = (book) => {
   setSelectedBook(book);
   setEditNote(book.note || "");
-  setEditCategory(
-  Array.isArray(book.category)
-    ? book.category
-    : book.category
-    ? [book.category] // handle old single-string data
-    : []
-);
   setEditTitle(book.title || "");
   setEditAuthor(book.author || "");
   setEditYear(book.year || "");
+
+  // Fix: handle string, array, or undefined
+  const cat = book.category;
+  if (!cat) {
+    setEditCategory([]);
+  } else if (Array.isArray(cat)) {
+    setEditCategory(cat);
+  } else {
+    setEditCategory([cat]); // convert old string to array
+  }
+
   setIsEditing(false);
   setShowDetail(true);
 };
@@ -234,7 +238,7 @@ export default function Books() {
               {book.category && (
   <span className="book-category-badge">
     {Array.isArray(book.category)
-      ? book.category.slice(0, 2).join(", ")
+      ? book.category.slice(0, 1).join(", ")
       : book.category}
   </span>
 )}
@@ -442,7 +446,9 @@ export default function Books() {
               <div className="books-detail-categories">
   {(Array.isArray(selectedBook.category)
     ? selectedBook.category
-    : [selectedBook.category]
+    : typeof selectedBook.category === "string"
+    ? [selectedBook.category]
+    : []
   ).filter(Boolean).map(cat => (
     <span key={cat} className="books-detail-category">{cat}</span>
   ))}
