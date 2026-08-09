@@ -36,6 +36,10 @@ export default function Books() {
   const [searching, setSearching] = useState(false);
   const [adding, setAdding] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [brokenCovers, setBrokenCovers] = useState({});
+  const [editTitle, setEditTitle] = useState("");
+  const [editAuthor, setEditAuthor] = useState("");
+  const [editYear, setEditYear] = useState("");
 
     const coverUploadRef = useRef(null);
     const handleCoverUpload = async (res) => {
@@ -125,24 +129,37 @@ export default function Books() {
   };
 
   const handleUpdate = async () => {
-    if (!selectedBook) return;
-    await updateDoc(doc(db, "books", selectedBook.id), {
-      note: editNote.trim(),
-      category: editCategory
-    });
-    setIsEditing(false);
-    const updated = { ...selectedBook, note: editNote, category: editCategory };
-    setSelectedBook(updated);
-    loadBooks();
+  if (!selectedBook) return;
+  await updateDoc(doc(db, "books", selectedBook.id), {
+    note: editNote.trim(),
+    category: editCategory,
+    title: editTitle.trim(),
+    author: editAuthor.trim(),
+    year: editYear.trim()
+  });
+  setIsEditing(false);
+  const updated = {
+    ...selectedBook,
+    note: editNote,
+    category: editCategory,
+    title: editTitle,
+    author: editAuthor,
+    year: editYear
   };
+  setSelectedBook(updated);
+  loadBooks();
+};
 
   const openDetail = (book) => {
-    setSelectedBook(book);
-    setEditNote(book.note || "");
-    setEditCategory(book.category || "Fiction");
-    setIsEditing(false);
-    setShowDetail(true);
-  };
+  setSelectedBook(book);
+  setEditNote(book.note || "");
+  setEditCategory(book.category || "Fiction");
+  setEditTitle(book.title || "");
+  setEditAuthor(book.author || "");
+  setEditYear(book.year || "");
+  setIsEditing(false);
+  setShowDetail(true);
+};
 
   const allCategories = ["All", ...CATEGORIES];
   const filteredBooks = categoryFilter === "All"
@@ -179,24 +196,26 @@ export default function Books() {
       ) : (
         <div className="books-grid">
           {filteredBooks.map(book => (
-            <div key={book.id} className="book-card" onClick={() => openDetail(book)}>
-              <div className="book-cover-wrap">
-                {book.coverUrl ? (
-                  <img src={book.coverUrl} alt={book.title} className="book-cover" />
-                ) : (
-                  <div className="book-cover-placeholder">
-                    <span>{book.title?.[0]}</span>
-                  </div>
-                )}
-                {book.category && (
-                  <span className="book-category-badge">{book.category}</span>
-                )}
-              </div>
-              <div className="book-info">
-                <div className="book-title">{book.title}</div>
-                <div className="book-author">{book.author}</div>
-              </div>
-            </div>
+            <div className="book-cover-wrap">
+  {book.coverUrl && !brokenCovers[book.id] ? (
+    <img
+      src={book.coverUrl}
+      alt={book.title}
+      className="book-cover"
+      onError={() => setBrokenCovers(prev => ({ ...prev, [book.id]: true }))}
+    />
+  ) : (
+    <div className="book-cover-placeholder">
+      <span>{book.title?.[0]}</span>
+      {brokenCovers[book.id] && (
+        <div className="book-cover-broken">⚠</div>
+      )}
+    </div>
+  )}
+  {book.category && (
+    <span className="book-category-badge">{book.category}</span>
+  )}
+</div>
           ))}
           {filteredBooks.length === 0 && !loading && (
             <div className="books-empty">No books yet. Add one →</div>
@@ -348,32 +367,58 @@ export default function Books() {
 
             {isEditing ? (
               <>
-                <div className="books-form-label">Category</div>
-                <div className="books-category-select">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat}
-                      className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
-                      onClick={() => setEditCategory(cat)}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+    <div className="books-form-label">Title</div>
+    <input
+      className="books-search-input"
+      value={editTitle}
+      onChange={e => setEditTitle(e.target.value)}
+      placeholder="Book title"
+    />
 
-                <div className="books-form-label">Note</div>
-                <textarea
-                  className="books-note-input"
-                  value={editNote}
-                  onChange={e => setEditNote(e.target.value)}
-                  rows={4}
-                  autoFocus
-                />
-                <div className="books-confirm-actions">
-                  <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-                  <button className="books-save-btn" onClick={handleUpdate}>Save</button>
-                </div>
-              </>
+    <div className="books-form-label">Author</div>
+    <input
+      className="books-search-input"
+      value={editAuthor}
+      onChange={e => setEditAuthor(e.target.value)}
+      placeholder="Author name"
+    />
+
+    <div className="books-form-label">Year</div>
+    <input
+      className="books-search-input"
+      value={editYear}
+      onChange={e => setEditYear(e.target.value)}
+      placeholder="Publication year"
+      style={{ width: "30%" }}
+    />
+
+    <div className="books-form-label">Category</div>
+    <div className="books-category-select">
+      {CATEGORIES.map(cat => (
+        <button
+          key={cat}
+          className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
+          onClick={() => setEditCategory(cat)}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <div className="books-form-label">Note</div>
+    <textarea
+      className="books-note-input"
+      value={editNote}
+      onChange={e => setEditNote(e.target.value)}
+      rows={3}
+      placeholder="Your thoughts..."
+    />
+
+    <div className="books-confirm-actions">
+      <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
+      <button className="books-save-btn" onClick={handleUpdate}>Save</button>
+    </div>
+  </>
             ) : (
               <>
                 <div className="books-detail-category">{selectedBook.category}</div>
