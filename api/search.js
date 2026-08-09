@@ -73,7 +73,29 @@ export default async function handler(req, res) {
       return res.status(200).json(results);
     }
 
-    return res.status(400).json({ error: "mode required: music or movie" });
+    // mode=books → Google Books API (no key needed for basic search)
+    if (mode === "books") {
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=15&printType=books`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const results = (data.items || []).map(item => {
+        const info = item.volumeInfo;
+        const isbn = info.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier
+          || info.industryIdentifiers?.find(id => id.type === "ISBN_10")?.identifier;
+        return {
+          googleId: item.id,
+          title: info.title || "Unknown Title",
+          author: info.authors?.join(", ") || "Unknown Author",
+          year: info.publishedDate?.slice(0, 4) || "",
+          description: info.description || "",
+          coverUrl: info.imageLinks?.thumbnail?.replace("http://", "https://") || null,
+          isbn: isbn || null
+        };
+      });
+      return res.status(200).json(results);
+    }
+
+    return res.status(400).json({ error: "mode required: music or movie or books" });
 
   } catch (error) {
     console.error("Search error:", error);

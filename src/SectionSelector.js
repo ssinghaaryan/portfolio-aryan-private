@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Music2, Image, BookOpen, Wallet, Lightbulb, Clapperboard, BookMarked } from "lucide-react";
+import { Music2, Image, BookOpen, Wallet, Lightbulb, Clapperboard, BookMarked, Library } from "lucide-react";
 import { useData } from "./context/DataContext";
 import "./SectionSelector.css";
 
@@ -26,6 +26,7 @@ const sections = [
   { name: "Ideas", path: "/ideas", icon: Lightbulb },
   { name: "Movies", path: "/movies", icon: Clapperboard },
   { name: "Vault", path: "/vault", icon: BookMarked },
+  { name: "Books", path: "/books", icon: Library }
 ];
 
 const SectionSelector = () => {

@@ -17,6 +17,7 @@ import Finance from "../src/finance/Finance";
 import Ideas from "../src/ideas/Ideas";
 import Movies from "./movies/Movies";
 import Vault from "./vault/Vault";
+import Books from "./books/Books";
 import BottomNavbar from "./components/BottomNavbar/BottomNavbar";
 
 function App() {
@@ -68,8 +69,13 @@ function App() {
 
         <Route path='/movies' element={
         <ProtectedRoute><Movies /></ProtectedRoute>} />
+
         <Route path="/vault" element={
         <ProtectedRoute><Vault /> </ProtectedRoute>} />
+        
+        <Route path='/books' element={
+        <ProtectedRoute><Books /></ProtectedRoute>} />
+        
       </Routes>
         
       <BottomNavbar />
