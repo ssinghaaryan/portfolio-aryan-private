@@ -367,58 +367,32 @@ export default function Books() {
 
             {isEditing ? (
               <>
-    <div className="books-form-label">Title</div>
-    <input
-      className="books-search-input"
-      value={editTitle}
-      onChange={e => setEditTitle(e.target.value)}
-      placeholder="Book title"
-    />
+                <div className="books-form-label">Category</div>
+                <div className="books-category-select">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat}
+                      className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
+                      onClick={() => setEditCategory(cat)}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
 
-    <div className="books-form-label">Author</div>
-    <input
-      className="books-search-input"
-      value={editAuthor}
-      onChange={e => setEditAuthor(e.target.value)}
-      placeholder="Author name"
-    />
-
-    <div className="books-form-label">Year</div>
-    <input
-      className="books-search-input"
-      value={editYear}
-      onChange={e => setEditYear(e.target.value)}
-      placeholder="Publication year"
-      style={{ width: "30%" }}
-    />
-
-    <div className="books-form-label">Category</div>
-    <div className="books-category-select">
-      {CATEGORIES.map(cat => (
-        <button
-          key={cat}
-          className={`books-cat-btn ${editCategory === cat ? "active" : ""}`}
-          onClick={() => setEditCategory(cat)}
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
-
-    <div className="books-form-label">Note</div>
-    <textarea
-      className="books-note-input"
-      value={editNote}
-      onChange={e => setEditNote(e.target.value)}
-      rows={3}
-      placeholder="Your thoughts..."
-    />
-
-    <div className="books-confirm-actions">
-      <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-      <button className="books-save-btn" onClick={handleUpdate}>Save</button>
-    </div>
-  </>
+                <div className="books-form-label">Note</div>
+                <textarea
+                  className="books-note-input"
+                  value={editNote}
+                  onChange={e => setEditNote(e.target.value)}
+                  rows={4}
+                  autoFocus
+                />
+                <div className="books-confirm-actions">
+                  <button className="books-cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
+                  <button className="books-save-btn" onClick={handleUpdate}>Save</button>
+                </div>
+              </>
             ) : (
               <>
                 <div className="books-detail-category">{selectedBook.category}</div>
